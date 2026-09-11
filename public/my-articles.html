@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Stories & Feeds | News Junction</title>
+  <link rel="icon" type="image/png" href="/grfx/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="site-header">
+    <div class="hero-container">
+      <div class="brand-logo">
+        <a href="/">
+          <img src="/grfx/images/newsjunction.png" alt="News Junction" onerror="this.src='/images/newsjunction.png'" />
+        </a>
+      </div>
+      <div class="hero-text">
+        <p>Author Dashboard — Track read counts, edit drafts, and monitor scheduled publications.</p>
+        <a href="/create.html" class="hero-cta">
+          <span>+ Write New Story</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= SUB NAVIGATION ================= -->
+  <div class="sub-nav">
+    <div class="sub-nav-content">
+      <a href="/" class="sub-nav-item">🏠 Home</a>
+      <a href="/reader.html" class="sub-nav-item">📰 News Feed</a>
+      <a href="/channels.html" class="sub-nav-item">📡 Channels</a>
+      <a href="/district-newspapers.html" class="sub-nav-item">🗞️ District Papers</a>
+      <a href="/sharemarket.html" class="sub-nav-item">📈 Share Market</a>
+      <a href="/magazine.html" class="sub-nav-item">📖 Digital Magazine</a>
+      <a href="/complaints.html" class="sub-nav-item">⚖️ Citizen Grievances</a>
+      <a href="/influencers.html" class="sub-nav-item">✍️ Columnists</a>
+      <a href="/create.html" class="sub-nav-item">✏️ Create Story</a>
+      <a href="/my-articles.html" class="sub-nav-item active highlight">📚 My Stories</a>
+      <a href="/lead-builder.html" class="sub-nav-item">🎯 Lead Builder</a>
+      <a href="/analytics.html" class="sub-nav-item">📊 Analytics</a>
+      <a href="/admin.html" class="sub-nav-item">⚙️ Admin</a>
+    </div>
+  </div>
+
+  <main class="main-section">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+      <div>
+        <h1 style="font-size: 1.8rem; font-weight: 700;">My Published Stories</h1>
+        <p style="color: var(--color-text-muted);">Manage your submitted articles, views, and scheduled release pipeline.</p>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button id="tabPublished" class="btn-primary">Published Stories</button>
+        <button id="tabScheduled" class="btn-secondary">Scheduled Queue</button>
+        <a href="/create.html" class="btn-primary">+ Create Story</a>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Category</th>
+              <th>District</th>
+              <th>Views</th>
+              <th>Likes</th>
+              <th>Date / Schedule</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="articlesTableBody">
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 30px; color: var(--color-text-muted);">
+                Loading articles...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 News Junction. Converted to Vanilla HTML, CSS, JS & Node.js.</p>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/my-articles.js"></script>
+</body>
+</html>

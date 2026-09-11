@@ -1,0 +1,484 @@
+
+
+  
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Agency Portfolio</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:200,300,400,500,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Work Sans", sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f1f1f1;
+      }
+
+      a {
+        text-decoration: none;
+        color: #007bff;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+      }
+
+      .header {
+        background-color: #fff;
+        padding: 20px 0;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+      }
+
+      .hero {
+        background-color: #fff;
+        padding: 80px 0;
+        text-align: center;
+      }
+
+      .hero h2 {
+        font-size: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .hero h2 span {
+        color: #007bff;
+      }
+
+      .projects {
+        background-color: #fff;
+        padding: 50px 0;
+      }
+
+      .section-heading {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .section-heading h2 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+
+      .section-heading p {
+        max-width: 600px;
+        margin: 0 auto;
+        color: #666;
+      }
+
+      .project-grid {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -15px;
+      }
+
+      .project-column {
+        flex: 0 0 50%;
+        padding: 0 15px;
+      }
+
+      .project-item {
+        margin-bottom: 30px;
+      }
+
+      .project-item img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .project-info {
+        text-align: center;
+        padding: 15px 0;
+      }
+
+      .project-info h3 {
+        margin-bottom: 5px;
+      }
+
+      .project-info span {
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      .footer {
+        background-color: #222;
+        color: #fff;
+        padding: 50px 0 20px;
+      }
+
+      .footer-content {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+      }
+
+      .footer-column {
+        flex: 0 0 33.333%;
+        padding: 0 15px;
+        margin-bottom: 30px;
+      }
+
+      .footer-column h3 {
+        color: #fff;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+      }
+
+      .footer-column p,
+      .footer-column li {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 10px;
+      }
+
+      .footer-column ul {
+        list-style: none;
+      }
+
+      .footer-column a {
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .footer-column a:hover {
+        color: #fff;
+      }
+
+      .copyright {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 20px;
+        color: rgba(255, 255, 255, 0.4);
+        display: flex;
+        justify-content: space-between;
+      }
+
+      /* Contact Form Styles */
+      .contact-form-section {
+        background-color: #ddd;
+        padding: 50px 0;
+        position: relative;
+      }
+
+      .field-selection {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 30px;
+      }
+
+      .field-selection h3 {
+        margin-bottom: 15px;
+      }
+
+      .checkbox-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .checkbox-item {
+        flex: 0 0 33.333%;
+        margin-bottom: 10px;
+        padding-right: 15px;
+      }
+
+      .form-title {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 1.8rem;
+        position: relative;
+      }
+
+      .contact-form {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s, transform 0.5s;
+      }
+
+      .form-group.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: "Work Sans", sans-serif;
+      }
+
+      .submit-button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s;
+      }
+
+      .submit-button:hover {
+        background-color: #0056b3;
+      }
+
+      .submit-section {
+        display: flex;
+        align-items: center;
+      }
+
+      .loader {
+        margin-left: 15px;
+      }
+
+      .status-panel {
+        margin-bottom: 20px;
+        padding: 10px;
+        border-radius: 4px;
+      }
+
+      .edit-button {
+        position: absolute;
+        right: -30px;
+        top: 0;
+        background: #007bff;
+        color: white;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .edit-control {
+        position: relative;
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 768px) {
+        .project-column {
+          flex: 0 0 100%;
+        }
+
+        .footer-column {
+          flex: 0 0 100%;
+        }
+
+        .checkbox-item {
+          flex: 0 0 50%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .checkbox-item {
+          flex: 0 0 100%;
+        }
+      }
+    </style>
+  
+
+  
+    <header class="header">
+      <div class="container">
+        <h1 class="" style="position: relative;">Agency</h1>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="container">
+        <h2 class="" style="position: relative; border: 0px none rgb(51, 51, 51);">
+          We Are Portfolio Agency, We Create <span class="" style="position: relative; border: 0px none rgb(0, 123, 255);">Functional</span> &amp;
+          <span class="" style="position: relative;">Beautiful</span> Websitesdsdsd</h2>
+      </div>
+    </section>
+
+    <section class="projects">
+      <div class="container">
+        <div class="section-heading">
+          <h2 class="" style="position: relative;">Projects</h2>
+          <p class="" style="position: relative;">
+            A small river named Duden flows by their place and supplies it with
+            the necessary regelialia.
+          </p>
+        </div>
+
+        <div class="project-grid">
+          <div class="project-column">
+            <div class="project-item">
+              <img src="images3/work-1.jpg" alt="Project 1">
+              <div class="project-info">
+                <h3 class="" style="position: relative;"><a href="#" class="" style="position: relative;">Work name</a></h3>
+                <span class="" style="position: relative;">Printing</span>
+              </div>
+            </div>
+
+            <div class="project-item">
+              <img src="images3/work-2.jpg" alt="Project 2">
+              <div class="project-info">
+                <h3 class="" style="position: relative;"><a href="#" class="" style="position: relative;">Work name</a></h3>
+                <span class="" style="position: relative;">Printing</span>
+              </div>
+            </div>
+
+            <div class="project-item">
+              <img src="images3/work-3.jpg" alt="Project 3">
+                <h3 class="" style="position: relative;"><a href="#" class="" style="position: relative;">Work</a></h3>
+                <span class="" style="position: relative;">Printing</span>
+              </div>
+            </div>
+
+            <div class="project-item">
+              <img src="images3/work-4.jpg" alt="Project 4">
+              <div class="project-info">
+                <h3 class="" style="position: relative;"><a href="#" class="" style="position: relative;">Work</a></h3>
+                <span class="" style="position: relative;">Printing</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-column">
+            <div class="project-item">
+              <img src="images3/work-5.jpg" alt="Project 5">
+              <div class="project-info">
+                <h3 class="" style="position: relative;"><a href="#" class="" style="position: relative;">Work name</a></h3>
+                <span class="" style="position: relative;">Branding</span>
+              </div>
+            </div>
+
+            <div class="project-item">
+              <img src="images3/work-6.jpg" alt="Project 6">
+              <div class="project-info">
+                <h3 class="" style="position: relative;"><a href="#" class="" style="position: relative;">Work name</a></h3>
+                <span class="" style="position: relative;">Branding</span>
+              </div>
+            </div>
+
+            <div class="project-item">
+              <img src="images3/work-7.jpg" alt="Project 7">
+              <div class="project-info">
+                <h3 class="" style="position: relative;"><a href="#" class="" style="position: relative;">Work name</a></h3>
+                <span class="" style="position: relative;">Branding</span>
+              </div>
+            </div>
+
+            <div class="project-item">
+              <img src="images3/work-8.jpg" alt="Project 8">
+              <div class="project-info">
+                <h3 class="" style="position: relative;"><a href="#" class="" style="position: relative;">Work name</a></h3>
+                <span class="" style="position: relative;">Branding</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+    </section>
+
+    <!-- New Dynamic Form Section -->
+    <section class="contact-form-section">
+      <div class="container">
+        <h2 class="form-title" id="form-title" style="position: relative;">Enter Form Name</h2>
+        <form id="frmLead" class="contact-form" onsubmit="return chkLead()">
+          <div id="formFields">
+            <div class="form-group form-field visible" data-field="name">
+              <label for="Name">Name *</label>
+              <input type="text" id="Name" name="Name" required="">
+            </div>
+            <div class="form-group form-field visible" data-field="email">
+              <label for="Email">Email *</label>
+              <input type="email" id="Email" name="Email" required="">
+            </div>
+
+            <div class="form-group form-field visible" data-field="phone">
+              <label for="Mobile">Phone Number *</label>
+              <input type="tel" id="Mobile" name="Mobile" required="">
+            </div>
+
+            <div class="form-group form-field visible" data-field="query">
+              <label for="Query">Message  *</label>
+              <textarea id="Query" name="Query" rows="4" required=""></textarea>
+            </div>
+          </div>
+
+          <div id="panelStatus" class="status-panel"></div>
+
+          <div class="submit-section">
+            <button type="submit" id="btnSubmit" class="submit-button">
+              Submit
+            </button>
+            <div id="contentLoader" class="loader" style="display: none">
+              Processing...
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-column">
+            <h3 class="" style="position: relative;">About</h3>
+            <p class="" style="position: relative;">
+              A small river named Duden flows by their place and supplies it
+              with the necessary regelialia.
+            </p>
+          </div>
+
+          <div class="footer-column">
+            <h3 class="" style="position: relative;">Contact Info</h3>
+            <ul>
+              <li>
+                203 Fake St. Mountain View, San Francisco, California, USA
+              </li>
+              <li><a href="tel:+2 392 3929 210" class="" style="position: relative;">+2 392 3929 210</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-column">
+            <h3 class="" style="position: relative;">Useful Links</h3>
+            <ul>
+              <li><a href="#" class="" style="position: relative;">Home</a></li>
+              <li><a href="#" class="" style="position: relative;">About</a></li>
+              <li><a href="#" class="" style="position: relative;">Services</a></li>
+              <li><a href="#" class="" style="position: relative;">Work</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="copyright">
+          <p class="" style="position: relative;">© 2018 Agency. All Rights Reserved</p>
+          <p class="" style="position: relative;"></p>
+        </div>
+      </div>
+    </footer>
+  
+  <script src="script.js"></script>
+

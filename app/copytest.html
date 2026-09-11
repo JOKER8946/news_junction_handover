@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copy to Clipboard Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Copy to Clipboard Test</h2>
+        <input type="text" id="noteInput" placeholder="Enter your note here...">
+        <button id="copyButton">Copy Note</button>
+        <p class="message">When you click "Copy Note", the note will be copied to your clipboard.</p>
+    </div>
+
+    <script>
+       function copyToClipboard(note) {
+            // Append the custom text to the note
+            var textToCopy = note + '\n\nshared via knoblyreader.com';
+
+            // Try using the Clipboard API first
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(textToCopy).then(function() {
+                    alert('Note copied to clipboard: ' + textToCopy);
+                }).catch(function(error) {
+                    console.error('Clipboard API error: ', error);
+                    fallbackCopy(textToCopy);
+                });
+            } else {
+                console.error('Clipboard API is not available');
+                fallbackCopy(textToCopy);
+            }
+
+            // Fallback method using a temporary textarea element
+            function fallbackCopy(textToCopy) {
+                // Create a temporary textarea element using jQuery
+                var $tempTextArea = $('<textarea>');
+
+                // Set the value of the textarea to the text we want to copy
+                $tempTextArea.val(textToCopy).appendTo('body');
+
+                // Focus the textarea and select the content using jQuery
+                $tempTextArea.focus().select();
+                $tempTextArea[0].setSelectionRange(0, textToCopy.length); // For mobile devices
+
+                // Try executing the copy command
+                try {
+                    var successful = document.execCommand('copy');
+                    if (successful) {
+                        alert('Note copied to clipboard: ' + textToCopy);
+                    } else {
+                        alert('Failed to copy note.');
+                    }
+                } catch (err) {
+                    console.error('Error copying text: ', err);
+                    alert('Failed to copy note.');
+                } finally {
+                    // Remove the temporary textarea from the document
+                    $tempTextArea.remove();
+                }
+            }
+
+        }
+
+        // Event listener for the "Copy Note" button
+        $('#copyButton').click(function () {
+            var note = $('#noteInput').val();
+            if (note) {
+                copyToClipboard(note);
+            } else {
+                alert('Please enter a note before copying.');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

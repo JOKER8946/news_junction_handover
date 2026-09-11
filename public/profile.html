@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile &bull; News Junction</title>
+  <link rel="icon" type="image/png" href="/grfx/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    .profile-hero {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 30px;
+      margin-bottom: 24px;
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .profile-avatar-large {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: var(--color-navy);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      font-weight: 700;
+      border: 3px solid var(--color-gold);
+    }
+    .profile-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .profile-stat-box {
+      background: #ffffff;
+      padding: 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      text-align: center;
+    }
+    .profile-stat-box h3 {
+      font-size: 1.8rem;
+      color: var(--color-primary);
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= NAVBAR ================= -->
+  <nav class="main-nav">
+    <div class="nav-content">
+      <a href="/" style="display:flex; align-items:center; gap:10px;">
+        <img src="/grfx/images/newsjunction.png" alt="News Junction" style="height: 38px;" onerror="this.src='/images/newsjunction.png'" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/reader.html">News Feed</a></li>
+        <li><a href="/complaints.html">Complaints</a></li>
+      </ul>
+
+      <div class="nav-auth">
+        <a href="/api/auth/logout" class="btn-nav-login" style="padding: 5px 14px;">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= SUB NAVIGATION ================= -->
+  <div class="sub-nav">
+    <div class="sub-nav-content">
+      <a href="/" class="sub-nav-item">🏠 Home</a>
+      <a href="/reader.html" class="sub-nav-item">📰 News Feed</a>
+      <a href="/channels.html" class="sub-nav-item">📡 Channels</a>
+      <a href="/district-newspapers.html" class="sub-nav-item">🗞️ District Papers</a>
+      <a href="/sharemarket.html" class="sub-nav-item">📈 Share Market</a>
+      <a href="/magazine.html" class="sub-nav-item">📖 Digital Magazine</a>
+      <a href="/complaints.html" class="sub-nav-item">⚖️ Citizen Grievances</a>
+      <a href="/influencers.html" class="sub-nav-item">✍️ Columnists</a>
+      <a href="/create.html" class="sub-nav-item">✏️ Create Story</a>
+      <a href="/my-articles.html" class="sub-nav-item">📚 My Stories</a>
+      <a href="/collections.html" class="sub-nav-item">🔖 Collections</a>
+      <a href="/lead-builder.html" class="sub-nav-item">🎯 Lead Builder</a>
+      <a href="/analytics.html" class="sub-nav-item">📊 Analytics</a>
+      <a href="/admin.html" class="sub-nav-item">⚙️ Admin</a>
+    </div>
+  </div>
+
+  <!-- ================= PROFILE CONTENT ================= -->
+  <main class="reader-layout" style="max-width: 960px;">
+
+    <!-- User Header Hero -->
+    <section class="profile-hero">
+      <div class="profile-avatar-large" id="avatarDisplay">U</div>
+      <div style="flex:1;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
+          <h2 id="profileName" style="font-size: 1.6rem; color: var(--color-text-dark);">Loading Profile...</h2>
+          <span class="ad-badge" id="planBadge">Free</span>
+        </div>
+        <p id="profileEmail" style="color:var(--color-text-muted); font-size: 0.95rem; margin-bottom: 6px;"></p>
+        <p id="profileBio" style="color:#475569; font-size: 0.9rem;"></p>
+      </div>
+    </section>
+
+    <!-- Stats Row -->
+    <div class="profile-stats-grid">
+      <div class="profile-stat-box">
+        <h3 id="statSaved">0</h3>
+        <p style="color:var(--color-text-muted); font-size:0.85rem; font-weight:600;">Saved Stories</p>
+      </div>
+      <div class="profile-stat-box">
+        <h3 id="statVisits">1</h3>
+        <p style="color:var(--color-text-muted); font-size:0.85rem; font-weight:600;">Platform Visits</p>
+      </div>
+      <div class="profile-stat-box">
+        <h3 id="statRole">Reader</h3>
+        <p style="color:var(--color-text-muted); font-size:0.85rem; font-weight:600;">Membership Status</p>
+      </div>
+    </div>
+
+    <!-- Tabbed Navigation -->
+    <div class="auth-tabs" style="margin-bottom: 20px;">
+      <button class="auth-tab active" data-target="savedTab">Saved Articles</button>
+      <button class="auth-tab" data-target="editTab">Edit Profile</button>
+      <button class="auth-tab" data-target="settingsTab">Settings & Plan</button>
+    </div>
+
+    <!-- Alert status -->
+    <div id="profileAlert" class="alert-message"></div>
+
+    <!-- 1. Saved Articles Tab -->
+    <section id="savedTab" class="auth-form-panel">
+      <h3 style="margin-bottom:16px; font-size:1.2rem; color:var(--color-primary);">Your Reading Collection</h3>
+      <div class="articles-grid" id="savedGrid">
+        <!-- Injected via JS -->
+      </div>
+      <div id="noSavedMsg" style="display:none; text-align:center; padding:40px; background:#fff; border-radius:8px;">
+        <p style="color:var(--color-text-muted);">You have not saved any articles yet.</p>
+        <a href="/reader.html" class="btn-read" style="display:inline-block; margin-top:10px;">Explore News Feed</a>
+      </div>
+    </section>
+
+    <!-- 2. Edit Profile Tab -->
+    <section id="editTab" class="auth-form-panel" style="display:none;">
+      <div style="background:#ffffff; padding:28px; border-radius:var(--radius-md); border:1px solid var(--color-border);">
+        <h3 style="margin-bottom:20px; font-size:1.2rem; color:var(--color-primary);">Update Information</h3>
+
+        <form id="editProfileForm">
+          <div class="form-group">
+            <label for="editFullName">Full Name</label>
+            <input type="text" id="editFullName" class="form-control" required />
+          </div>
+
+          <div class="form-group">
+            <label for="editEmail">Email Address</label>
+            <input type="email" id="editEmail" class="form-control" required />
+          </div>
+
+          <div style="display:grid; grid-template-columns: 100px 1fr; gap:12px;">
+            <div class="form-group">
+              <label for="editCountryCode">Code</label>
+              <select id="editCountryCode" class="form-control">
+                <option value="+91">+91</option>
+                <option value="+1">+1</option>
+                <option value="+44">+44</option>
+                <option value="+971">+971</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="editPhone">Phone Number</label>
+              <input type="tel" id="editPhone" class="form-control" />
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label for="editCompany">Company / Outlet</label>
+              <input type="text" id="editCompany" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label for="editPincode">Pincode</label>
+              <input type="text" id="editPincode" class="form-control" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="editWebsite">Website / Social URL</label>
+            <input type="url" id="editWebsite" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label for="editBio">Short Bio</label>
+            <textarea id="editBio" class="form-control" rows="3"></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit" id="saveProfileBtn">Save Changes</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 3. Settings Tab -->
+    <section id="settingsTab" class="auth-form-panel" style="display:none;">
+      <div style="background:#ffffff; padding:28px; border-radius:var(--radius-md); border:1px solid var(--color-border);">
+        <h3 style="margin-bottom:16px; font-size:1.2rem; color:var(--color-primary);">Membership & Security</h3>
+        <p style="margin-bottom: 20px; color:var(--color-text-muted);">Manage your subscription tier and account security credentials.</p>
+
+        <div style="padding:16px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:24px;">
+          <h4>Current Tier: <span id="settingsPlan" style="color:var(--color-primary);">Free Citizen Plan</span></h4>
+          <p style="font-size:0.88rem; color:var(--color-text-muted); margin-top:4px;">
+            Unlimited reading access to verified district, state, and national journalism.
+          </p>
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <a href="/sign-in.html?action=reset" class="btn-nav-login" style="background:var(--color-navy); color:#fff;">Change Password</a>
+          <a href="/api/auth/logout" class="btn-nav-login" style="background:#ef4444; color:#fff; border:none;">Log Out of Account</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>&copy; 2026 News Junction Media Network &bull; <a href="/privacy.html" style="color:#cbd5e1;">Privacy</a></p>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/profile.js"></script>
+</body>
+</html>

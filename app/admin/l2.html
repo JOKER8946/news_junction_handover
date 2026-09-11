@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Knobly UI</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="services/css/owl.carousel.min.css">
+  <link rel="stylesheet" href="services/css/owl.carousel.min.css">
+  <link rel="stylesheet" href="services/css/style.css">
+  <link rel="stylesheet" href="assets/css/form.css">
+  <style>
+    button {
+      position: relative;
+      background: #444;
+      color: #fff;
+      text-decoration: none;
+      text-transform: uppercase;
+      border: none;
+      letter-spacing: 0.1rem;
+      font-size: 1rem;
+      padding: 1rem 3rem;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      letter-spacing: 0.2rem;
+      padding: 1.1rem 3.1rem;
+      background: var(--clr);
+      color: var(--clr);
+      /* box-shadow: 0 0 35px var(--clr); */
+      animation: box 3s infinite;
+    }
+
+    button::before {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      background: #272822;
+    }
+
+    button span {
+      position: relative;
+      z-index: 1;
+    }
+
+    button i {
+      position: absolute;
+      inset: 0;
+      display: block;
+    }
+
+    button i::before {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 2px;
+      left: 80%;
+      top: -2px;
+      border: 2px solid var(--clr);
+      background: #272822;
+      transition: 0.2s;
+    }
+
+    button:hover i::before {
+      width: 15px;
+      left: 20%;
+      animation: move 3s infinite;
+    }
+
+    button i::after {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 2px;
+      left: 20%;
+      bottom: -2px;
+      border: 2px solid var(--clr);
+      background: #272822;
+      transition: 0.2s;
+    }
+
+    button:hover i::after {
+      width: 15px;
+      left: 80%;
+      animation: move 3s infinite;
+    }
+
+    @keyframes move {
+      0% {
+        transform: translateX(0);
+      }
+
+      50% {
+        transform: translateX(5px);
+      }
+
+      100% {
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes box {
+      0% {
+        box-shadow: #27272c;
+      }
+
+      50% {
+        box-shadow: 0 0 25px var(--clr);
+      }
+
+      100% {
+        box-shadow: #27272c;
+      }
+    }
+  </style>
+  <script type="text/javascript">
+    <!--
+    function MM_preloadImages() { //v3.0
+      var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+        var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+        if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+    }
+    
+    function MM_findObj(n, d) { //v4.01
+      var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+        d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+      if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+      for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+      if(!x && d.getElementById) x=d.getElementById(n); return x;
+    }
+    
+    function MM_swapImgRestore() { //v3.0
+      var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+    }
+    
+    function MM_swapImage() { //v3.0
+      var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+       if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+    }
+    //-->
+  </script>
+</head>
+
+<body
+  onLoad="MM_preloadImages('assets/img/button_o.png','assets/img/icons/call_o.png','assets/img/speaker_o.png','assets/img/share_o.png')">
+
+
+
+  <main id="main">
+
+
+    <section id="about" class="about" style="background:#F5EDE7; margin-bottom:-30px;">
+      <div class="container">
+
+        <div class="row">
+          <div class="col-lg-4" style="background-color:#F5EDE7; margin-top:30px;">
+            <img src="assets/img/about.jpg" alt="" width="627" height="339" class="img-fluid"> <br>
+            <strong><a href="#">Times of India</a></strong><br>
+            <strong>Pulished:</strong> Name<br>
+
+            <div style="color:#FA800A; font-size:16px;"><strong>Date:</strong> Aug 13, 2024</div> <br>
+          </div>
+          <div class="col-lg-8 pt-4 pt-lg-0 content" style="margin-top:30px;">
+            <h3>The Zudio effect: How V2 Retail plans to take on the Tata brand in value fashion</h3>
+
+            Delhi-based V2 Retail Ltd aims to establish an online presence by Q3 FY25, starting with a pilot in Delhi.
+            The firm will use its stores to fulfill online orders, aiming to tap demand in tier 2 and 3 cities<br>
+            Our team possesses extensive industry knowledge and years of cumulative experience in numerous relevant
+            sectors, allowing us to provide clients with the right solutions on a timely basis at the right cost.<br>
+            <br>
+            <div class="row" style="margin-right:10px;">
+              <div class="item2" align="right"><a href="#" onMouseOut="MM_swapImgRestore()"
+                  onMouseOver="MM_swapImage('Image5','','assets/img/speaker_o.png',1)"><img
+                    src="assets/img/speaker_n.png" name="Image5" width="45" height="45" border="0"></a>
+                &nbsp;&nbsp;&nbsp;<a href="#" onMouseOut="MM_swapImgRestore()"
+                  onMouseOver="MM_swapImage('Image6','','assets/img/share_o.png',1)"><img src="assets/img/share_n.png"
+                    name="Image6" width="45" height="45" border="0"></a></div>
+            </div>
+
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="about" class="about" style="background:#F7F5F4; margin-bottom:-30px;">
+      <div class="container">
+
+        <div class="row">
+          <div class="col-lg-4" style="margin-top:30px;">
+            <img src="assets/img/olympics.jpg" alt="" width="627" height="339" class="img-fluid"> <br>
+            <strong><a href="#">Times of India</a></strong><br>
+            <strong>Pulished:</strong> Name<br>
+
+            <div style="color:#FA800A; font-size:16px;"><strong>Date:</strong> Aug 13, 2024</div> <br>
+          </div>
+          <div class="col-lg-8 pt-4 pt-lg-0 content" style="margin-top:30px;">
+            <h3>The Zudio effect: How V2 Retail plans to take on the Tata brand in value fashion</h3>
+
+            Delhi-based V2 Retail Ltd aims to establish an online presence by Q3 FY25, starting with a pilot in Delhi.
+            The firm will use its stores to fulfill online orders, aiming to tap demand in tier 2 and 3 cities<br>
+            Our team possesses extensive industry knowledge and years of cumulative experience in numerous relevant
+            sectors, allowing us to provide clients with the right solutions on a timely basis at the right cost.<br>
+            <br>
+            <div class="row" style="margin-right:10px;">
+              <div class="item2" align="right"><a href="#" onMouseOut="MM_swapImgRestore()"
+                  onMouseOver="MM_swapImage('Image7','','assets/img/speaker_o.png',1)"><img
+                    src="assets/img/speaker_n.png" name="Image7" width="45" height="45"
+                    border="0"></a>&nbsp;&nbsp;&nbsp;<a href="#" onMouseOut="MM_swapImgRestore()"
+                  onMouseOver="MM_swapImage('Image8','','assets/img/share_o.png',1)"><img src="assets/img/share_n.png"
+                    name="Image8" width="45" height="45" border="0"></a></div>
+            </div>
+
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="about" class="about" style="background:#F5EDE7; margin-bottom:-30px;">
+      <div class="container">
+
+        <div class="row">
+          <div class="col-lg-4" style="background-color:#F5EDE7; margin-top:30px;">
+            <img src="assets/img/top_share.jpg" alt="" width="627" height="339" class="img-fluid"> <br>
+            <strong><a href="#">Times of India</a></strong><br>
+            <strong>Pulished:</strong> Name<br>
+
+            <div style="color:#FA800A; font-size:16px;"><strong>Date:</strong> Aug 13, 2024</div> <br>
+          </div>
+          <div class="col-lg-8 pt-4 pt-lg-0 content" style="margin-top:30px;">
+            <h3>The Zudio effect: How V2 Retail plans to take on the Tata brand in value fashion</h3>
+
+            Delhi-based V2 Retail Ltd aims to establish an online presence by Q3 FY25, starting with a pilot in Delhi.
+            The firm will use its stores to fulfill online orders, aiming to tap demand in tier 2 and 3 cities<br>
+            Our team possesses extensive industry knowledge and years of cumulative experience in numerous relevant
+            sectors, allowing us to provide clients with the right solutions on a timely basis at the right cost.<br>
+            <br>
+            <div class="row" style="margin-right:10px;">
+              <div class="item2" align="right"><a href="#" onMouseOut="MM_swapImgRestore()"
+                  onMouseOver="MM_swapImage('Image9','','assets/img/speaker_o.png',1)"><img
+                    src="assets/img/speaker_n.png" name="Image9" width="45" height="45"
+                    border="0"></a>&nbsp;&nbsp;&nbsp;<a href="#" onMouseOut="MM_swapImgRestore()"
+                  onMouseOver="MM_swapImage('Image10','','assets/img/share_o.png',1)"><img src="assets/img/share_n.png"
+                    name="Image10" width="45" height="45" border="0"></a></div>
+            </div>
+
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="about" class="about" style="background:#F7F5F4;margin-bottom:-30px;">
+      <div class="container">
+
+        <div class="row">
+          <div class="col-lg-4" style="margin-top:30px;">
+            <img src="assets/img/about.jpg" alt="" width="627" height="339" class="img-fluid"> <br>
+            <strong><a href="#">Times of India</a></strong><br>
+            <strong>Pulished:</strong> Name<br>
+
+            <div style="color:#FA800A; font-size:16px;"><strong>Date:</strong> Aug 13, 2024</div> <br>
+          </div>
+          <div class="col-lg-8 pt-4 pt-lg-0 content" style="margin-top:30px;">
+            <h3>The Zudio effect: How V2 Retail plans to take on the Tata brand in value fashion</h3>
+
+            Delhi-based V2 Retail Ltd aims to establish an online presence by Q3 FY25, starting with a pilot in Delhi.
+            The firm will use its stores to fulfill online orders, aiming to tap demand in tier 2 and 3 cities<br>
+            Our team possesses extensive industry knowledge and years of cumulative experience in numerous relevant
+            sectors, allowing us to provide clients with the right solutions on a timely basis at the right cost.<br>
+            <br>
+            <div class="row" style="margin-right:10px;">
+              <div class="item2" align="right"><a href="#" onMouseOut="MM_swapImgRestore()"
+                  onMouseOver="MM_swapImage('Image11','','assets/img/speaker_o.png',1)"><img
+                    src="assets/img/speaker_n.png" name="Image11" width="45" height="45"
+                    border="0"></a>&nbsp;&nbsp;&nbsp;<a href="#" onMouseOut="MM_swapImgRestore()"
+                  onMouseOver="MM_swapImage('Image12','','assets/img/share_o.png',1)"><img src="assets/img/share_n.png"
+                    name="Image12" width="45" height="45" border="0"></a></div>
+            </div>
+
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main><!-- End #main -->
+
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js"></script>
+  <script src="services/js/jquery.min.js"></script>
+  <script src="services/js/popper.js"></script>
+  <script src="services/js/bootstrap.min.js"></script>
+  <script src="services/js/owl.carousel.min.js"></script>
+  <script src="services/js/main.js"></script>
+
+
+
+  <script>
+    let modalBtns = [...document.querySelectorAll(".button")];
+    modalBtns.forEach(function (btn) {
+      btn.onclick = function () {
+        let modal = btn.getAttribute("data-modal");
+        document.getElementById(modal).style.display = "block";
+      };
+    });
+    let closeBtns = [...document.querySelectorAll(".close")];
+    closeBtns.forEach(function (btn) {
+      btn.onclick = function () {
+        let modal = btn.closest(".modal");
+        modal.style.display = "none";
+      };
+    });
+    window.onclick = function (event) {
+      if (event.target.className === "modal") {
+        event.target.style.display = "none";
+      }
+    };
+  </script>
+
+</body>
+
+</html>

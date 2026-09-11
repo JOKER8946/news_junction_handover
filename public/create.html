@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Article & Lead Story | News Junction</title>
+  <link rel="icon" type="image/png" href="/grfx/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="site-header">
+    <div class="hero-container">
+      <div class="brand-logo">
+        <a href="/">
+          <img src="/grfx/images/newsjunction.png" alt="News Junction" onerror="this.src='/images/newsjunction.png'" />
+        </a>
+      </div>
+      <div class="hero-text">
+        <p>Journalist & Editor Publishing Suite — Create verified district stories and lead generation articles.</p>
+        <a href="/my-articles.html" class="hero-cta">
+          <span>Manage My Articles</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= SUB NAVIGATION ================= -->
+  <div class="sub-nav">
+    <div class="sub-nav-content">
+      <a href="/" class="sub-nav-item">🏠 Home</a>
+      <a href="/reader.html" class="sub-nav-item">📰 News Feed</a>
+      <a href="/channels.html" class="sub-nav-item">📡 Channels</a>
+      <a href="/district-newspapers.html" class="sub-nav-item">🗞️ District Papers</a>
+      <a href="/sharemarket.html" class="sub-nav-item">📈 Share Market</a>
+      <a href="/magazine.html" class="sub-nav-item">📖 Digital Magazine</a>
+      <a href="/complaints.html" class="sub-nav-item">⚖️ Citizen Grievances</a>
+      <a href="/influencers.html" class="sub-nav-item">✍️ Columnists</a>
+      <a href="/create.html" class="sub-nav-item active highlight">✏️ Create Story</a>
+      <a href="/my-articles.html" class="sub-nav-item">📚 My Stories</a>
+      <a href="/lead-builder.html" class="sub-nav-item">🎯 Lead Builder</a>
+      <a href="/analytics.html" class="sub-nav-item">📊 Analytics</a>
+      <a href="/admin.html" class="sub-nav-item">⚙️ Admin</a>
+    </div>
+  </div>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="main-section" style="max-width: 900px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+      <div>
+        <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--color-dark);">Publish News Article</h1>
+        <p style="color: var(--color-text-muted); font-size: 0.95rem;">Draft grassroots reporting, set district coverage, or configure lead capture gates.</p>
+      </div>
+      <a href="/my-articles.html" class="btn-secondary">View Drafts & Scheduled</a>
+    </div>
+
+    <div id="alertBox" style="display: none; padding: 14px 20px; border-radius: 8px; margin-bottom: 20px; font-weight: 500;"></div>
+
+    <form id="createArticleForm" class="magazine-box">
+      <!-- Article Title -->
+      <div class="form-group">
+        <label for="postTitle">Article Title <span style="color: red;">*</span></label>
+        <input type="text" id="postTitle" class="form-control" placeholder="e.g. New Rural Water Supply Network Launched in Belagavi" required />
+      </div>
+
+      <!-- Category & District Row -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div class="form-group">
+          <label for="categorySelect">Category <span style="color: red;">*</span></label>
+          <select id="categorySelect" class="form-control" required>
+            <option value="2">District News</option>
+            <option value="3">Karnataka</option>
+            <option value="4">National</option>
+            <option value="5">Business</option>
+            <option value="6">Technology</option>
+            <option value="7">Entertainment</option>
+            <option value="8">Sports</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="districtSelect">Target District</label>
+          <select id="districtSelect" class="form-control">
+            <option value="Bengaluru Urban">Bengaluru Urban</option>
+            <option value="Udupi">Udupi</option>
+            <option value="Mysuru">Mysuru</option>
+            <option value="Belagavi">Belagavi</option>
+            <option value="Hassan">Hassan</option>
+            <option value="Dharwad">Dharwad</option>
+            <option value="Tumakuru">Tumakuru</option>
+            <option value="Dakshina Kannada">Dakshina Kannada</option>
+            <option value="All Karnataka">All Karnataka</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Author and Tags Row -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div class="form-group">
+          <label for="authorName">Author / Reporter Name</label>
+          <input type="text" id="authorName" class="form-control" placeholder="News Junction Bureau" />
+        </div>
+        <div class="form-group">
+          <label for="articleTags">Tags (comma-separated)</label>
+          <input type="text" id="articleTags" class="form-control" placeholder="Infra, Water, Rural, Belagavi" />
+        </div>
+      </div>
+
+      <!-- Cover Image -->
+      <div class="form-group">
+        <label for="coverImage">Cover Image URL</label>
+        <input type="url" id="coverImage" class="form-control" placeholder="https://images.unsplash.com/... or /images/..." />
+        <small style="color: var(--color-text-muted); display: block; margin-top: 4px;">Leave blank for default district image.</small>
+      </div>
+
+      <!-- Short Summary -->
+      <div class="form-group">
+        <label for="postSummary">Brief Summary / Lead Deck</label>
+        <textarea id="postSummary" class="form-control" rows="2" style="min-height: 70px;" placeholder="A 2-sentence summary of the news story..."></textarea>
+      </div>
+
+      <!-- Full Body -->
+      <div class="form-group">
+        <label for="postBody">Full Article Content <span style="color: red;">*</span></label>
+        <textarea id="postBody" class="form-control" rows="8" placeholder="Type the full news article content here. HTML tags (<h3>, <p>, <ul>) are supported." required></textarea>
+      </div>
+
+      <!-- ================= READ MORE / LEAD GATE SETTINGS (app/create.php parity) ================= -->
+      <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: var(--radius-md); padding: 20px; margin-bottom: 24px;">
+        <div class="form-check" style="margin-bottom: 12px;">
+          <input type="checkbox" id="isReadMore" style="width: 18px; height: 18px;" />
+          <label for="isReadMore" style="font-weight: 700; cursor: pointer; color: var(--color-navy);">Enable "Read More" Lead Capture Gate</label>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--color-text-muted); margin-bottom: 16px;">
+          Gating the full article requires readers to provide contact information before reading the conclusion or special report.
+        </p>
+
+        <div id="leadSettingsContainer" style="display: none; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+          <div class="form-group">
+            <label for="readMoreTxt">Custom Button Text</label>
+            <input type="text" id="readMoreTxt" class="form-control" placeholder="Click here to unlock full investigation" />
+          </div>
+
+          <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px;">
+            <label class="form-check" style="cursor: pointer;">
+              <input type="checkbox" id="isMandatoryEmail" checked /> Require Email Address
+            </label>
+            <label class="form-check" style="cursor: pointer;">
+              <input type="checkbox" id="isMandatoryMobile" /> Require Mobile Number
+            </label>
+            <label class="form-check" style="cursor: pointer;">
+              <input type="checkbox" id="isMandatoryCompany" /> Require Company / Organization
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label for="readMoreResponse">Success Message for Reader</label>
+            <input type="text" id="readMoreResponse" class="form-control" placeholder="Thank you! Access has been granted." />
+          </div>
+
+          <div class="form-group">
+            <label for="readMoreEmail">Notification Email for Captured Leads</label>
+            <input type="email" id="readMoreEmail" class="form-control" placeholder="leads@newsjunction.net" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SCHEDULING (app/schedule-post.php parity) ================= -->
+      <div style="background: #fdf4ff; border: 1px solid #f0abfc; border-radius: var(--radius-md); padding: 18px; margin-bottom: 24px;">
+        <div class="form-check">
+          <input type="checkbox" id="isSchedule" style="width: 18px; height: 18px;" />
+          <label for="isSchedule" style="font-weight: 700; cursor: pointer; color: #86198f;">Schedule Post for Future Publishing</label>
+        </div>
+        <div id="scheduleTimeContainer" style="display: none; margin-top: 12px;">
+          <label for="scheduledFor" style="font-size: 0.9rem; font-weight: 600;">Publish Date and Time</label>
+          <input type="datetime-local" id="scheduledFor" class="form-control" style="max-width: 280px;" />
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button type="button" id="btnPreview" class="btn-secondary">Preview Story</button>
+        <button type="submit" id="btnPublish" class="btn-primary">🚀 Publish Article</button>
+      </div>
+    </form>
+  </main>
+
+  <!-- ================= PREVIEW MODAL ================= -->
+  <div class="modal-overlay" id="previewModal">
+    <div class="modal-box" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3 id="previewTitle">Preview</h3>
+        <button class="btn-close" id="btnClosePreview">&times;</button>
+      </div>
+      <div class="modal-body">
+        <img id="previewImg" src="" style="width: 100%; max-height: 280px; object-fit: cover; border-radius: 8px; margin-bottom: 16px; display: none;" />
+        <div id="previewMeta" style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 16px;"></div>
+        <div id="previewBody" style="line-height: 1.7; font-size: 1rem; color: var(--color-text-dark);"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 News Junction. Converted to Vanilla HTML, CSS, JS & Node.js.</p>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/create.js"></script>
+</body>
+</html>

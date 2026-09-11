@@ -1,0 +1,180 @@
+Sample Data for Sign In Callback from Facebook to get Short access code
+
+Array
+(
+    [access_token] => EAAGvb6fjh0YBO3ZAZAqw5mcnhbnJQ93STEzrWC4xUBGYo4YvqSdDyRZASpy7ZC1vcZCRrlDdLU93N8Fn5lkroZBNCOEHpOdF0Lx7HBZAw6LqbZBZB83ZCfgqMN5yv2tZAyLtb8rMu09xZAm0ESe0ZA7dQzZAZAcPpE5rBOjCVtfZBEDTr9qRB3oS5omEcJqnVuZBHCgQvzoD4MxCOuUYHOzq8WOm5V1nmPK0lHe4hryKG6HLxMqZCFkrUBYijfV6he8cpA5uRTQs0ZD
+    [token_type] => bearer
+)
+
+Sample Data for Generate Page Tokens
+
+Array
+(
+    [data] => Array
+        (
+            [0] => Array
+                (
+                    [access_token] => EAAGvb6fjh0YBOZByKz3lvtgT1v8BSUxeZBmygOGpGQIs0dKLIY5uUhnD9uHwncfvZBDCWdvA7s3bbsDzqYXf89du7zwWdVW7GPoPApeNrgDpbNVdFwmU4Bgd8AIBQEbjz9qFWOJoJauFEed9Ae9w8DLYKa4TmGsGrVR9ZAa8BUy41qK8FRLaRyHGMAUsYC8s1O5kJT3MtsuwhwZDZD
+                    [category] => Publisher
+                    [category_list] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [id] => 191684877517919
+                                    [name] => Publisher
+                                )
+
+                        )
+
+                    [name] => KnoblyCream
+                    [id] => 379860695210422
+                    [tasks] => Array
+                        (
+                            [0] => ADVERTISE
+                            [1] => ANALYZE
+                            [2] => CREATE_CONTENT
+                            [3] => MESSAGING
+                            [4] => MODERATE
+                            [5] => MANAGE
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [access_token] => EAAGvb6fjh0YBO2ILQR2lrkkk3e73HgiGJfJn3Mh4t4nvLZAvqnyDLSeovQBE13m0mzXPnHEKldJcerBGcgu7ZAOgFn8mmSAndUyir5JqFobZCVZBmq70LCY3knK4YfaILTDZAqO39ZCR0rCX2mMOOI2nfLmpicZB3JZBH1PlLKlskJ9zsjDKwlYvHZBzbVhqQ9T1ZAslIjHobLLnFc4gZDZD
+                    [category] => Electronics Company
+                    [category_list] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [id] => 1202159779814354
+                                    [name] => Electronics Company
+                                )
+
+                        )
+
+                    [name] => Chirayu information technologies
+                    [id] => 361874437847116
+                    [tasks] => Array
+                        (
+                            [0] => ADVERTISE
+                            [1] => ANALYZE
+                            [2] => CREATE_CONTENT
+                            [3] => MESSAGING
+                            [4] => MODERATE
+                            [5] => MANAGE
+                        )
+
+                )
+
+            [2] => Array
+                (
+                    [access_token] => EAAGvb6fjh0YBOzwSYdzlgKQqECVZBdoG1ViTQUVu1bIAemHu86eCanNl2k2CPNkpQ7oOYZAIQ8NtJekq5breemhViV6BwQoi1QOSvwI8gqczztG9Hq7FklyfAKa4uBDxzNXZC1YK4BqYpZBu6hproBcm0qLZAuAKIuxtkjzEoU7is7gWpQdOvyWOBjdTcBZAjTCylWCrdWPG2t
+                    [category] => Clothing (Brand)
+                    [category_list] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [id] => 2209
+                                    [name] => Clothing (Brand)
+                                )
+
+                        )
+
+                    [name] => Fairy Designs Inc
+                    [id] => 113329460524113
+                    [tasks] => Array
+                        (
+                            [0] => ADVERTISE
+                            [1] => ANALYZE
+                            [2] => CREATE_CONTENT
+                            [3] => MESSAGING
+                            [4] => MODERATE
+                        )
+
+                )
+
+            [3] => Array
+                (
+                    [access_token] => EAAGvb6fjh0YBO9NMQhrR4NL5IzXcCI0ZB4OvO5Ymbe1QiKoxrKJWFZBOgOOD7MelNd36ZCHogwrvkq3sRoUtVssD3OZA4u8NsnVcbx6uwOSZBy1wrcNdbhcJvbeB6FwncWBQgM2YtGXiKw6CEYHecHXZAP2M2UL93ZBkSxQSnE5E8I4wb7vK2e7WEIGjrqHk5AhvQbiQZBEPJZCwM
+                    [category] => Consulting agency
+                    [category_list] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [id] => 2248
+                                    [name] => Consulting agency
+                                )
+
+                        )
+
+                    [name] => Bizprout Corporate Solutions P Ltd
+                    [id] => 263746306974099
+                    [tasks] => Array
+                        (
+                            [0] => ADVERTISE
+                            [1] => ANALYZE
+                            [2] => CREATE_CONTENT
+                            [3] => MESSAGING
+                            [4] => MODERATE
+                            [5] => MANAGE
+                        )
+
+                )
+
+            [4] => Array
+                (
+                    [access_token] => EAAGvb6fjh0YBOZBZCQnf7sSgU7CmXbuxk7pazw0vtBI5UpEEWvGm0S78bwLZBdilqM46OIdUQooZChp6yqDAlWLrJSONHQ0evVvL335IOakEUxmpDfpXD2mdHc7iKGEY9I5OkmoKpN9oYgCts0q9tC2OFk2sXSwBHZBzZC3gWMAfsRXeSHnpGiEtJabLMEVYXHopqycdz8xrm8
+                    [category] => Community Organization
+                    [category_list] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [id] => 152880021441864
+                                    [name] => Community Organization
+                                )
+
+                        )
+
+                    [name] => Mycream-hebbarp
+                    [id] => 152227035601835
+                    [tasks] => Array
+                        (
+                            [0] => ADVERTISE
+                            [1] => ANALYZE
+                            [2] => CREATE_CONTENT
+                            [3] => MESSAGING
+                            [4] => MODERATE
+                            [5] => MANAGE
+                        )
+
+                )
+
+        )
+
+    [paging] => Array
+        (
+            [cursors] => Array
+                (
+                    [before] => QVFIUnZAmZAXZAuOVYxNE5MNVU5dkRBZAFFtRmpRWUtTb2IxNXZAST2ZAjTHBVMW1XX2FNZAV91bUVaYjNEaTVNTnM3QW9OZAkRCc3lFcnM4MV9YVWhDaVZAwUTdvSm1n
+                    [after] => QVFIUjZANNFQwZAGJmdWM1dUZAOM3VvUldWbzIycExvQ29iV3pNM0t5MzJCTGJZAQjZASQm05Ujl5SnZABX0dQWWpyZAGVCX28yRk1WSzQ2ZAnZArcnlaUGtvenZAldF9R
+                )
+
+        )
+)
+
+Sample Data for generating Long Live Access Tokens
+
+Array
+(
+    [access_token] => EAAGvb6fjh0YBO9dq5F33VrGwye1yg3d7jZCvhQl5e4NM6pRY7a3CZBibIRvmISHZCOK0uUxYYfdnIR1zZCdLWlb0oGxapmqqeTdzoSosFAYMZANXFNUnceXNgwHItsiwxzb4WcuPxOYZBZCZBFxOHltCGKOw0ZAzYailAlvOmrodRM9zYvtouxvaClUhiC1yyX37NXvAIyL7MLrvZAxQZDZD
+    [token_type] => bearer
+)
+
+
+Sample Data for posting the message to the facebook
+Array
+(
+    [id] => 379860695210422_122119738712431920
+)

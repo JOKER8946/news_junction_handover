@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In &bull; News Junction</title>
+  <link rel="icon" type="image/png" href="/grfx/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body style="background: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column;">
+
+  <!-- Nav bar -->
+  <nav class="main-nav">
+    <div class="nav-content">
+      <a href="/" style="display:flex; align-items:center; gap:10px;">
+        <img src="/grfx/images/newsjunction.png" alt="News Junction" style="height: 38px;" onerror="this.src='/images/newsjunction.png'" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/reader.html">News Feed</a></li>
+        <li><a href="/complaints.html">Complaints</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Auth Wrapper -->
+  <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 30px 16px;">
+    <div class="auth-wrapper">
+      <div class="auth-header">
+        <a href="/">
+          <img src="/grfx/images/newsjunction.png" alt="News Junction" onerror="this.src='/images/newsjunction.png'" />
+        </a>
+        <p style="color: var(--color-text-muted); font-size: 0.95rem;">Your Verified Digital News Network</p>
+      </div>
+
+      <!-- Notification Alerts -->
+      <div id="authAlert" class="alert-message"></div>
+
+      <!-- Navigation Tabs -->
+      <div class="auth-tabs" id="authTabs">
+        <button class="auth-tab active" data-target="loginTab">Sign In</button>
+        <button class="auth-tab" data-target="signupTab">Sign Up</button>
+        <button class="auth-tab" data-target="forgotTab">Forgot</button>
+      </div>
+
+      <!-- ================= 1. LOGIN FORM ================= -->
+      <form id="loginForm" class="auth-form-panel">
+        <div class="form-group">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" class="form-control" placeholder="name@example.com" required autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label for="loginPassword" style="margin-bottom: 0;">Password</label>
+            <a href="#" id="linkForgotPassword" style="font-size: 0.82rem; color: var(--color-primary); font-weight: 500;">Forgot?</a>
+          </div>
+          <div class="input-password-wrapper">
+            <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required autocomplete="current-password" />
+            <button type="button" class="password-toggle-btn" data-input="loginPassword">👁️</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="loginBtn">Sign In</button>
+
+        <div style="text-align: center; margin-top: 20px; font-size: 0.88rem; color: var(--color-text-muted);">
+          Don't have an account? <a href="#" id="linkGoToSignup" style="color: var(--color-primary); font-weight: 600;">Sign up free</a>
+        </div>
+      </form>
+
+      <!-- ================= 2. SIGN UP FORM ================= -->
+      <form id="signupForm" class="auth-form-panel" style="display: none;">
+        <div class="form-group">
+          <label for="signFullName">Full Name *</label>
+          <input type="text" id="signFullName" class="form-control" placeholder="Your full name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="signEmail">Email Address *</label>
+          <input type="email" id="signEmail" class="form-control" placeholder="name@example.com" required />
+          <small id="emailCheckMsg" style="font-size: 0.8rem;"></small>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 90px 1fr; gap: 10px;">
+          <div class="form-group">
+            <label for="countryCode">Code</label>
+            <select id="countryCode" class="form-control">
+              <option value="+91">+91 (IN)</option>
+              <option value="+1">+1 (US)</option>
+              <option value="+44">+44 (UK)</option>
+              <option value="+971">+971 (UAE)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="userPhone">Phone Number *</label>
+            <input type="tel" id="userPhone" class="form-control" placeholder="9845012345" required />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label for="signPincode">Pincode *</label>
+            <input type="text" id="signPincode" class="form-control" placeholder="560001" maxlength="10" required />
+          </div>
+          <div class="form-group">
+            <label for="signCompany">Company / Outlet</label>
+            <input type="text" id="signCompany" class="form-control" placeholder="Optional" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="signPwd1">Create Password *</label>
+          <div class="input-password-wrapper">
+            <input type="password" id="signPwd1" class="form-control" placeholder="At least 6 characters" required />
+            <button type="button" class="password-toggle-btn" data-input="signPwd1">👁️</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="signPwd2">Confirm Password *</label>
+          <div class="input-password-wrapper">
+            <input type="password" id="signPwd2" class="form-control" placeholder="Confirm password" required />
+            <button type="button" class="password-toggle-btn" data-input="signPwd2">👁️</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="signupBtn">Create Account</button>
+
+        <div style="text-align: center; margin-top: 20px; font-size: 0.88rem; color: var(--color-text-muted);">
+          Already have an account? <a href="#" id="linkGoToLogin" style="color: var(--color-primary); font-weight: 600;">Sign in here</a>
+        </div>
+      </form>
+
+      <!-- ================= 3. FORGOT PASSWORD ================= -->
+      <form id="forgotForm" class="auth-form-panel" style="display: none;">
+        <div style="margin-bottom: 18px; font-size: 0.9rem; color: var(--color-text-muted);">
+          Enter the email address registered with your account. We will dispatch a secure password reset link.
+        </div>
+
+        <div class="form-group">
+          <label for="forgotEmail">Account Email</label>
+          <input type="email" id="forgotEmail" class="form-control" placeholder="name@example.com" required />
+        </div>
+
+        <button type="submit" class="btn-submit" id="forgotBtn">Send Reset Link</button>
+
+        <div style="text-align: center; margin-top: 20px; font-size: 0.88rem;">
+          <a href="#" id="linkBackToLogin" style="color: var(--color-primary); font-weight: 600;">&larr; Back to Sign In</a>
+        </div>
+      </form>
+
+      <!-- ================= 4. RESET PASSWORD CONFIRM ================= -->
+      <form id="resetConfirmForm" class="auth-form-panel" style="display: none;">
+        <div style="margin-bottom: 18px; font-size: 0.9rem; color: var(--color-text-muted);">
+          Enter your new password below to complete account recovery.
+        </div>
+
+        <input type="hidden" id="resetToken" />
+
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <div class="input-password-wrapper">
+            <input type="password" id="newPassword" class="form-control" placeholder="Enter new password" required />
+            <button type="button" class="password-toggle-btn" data-input="newPassword">👁️</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmNewPassword">Confirm New Password</label>
+          <input type="password" id="confirmNewPassword" class="form-control" placeholder="Confirm new password" required />
+        </div>
+
+        <button type="submit" class="btn-submit" id="resetConfirmBtn">Update Password</button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer" style="padding: 20px; font-size: 0.85rem;">
+    <p>&copy; 2026 News Junction Media Network &bull; <a href="/privacy.html" style="color:#cbd5e1;">Privacy</a> &bull; <a href="/contact.html" style="color:#cbd5e1;">Contact</a></p>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+</body>
+</html>

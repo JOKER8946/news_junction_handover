@@ -1,0 +1,26 @@
+Array
+(
+    [access_token] => AQVKPfPidd_Yl-FKKIYVIkB_LikhKk-VyO8VGabu36XjCMAH6c4as_9P_iKd1pFngWNKMxe8P_RzM1R5vc6MZuRki_AID8zVa78p6vb1yxpvTJ9z4ip7u-FmmiLzX5EAjh0PqwL0yDV_tF3sW19mB5pkK0g78cFMrHNzRyfLNrusANbIt6t6fSscGNfxkFE5Mh6RFof-kGDBOhMGuvEc2EuBp4psxGAgaW8e8WmpuxQ-Wk1ip8piTTB0U4dCs2nvo88r27gtKvS_4FkdRv7u6BBGd5J25rfDZPn4-smH-yimStqNxnAQaakDM0W6_3havqhuVrXNbd8pqIUfaa5S6WJop-tmNg
+    [expires_in] => 5183999
+    [refresh_token] => AQWnM3ije_0QhPONOrsRz9L6-tO59i9W_-qcFKy9B2Qqla5KDWCosNXTlyUTZJ2Y5VMFwVhF9MmBGihX2nexq1ztZQGC-afWbl0aANDpeAF3bnK1metutP8EaYpdMnfm4gkQHOKuDzjM6whoTbI4Xd4m68uPwVwVj5eg0afeykdFtJi5Nx3O8mtFYJT85u6hBMHXzTOZtL6-j94ff7cJagxfN60wJEfwFW6qt5DhNaImWiqyad6oKqg77DPb04HkO4-faP_NsMNM-HhrWhNgVklSZ4o1bFcoQmRNOoFU22Z9Y09fV4snh9m8_cNfZCnrSaxPnlMGWiigZjTbx-d7UXqkMZqO0Q
+    [refresh_token_expires_in] => 31535999
+    [scope] => openid,profile,w_member_social
+    [token_type] => Bearer
+    [id_token] => eyJ6aXAiOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImQ5Mjk2NjhhLWJhYjEtNGM2OS05NTk4LTQzNzMxNDk3MjNmZiIsImFsZyI6IlJTMjU2In0.eyJpc3MiOiJodHRwczovL3d3dy5saW5rZWRpbi5jb20vb2F1dGgiLCJhdWQiOiI4NjhjaXdqZzBnYzh3MSIsImlhdCI6MTcyOTA4NTI2NCwiZXhwIjoxNzI5MDg4ODY0LCJzdWIiOiJXalFTdHFUSjlyIiwibmFtZSI6IlByYXNoYW50aCBIZWJiYXIiLCJnaXZlbl9uYW1lIjoiUHJhc2hhbnRoIiwiZmFtaWx5X25hbWUiOiJIZWJiYXIiLCJwaWN0dXJlIjoiaHR0cHM6Ly9tZWRpYS5saWNkbi5jb20vZG1zL2ltYWdlL3YyL0M1NjAzQVFHeUFtRm5vWHA0a1EvcHJvZmlsZS1kaXNwbGF5cGhvdG8tc2hyaW5rXzEwMF8xMDAvcHJvZmlsZS1kaXNwbGF5cGhvdG8tc2hyaW5rXzEwMF8xMDAvMC8xNTE2MjUxNjA5ODA5P2U9MjE0NzQ4MzY0NyZ2PWJldGEmdD0wSFlXd1I3X3JsMy1jMlZFRlNDNS12RGNBUVgyaHE0ZFdKOU5SU2l1cHdrIiwibG9jYWxlIjoiZW5fVVMifQ.eErBVteVdOdtS-eR5rH3hnZ_SjTH0OHbBf5p7C5rT0DyUmFqif6xdtr6FuiGQI2_Dyw-_nmUlgx72e8nVng9nECsufR47QoyvmxaordjlbOEXQlxIjbkQR86p-tHRhsW_01hfoISNl9CxW-giEQxdKuIXcHwaCl1Zy6iL5Uqc5I-13q87cS_8Q13ydhDQY9mvLomB5gMdnetwDQde6Ou34CRLAdGqHWt-sNRCz6-yMY5RO1i_yn2Sbfol513mk06MAT615V9tzrL4-UhVUoK0dt8B2Z-U_5jWR7KeMSh7bSMvjFeTtpcZo1378oSuzt-aMj66L5nWJVWQmvCvwOJDUASuAn6mBDwcU6Bz3LmhXwNIqBL7_4MffMV7Lz4KOMOCifUXJzR_6tRmU5RBqKRYkk2MV6bjyIBtLC8VO1kPth49MvtAoneS6fsbNYt9hCrwrbFu25IVg_RvpTeI8LwcDBH2JyIS2DYjLPNMz13NhBR9foIzOmLX1mUrA2M1lB-AR3-DVqoHhvQGf1g0N2OsCR_TQmGA6SxWFDbbegEIQguLn3NPnZsO-H360oP4USXGwapKrU0nhLaeREX_pg-8-Ia7Vatt_PPjTkUwlsxqPBkKTUI6ILD-6ky7h6ExYvKcvDg_pkwU0D4ylIrP9eSj6Xsgf7dcLe92iX7nFtwt9I
+)
+Array
+(
+    [name] => Site Administrator
+    [sub] => WjQStqTJ9r
+    [locale] => Array
+        (
+            [country] => US
+            [language] => en
+        )
+
+
+    [given_name] => Prashanth
+    [family_name] => Hebbar
+    [picture] => https://media.licdn.com/dms/image/v2/C5603AQGyAmFnoXp4kQ/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1516251609809?e=1734566400&v=beta&t=wM1ZNJwkfr50_ZaRhYQE6nmj1_8530Zted3L4KWtAYs
+)
+{"errorDetailType":"com.linkedin.common.error.BadRequest","message":"com.linkedin.content.common.exception.BadRequestResponseException: Content is a duplicate of urn:li:share:7252309248703897601","errorDetails":{"inputErrors":[{"description":"Duplicate post is detected","input":{},"code":"DUPLICATE_POST"}]},"status":422}

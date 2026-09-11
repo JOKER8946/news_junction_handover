@@ -1,0 +1,512 @@
+
+
+  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corporate Website</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f1f1f1;
+        color: #333;
+      }
+
+      .bg_white {
+        background-color: #ffffff;
+      }
+
+      .bg_light {
+        background-color: #f8f9fa;
+      }
+
+      .bg_black {
+        background-color: #222222;
+        color: #ffffff;
+      }
+
+      .primary {
+        background-color: #007bff;
+        color: #ffffff;
+      }
+
+      .email-container {
+        margin: auto;
+      }
+
+      .hero {
+        position: relative;
+        padding: 3em 0;
+        text-align: center;
+      }
+
+      .hero img {
+        padding: 15px;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+      }
+
+      .hero .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 0;
+      }
+
+      .hero .text {
+        position: relative;
+        z-index: 1;
+        color: #ffffff;
+      }
+
+      .logo h1 {
+        margin: 0;
+        font-weight: bold;
+      }
+
+      .logo h1 a {
+        color: #222222;
+        text-decoration: none;
+      }
+
+      .navigation {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .navigation li {
+        margin-left: 20px;
+      }
+
+      .navigation li a {
+        color: #222222;
+        text-decoration: none;
+      }
+
+      .email-section {
+        padding: 2em;
+      }
+
+      .heading-section {
+        margin-bottom: 2em;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 10px;
+      }
+
+      .btn-primary {
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+      }
+
+      .btn-white-outline {
+        background-color: transparent;
+        color: #ffffff;
+        border: 1px solid #ffffff;
+      }
+
+      .services-list {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+      }
+
+      .services-list img {
+        width: 30px;
+        margin-right: 14px;
+      }
+
+      .footer {
+        padding: 2em;
+      }
+
+      .footer ul {
+        gap: 10px;
+        display: flex;
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer ul li {
+        margin-bottom: 10px;
+      }
+
+      .footer a {
+        color: #ffffff;
+        text-decoration: none;
+      }
+
+      /* Form Styles */
+      .contact-form {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .submit-button {
+        padding: 10px 30px;
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .loader {
+        margin-top: 15px;
+      }
+
+      .status-panel {
+        margin: 15px 0;
+        min-height: 30px;
+      }
+
+      .text-danger {
+        color: #dc3545;
+      }
+
+      .text-success {
+        color: #28a745;
+      }
+
+      /* Image placeholders */
+      .image-placeholder {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+      }
+
+      .blog-image,
+      .project-image,
+      .about-image {
+        /* height: 200px; */
+        width: 100%;
+        object-fit: cover;
+      }
+    </style>
+  
+  
+    <div class="email-container">
+      <!-- Header -->
+      <div class="bg_white" style="padding: 1em 2.5em">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="logo text-start">
+              <h1 class="" style="position: relative;"><a href="#" class="" style="position: relative;">Corporate</a></h1>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="logo text-end">
+              <ul class="navigation">
+                <li><a href="#" class="" style="position: relative;">Home</a></li>
+                <li><a href="#" class="" style="position: relative;">About</a></li>
+                <li><a href="#" class="" style="position: relative;">Works</a></li>
+                <li><a href="#" class="" style="position: relative;">Blog</a></li>
+                <li><a href="#" class="" style="position: relative;">Contact</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Section -->
+      <div class="hero bg_white position-relative">
+        <div class="overlay"></div>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="text" style="padding: 0 3em; text-align: center">
+                <h2 class="" style="position: relative; border: 0px none rgb(255, 255, 255);">We Create Modern Website</h2>
+                <p class="" style="position: relative; border: 0px none rgb(255, 255, 255);">
+                  A small river named Duden flows by their place and supplies it
+                  with the necessary regelialia. It is a paradisematic country,
+                  in which roasted parts of sentences fly into your mouth.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <img src="images2/about.jpg" alt="Hero Image" /> -->
+      </div>
+
+      <!-- About Section -->
+      <div class="bg_light email-section">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+              <img src="https://newsjunction.net/CreateLeadPage/uploads/NW_images/1741953233_logo.black.png" alt="About" class="about-image">
+            </div>
+            <div class="col-md-6">
+              <div class="text-services ps-4">
+                <div class="heading-section">
+                  <h2 class="" style="position: relative; border: 0px none rgb(51, 51, 51);">Business Strategy</h2>
+                  <p class="" style="position: relative; border: 0px none rgb(51, 51, 51);">
+                    A small river named Duden flows by their place and supplies
+                    it with the necessary regelialia.
+                  </p>
+                  <p class="" style="position: relative; border: 0px none rgb(51, 51, 51);"><a href="#" class="btn btn-primary" style="position: relative; border: 0px none rgb(10, 88, 202);">Read more</a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projects Section -->
+      <div class="bg_white email-section">
+        <div class="container">
+          <div class="heading-section text-center pb-4">
+            <h2 class="" style="position: relative; border: 0px none rgb(51, 51, 51);">Projects</h2>
+            <p class="" style="position: relative; border: 0px none rgb(51, 51, 51);">
+              A small river named Duden flows by their place and supplies it
+              with the necessary regelialia.
+            </p>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-4">
+              <img src="images2/work-1.jpg" alt="Project 1" class="project-image">
+            </div>
+            <div class="col-md-6 mb-4">
+              <img src="images2/work-2.jpg" alt="Project 2" class="project-image">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-4">
+              <img src="images2/work-3.jpg" alt="Project 3" class="project-image">
+            </div>
+            <div class="col-md-6 mb-4">
+              <img src="images2/work-4.jpg" alt="Project 4" class="project-image">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blog Section -->
+      <div class="bg_white email-section">
+        <div class="container">
+          <div class="heading-section text-center pb-4">
+            <h2 class="" style="position: relative;">Our Blog</h2>
+            <p class="" style="position: relative;">
+              A small river named Duden flows by their place and supplies it
+              with the necessary regelialia.
+            </p>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-4">
+              <div class="image-placeholder blog-image">
+                <img src="images2/blog-1.jpg" alt="Blog 1" class="blog-image">
+              </div>
+              <div class="text-services mt-3">
+                <p class="meta" style="position: relative;">
+                  <span class="" style="position: relative;">Posted on Feb 18, 2019</span>
+                  <span class="ms-3" style="position: relative;">Food</span>
+                </p>
+                <h3 class="" style="position: relative;">Business Key to Success</h3>
+                <p class="" style="position: relative;">
+                  Far far away, behind the word mountains, far from the
+                  countries
+                </p>
+                <p class="" style="position: relative;"><a href="#" class="btn btn-primary" style="position: relative;">Read more</a></p>
+              </div>
+            </div>
+            <div class="col-md-6 mb-4">
+              <div class="image-placeholder blog-image">
+                <img src="images2/blog-2.jpg" alt="Blog 2" class="blog-image">
+              </div>
+              <div class="text-services mt-3">
+                <p class="meta" style="position: relative;">
+                  <span class="" style="position: relative;">Posted on Feb 18, 2019</span>
+                  <span class="ms-3" style="position: relative;">Food</span>
+                </p>
+                <h3 class="" style="position: relative;">Web Design Technique</h3>
+                <p class="" style="position: relative;">
+                  Far far away, behind the word mountains, far from the
+                  countries
+                </p>
+                <p class="" style="position: relative;"><a href="#" class="btn btn-primary" style="position: relative;">Read more</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form Section -->
+      <section id="form-section" class="section content-section bg_light py-5">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h2 id="form-title" class="text-center mb-4" style="position: relative;">Contact form</h2>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+              <form id="frmLead" class="contact-form" onsubmit="return chkLead()">
+                <div id="formFields">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group form-field visible" data-field="name">
+                        <label for="Name">Name *</label>
+                        <input type="text" id="Name" name="Name" class="form-control" required="">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group form-field visible" data-field="email">
+                        <label for="Email">Email *</label>
+                        <input type="email" id="Email" name="Email" class="form-control" required="">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group form-field visible" data-field="phone">
+                        <label for="Mobile">Phone Number *</label>
+                        <input type="tel" id="Mobile" name="Mobile" class="form-control" required="">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group form-field visible" data-field="query">
+                        <label for="Query">Message *</label>
+                        <textarea id="Query" name="Query" rows="4" class="form-control" required=""></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <div id="panelStatus" class="status-panel"></div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="submit-section text-center">
+                      <button type="submit" id="btnSubmit" class="btn btn-primary submit-button">
+                        Submit
+                      </button>
+                      <div id="contentLoader" class="loader" style="display: none">
+                        Processing...
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <div class="bg_white email-section">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+              <img src="images2/bg_2.jpg" alt="Features" class="about-image">
+            </div>
+            <div class="col-md-6">
+              <div class="text-services ps-4">
+                <div class="heading-section">
+                  <h2 class="" style="position: relative;">Our Features</h2>
+                </div>
+                <div class="services-list">
+                  <img src="images2/checked.png" alt="Checked">
+                  <div class="text">
+                    <h3 class="" style="position: relative;">Responsive</h3>
+                    <p class="" style="position: relative;">A small river named Duden flows by their</p>
+                  </div>
+                </div>
+                <div class="services-list">
+                  <img src="images2/checked.png" alt="Checked">
+                  <div class="text">
+                    <h3 class="" style="position: relative;">Responsive</h3>
+                    <p class="" style="position: relative;">
+                      A small river named Duden flows by their place and
+                      supplies it with the necessary regelialia.
+                    </p>
+                  </div>
+                </div>
+                <div class="services-list">
+                  <img src="images2/checked.png" alt="Checked">
+                  <div class="text">
+                    <h3 class="" style="position: relative;">Responsive</h3>
+                    <p class="" style="position: relative;">A small river named Duden flows by their</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Section -->
+      <div class="bg_black email-section footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+              <h4 class="" style="position: relative;">Corporate</h4>
+              <p class="" style="position: relative;">All rights reserved © 2025</p>
+            </div>
+            <div class="col-md-6 text-end">
+              <ul>
+                <li><a href="#" class="" style="position: relative;">Privacy Policy</a></li>
+                <li><a href="#" class="" style="position: relative;">Terms of Service</a></li>
+                <li><a href="#" class="" style="position: relative;">Support</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  
+  <script src="script.js"></script>
+

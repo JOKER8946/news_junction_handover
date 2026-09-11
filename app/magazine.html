@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magazine - Choose Publications or Topics</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/js/scripts.js">
+    <!-- Font Awesome for the icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e50914;
+        }
+
+        .header {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .choice-section {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 50px;
+        }
+
+        .choice-card {
+            background-color: #222;
+            padding: 30px;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .choice-card:hover {
+            transform: scale(1.05);
+        }
+
+        .choice-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .choice-card h3 {
+            font-size: 24px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .choice-card p {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container d-flex justify-content-between">
+          <a class="navbar-brand" href="dashboard.php">
+            <img src="inc/img/logo.black.png" height="60px" alt="Logo">
+          </a>
+          <div class="end-navbar">
+            <a class="engtokanada"  href="#">ಕ/A</a>
+          <!-- Settings Dropdown Always Visible -->
+          <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" style="color: #fff;"
+              aria-expanded="false">
+              <span id="settings-text">Settings</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown">
+              <li><a class="dropdown-item" href="#">Account</a></li>
+              <!-- <li><a class="dropdown-item" href="#">Notifications</a></li> -->
+              <li>
+                <div class="dropdown-divider"></div>
+              </li>
+              <li><a class="dropdown-item" href="#">Logout</a></li>
+            </ul>
+          </div>
+          </div>
+        </div>
+      </nav>
+    <!-- Header -->
+    <div class="header">
+        <h1>Create Your Own Magazine</h1>
+        <p>Select by Publications or by Topics</p>
+    </div>
+
+    <!-- Choice Section -->
+    <div class="container">
+        <div class="row choice-section">
+            <!-- Publications Option -->
+            <div class="col-md-6 d-flex align-items-stretch">
+                <div class="choice-card text-center h-100 w-100">
+                    <img src="inc/img/Publications.png" alt="Publications">
+                    <h3>Choose by Publications</h3>
+                    <p>Browse through various publications to curate your own magazine.</p>
+                    <a href="#" class="btn btn-primary">Explore Publications</a>
+                </div>
+            </div>
+            <!-- Topics Option -->
+            <div class="col-md-6 d-flex align-items-stretch">
+                <div class="choice-card text-center h-100 w-100">
+                    <img src="inc/img/Topics.png" alt="Topics">
+                    <h3>Choose by Topics</h3>
+                    <p>Pick topics of your interest and build a personalized magazine.</p>
+                    <a href="#" class="btn btn-primary">Explore Topics</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2024 MyMagazine. All rights reserved.</p>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+
+</html>

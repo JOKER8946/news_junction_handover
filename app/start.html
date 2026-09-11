@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Readers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.1/aos.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            color: white;
+            background-color: #141414;
+            scroll-behavior: smooth; /* Smooth scrolling */
+        }
+
+        .hero {
+            background: url('background-image.jpg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            animation: fadeIn 1.5s ease-in; /* Animation */
+        }
+
+        .logo {
+            width: 200px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite; /* Logo bounce */
+        }
+
+        h1 {
+            font-size: 48px;
+            margin: 10px 0;
+            animation: slideIn 1s; /* Animation */
+        }
+
+        p {
+            font-size: 24px;
+            animation: slideIn 1.2s; /* Animation */
+        }
+
+        .cta {
+            padding: 15px 30px;
+            background: #e50914;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s; /* Transition for button */
+            border-radius: 5px; /* Rounded corners */
+        }
+
+        .cta:hover {
+            background: #f40612;
+            transform: scale(1.05); /* Button grow effect */
+        }
+
+        .story, .features {
+            padding: 50px 20px;
+            text-align: center;
+            animation: fadeInUp 1s; /* Animation */
+        }
+
+        h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            background-color: #000;
+            text-align: center;
+            padding: 20px;
+            animation: fadeIn 1.5s; /* Animation */
+        }
+
+        /* Keyframes for animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero" data-aos="fade-in">
+        <img src="inc/img/logo.black.png" alt="Readers Logo" class="logo">
+        <h1>Welcome to Readers</h1>
+        <p>Your journey into the world of books starts here.</p>
+          <a href="dashboard.php"> <button class="cta">Join Now</button></a>
+    </div>
+
+    <div class="story" data-aos="fade-up">
+        <h2>Our Story</h2>
+        <p>Readers was founded with the aim of bringing together a community of book lovers and providing a platform for discovering and sharing literature. Join us in exploring the world of stories!</p>
+    </div>
+
+    <div class="features" data-aos="fade-up">
+        <h2>Features</h2>
+        <ul>
+            <li>Personalized Reading Recommendations</li>
+            <li>Join Book Clubs and Discussions</li>
+            <li>Access to Exclusive Content</li>
+        </ul>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Readers. All Rights Reserved.</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.1/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shared Media Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 1em;
+      background: #f9f9f9;
+      color: #333;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.5em;
+    }
+    #shared-media-container {
+      margin-top: 20px;
+    }
+    img, video {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .message {
+      color: #888;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Shared Media Viewer</h1>
+  <div id="shared-media-container">
+    <img id="shared-image" style="display:none;" />
+    <video id="shared-video" controls style="display:none;"></video>
+    <p class="message" id="message">Waiting for shared content...</p>
+  </div>
+
+  <script src="cordova.js"></script>
+  <script>
+    document.addEventListener("deviceready", function () {
+      // Retrieve the shared media URI from the URL query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const imageUri = urlParams.get('image');
+      const videoUri = urlParams.get('video');
+
+      if (imageUri) {
+        // If an image URI is provided, display the image
+        displaySharedMedia("image", imageUri);
+      } else if (videoUri) {
+        // If a video URI is provided, display the video
+        displaySharedMedia("video", videoUri);
+      } else {
+        document.getElementById("message").textContent = "No shared content received.";
+      }
+    });
+
+    // Display the shared image or video
+    function displaySharedMedia(type, uri) {
+      document.getElementById("message").style.display = "none";
+
+      if (type === "image") {
+        document.getElementById("shared-video").style.display = "none";
+        const img = document.getElementById("shared-image");
+        img.src = uri; // Set the image URI
+        img.style.display = "block";
+      } else if (type === "video") {
+        document.getElementById("shared-image").style.display = "none";
+        const video = document.getElementById("shared-video");
+        video.src = uri; // Set the video URI
+        video.style.display = "block";
+      }
+    }
+  </script>
+
+</body>
+</html>

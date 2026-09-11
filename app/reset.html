@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>News Junction</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+    <link rel="stylesheet" href="inc/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="inc/style.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+    <script src="inc/common.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var token = getParam('token');
+            $('#token').val(token);
+        });
+
+        function getParam(param) {
+            return new URLSearchParams(window.location.search).get(param);
+        }
+
+        function chkResetPasswordConfirm() {
+            var loginPwd1 = $('#loginPwd1').val();
+            var loginPwd2 = $('#loginPwd2').val();
+            var loginToken = $('#token').val();
+            if (loginPwd1 == '') {
+                $('#panelStatus').html('<div class="text-danger animate__animated animate__flash">Error: New Password not entered!</div>');
+                return false;
+            }
+            if (loginPwd1 != loginPwd2) {
+                $('#panelStatus').html('<div class="text-danger animate__animated animate__flash">Error: Passwords do not match!</div>');
+                return false;
+            }
+            $.ajax({
+                url: 'signInProcess.php',
+                method: 'POST',
+                data: { act: 'resetPasswordConfirm', loginPwd: loginPwd1, loginToken: loginToken }
+            })
+                .done(function (res) {
+                    $('#panelReset').html('<div class="my-3">' + res + '</div>');
+                });
+            return false;
+        }
+
+
+    </script>
+</head>
+
+<body>
+
+    <header>
+        <div class="container text-center pt-2">
+            <a href="/"><img src="inc/img/logo.black.png" alt="News Junction" style="width:200px"></a><br>
+            <div style="font-size:24px">Create &bull; Reach &bull; Measure</div>
+        </div>
+    </header>
+
+    <section class="my-5">
+        <div class="container text-center">
+            <div class="col-12 offset-md-2 col-md-8 offset-lg-3 col-lg-6">
+                <h5>Reset Password</h5>
+                <div id="panelReset" class="my-4">
+                    <div class="row px-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <i class="input-group-text fa fa-unlock-alt p-3"></i>
+                            </div>
+                            <input type="password" id="loginPwd1" name="loginPwd1" class="form-control p-4"
+                                placeholder="Enter New Password" required maxlength="100" />
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <i class="input-group-text fa fa-unlock-alt p-3"></i>
+                            </div>
+                            <input type="password" id="loginPwd2" name="loginPwd2" class="form-control p-4"
+                                placeholder="Retype New Password" required maxlength="20" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn btn-success btn-md px-4" onclick="return chkResetPasswordConfirm()">Reset
+                                Password</button><br>
+                            <input type="hidden" id="token" name="token" value="" />
+                            <div id="panelStatus" class="pt-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footerHome">
+        <div class="container">
+            <div class="row py-2 no-gutters">
+                <div class="col-12 col-md-6 text-center text-md-left">
+                   Powered by Knobly Consulting
+                </div>
+                <div class="col-12 col-md-6 text-center text-md-right">
+                    <a href="about.html">About us</a> &nbsp;
+                     <!-- <a href="usage.html">Usage Policy</a> &nbsp; <a
+                        href="refund.html">Refund Policy</a>  -->
+                        &nbsp; <a href="privacy.html">Privacy Policy</a> &nbsp; <a
+                        href="contact.html">Contact us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magazine Book</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .magazine-container {
+            width: 100vw;
+            height: 100vh;
+            perspective: 1500px; /* Perspective for 3D flip effect */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .magazine {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transform-style: preserve-3d;
+            transition: transform 1s ease-in-out;
+            position: relative;
+        }
+
+        .page {
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            transform-origin: left;
+            transition: transform 1s;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        #cover-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 40px;
+        }
+
+        #cover-page img {
+            width: 80%;
+            max-width: 800px;
+            border-radius: 15px;
+        }
+
+        .article {
+            width: 100%;
+            max-width: 900px;
+            margin: 20px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            height: auto;
+            overflow-y: auto;
+            max-height: calc(100vh - 120px); /* Ensures the article fits and scrolls */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article img {
+            width: 100%; /* This ensures the image is responsive */
+            height: 300px;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .article-text {
+            display: flex;
+            flex-wrap: wrap; /* Allow the text to wrap around the image if it doesn't take up full width */
+        }
+
+        .article-text p {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 20px;
+            flex: 1 1 100%; /* Default to full width for paragraphs */
+        }
+
+        .article img.small-image {
+            width: 50%; /* Example: if image is smaller, set to 50% width */
+            margin-right: 20px; /* Add space between image and text */
+        }
+
+        .article-text p.text {
+            flex: 1; /* Allow text to take up the remaining space */
+        }
+
+        .meta {
+            font-size: 16px;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+        }
+
+
+
+        .nav-btn {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 5px;
+            margin: 0 20px;
+        }
+
+        .prev-btn {
+            position: absolute;
+            left: 0;
+        }
+
+        .next-btn {
+            position: absolute;
+            right: 0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="magazine-container">
+        <div class="magazine" id="magazine">
+            <!-- Front Cover (Page 1) -->
+            <div class="page" id="cover-page">
+                <div>
+                    <h1 style="font-size: 48px; color: #333;">Digital Magazine</h1>
+                    <img src="https://via.placeholder.com/800x600" alt="Magazine Cover">
+                    <p style="font-size: 20px; color: #666; margin-top: 20px;">The Future of Technology</p>
+                </div>
+            </div>
+    
+            <!-- Articles (Page 2 and onwards) -->
+            <div class="page" id="article-page-1">
+                <div class="article">
+                    <h2>Tech Innovations 2024: The Future of AI</h2>
+                    <img src="https://via.placeholder.com/800x400" alt="Tech Innovations">
+                    <p>The year 2024 promises to be a pivotal one for AI, robotics, and technology in general. From self-learning machines to space exploration powered by advanced algorithms, we dive into the innovations that will change the world. Artificial intelligence (AI) continues to evolve, pushing the boundaries of what’s possible. In 2024, AI will not only impact industries but also everyday life, making it a key element in shaping the future. As we look forward, the rise of generative AI models will change how businesses operate and transform the creative industries.</p>
+                    <p>One of the most exciting developments is AI’s ability to handle complex tasks such as drug discovery, autonomous vehicles, and predictive maintenance in industries like manufacturing. AI will also continue to dominate sectors such as healthcare, where it can assist doctors in diagnosing diseases with more precision than ever before. With the rise of large language models, like GPT-4 and beyond, AI is also making a significant impact on content creation, where it's used to generate articles, artwork, and even music. These advancements are not just theoretical — they're already being implemented in real-world applications.</p>
+                    <p>The next frontier will be the ethical implications of AI. As AI systems become more advanced, the question of fairness, transparency, and accountability in decision-making becomes even more important. AI has the potential to revolutionize industries, but we must ensure that these technologies are developed responsibly, with safeguards in place to prevent misuse.</p>
+                    <div class="meta">
+                        <span>Published on: March 25, 2024</span>
+                        <span>By: John Doe</span>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="page" id="article-page-2">
+                <div class="article">
+                    <h2>The Top 10 Travel Destinations for 2024</h2>
+                    <img src="inc/img/dna.png" alt="Travel Destinations">
+                    <p>Are you planning your next getaway? Look no further! We’ve compiled a list of the top 10 travel destinations for 2024, from hidden gems to popular hotspots, ensuring that your vacation is unforgettable. Whether you're an adventure seeker, a history buff, or someone looking to relax on a sunny beach, there's something for everyone in this list of 2024’s must-visit locations.</p>
+                    <p>First on the list is the Maldives, an island paradise known for its crystal-clear waters, white sandy beaches, and luxury resorts. For those seeking cultural immersion, Kyoto, Japan, offers a glimpse into traditional Japanese life with its temples, shrines, and stunning gardens. If you're looking for adventure, the rugged beauty of Iceland is hard to beat, offering breathtaking landscapes, waterfalls, and the chance to see the Northern Lights.</p>
+                    <p>Other notable destinations include the vibrant city of Cape Town in South Africa, the ancient wonders of Egypt, and the exotic wildlife of Costa Rica. Whether you're into exploring urban landscapes or escaping into nature, these destinations promise unforgettable experiences.</p>
+                    <div class="meta">
+                        <span>Published on: March 22, 2024</span>
+                        <span>By: Jane Smith</span>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="page" id="article-page-3">
+                <div class="article">
+                    <h2>How to Maintain a Healthy Lifestyle in 2024</h2>
+                    <img src="https://via.placeholder.com/800x400" alt="Healthy Living">
+                    <p>Maintaining a balanced life is essential to your mental and physical well-being. In this article, we provide actionable steps to maintain a healthy lifestyle that will last well into 2024 and beyond. Whether you are looking to improve your fitness, eat better, or manage stress, small changes in your daily routine can make a big difference in your overall health.</p>
+                    <p>Start with incorporating more physical activity into your day. It doesn't require spending hours at the gym — simple changes such as walking more, taking the stairs, or trying at-home workouts can add up. Regular exercise helps reduce the risk of chronic diseases, boosts mood, and improves sleep. Along with physical health, mental well-being is just as important. Practicing mindfulness through activities like meditation or yoga can reduce stress, improve focus, and promote emotional health.</p>
+                    <p>Diet also plays a crucial role in a healthy lifestyle. Focus on whole foods, such as fruits, vegetables, lean proteins, and whole grains. Try to limit processed foods and sugars that can lead to weight gain and health issues. Hydration is key as well — drink plenty of water throughout the day to keep your body functioning optimally.</p>
+                    <p>Lastly, make sure you’re getting enough rest. A good night’s sleep is vital for recovery and for your body to repair itself. Aim for 7-9 hours of quality sleep per night to maintain peak performance throughout your day.</p>
+                    <div class="meta">
+                        <span>Published on: March 20, 2024</span>
+                        <span>By: Alice Brown</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Navigation Controls -->
+        <div class="controls">
+            <button class="nav-btn prev-btn" id="prevBtn" disabled>Previous</button>
+            <button class="nav-btn next-btn" id="nextBtn">Next</button>
+        </div>
+    </div>
+
+<script>
+    let currentPage = 1;
+    const totalPages = 4; // Total pages (cover + articles)
+    const magazine = document.getElementById("magazine");
+
+    // Function to move to the next page
+    function nextPage() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            updatePages();
+        }
+    }
+
+    // Function to move to the previous page
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            updatePages();
+        }
+    }
+
+    // Update the pages to simulate the page turn
+    function updatePages() {
+        const pages = document.querySelectorAll(".page");
+        pages.forEach((page, index) => {
+            if (index + 1 === currentPage) {
+                page.style.transform = "rotateY(0deg)";
+            } else if (index + 1 === currentPage + 1) {
+                page.style.transform = "rotateY(-180deg)";
+            } else {
+                page.style.transform = "rotateY(0deg)";
+            }
+        });
+
+        // Disable or enable navigation buttons
+        document.getElementById("prevBtn").disabled = currentPage === 1;
+        document.getElementById("nextBtn").disabled = currentPage === totalPages;
+    }
+
+    // Event listeners for navigation buttons
+    document.getElementById("nextBtn").addEventListener("click", nextPage);
+    document.getElementById("prevBtn").addEventListener("click", prevPage);
+
+    // Initialize the magazine
+    updatePages();
+</script>
+
+</body>
+</html>

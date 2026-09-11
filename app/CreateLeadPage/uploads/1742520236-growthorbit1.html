@@ -1,0 +1,1250 @@
+
+
+  
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Agency</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+      :root {
+        --primary-color: #6c63ff;
+        --secondary-color: #f50057;
+        --dark-color: #2d3436;
+        --light-color: #f5f6fa;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        line-height: 1.6;
+        color: var(--dark-color);
+        background-color: var(--light-color);
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+      }
+
+      ul {
+        list-style: none;
+      }
+
+      .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 12px 28px;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 30px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Header */
+      .header {
+        width: 100%;
+        z-index: 1000;
+        background-color: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0;
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+
+      .nav-menu {
+        display: flex;
+      }
+
+      .nav-item {
+        margin-left: 30px;
+      }
+
+      .nav-link {
+        font-weight: 500;
+        padding: 8px 0;
+        position: relative;
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--primary-color);
+        transition: width 0.3s ease;
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      .hamburger {
+        display: none;
+        cursor: pointer;
+      }
+
+      /* Hero Section */
+      .hero {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        background-color: white;
+      }
+
+      .hero-content {
+        display: flex;
+        align-items: center;
+      }
+
+      .hero-text {
+        width: 50%;
+        flex: 1;
+        padding-right: 50px;
+      }
+
+      .hero-text h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
+      }
+
+      .hero-text h1 span {
+        color: var(--primary-color);
+      }
+
+      .hero-text p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        color: #666;
+      }
+
+      .hero-image {
+        flex: 1;
+      }
+
+      .hero-image img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Services Section */
+      .services {
+        padding: 100px 0;
+        background-color: white;
+      }
+
+      .section-title {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .section-title h2 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        position: relative;
+        display: inline-block;
+      }
+
+      .section-title h2::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 3px;
+        background-color: var(--primary-color);
+      }
+
+      .section-title p {
+        color: #666;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+      }
+
+      .service-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      .service-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--light-color);
+        border-radius: 50%;
+        color: var(--primary-color);
+        font-size: 1.5rem;
+      }
+
+      .service-card h3 {
+        margin-bottom: 15px;
+      }
+
+      .service-card p {
+        color: #666;
+      }
+
+      /* Portfolio Section */
+      .portfolio {
+        padding: 100px 0;
+        background-color: var(--light-color);
+      }
+
+      .portfolio-filter {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 40px;
+      }
+
+      .filter-item {
+        margin: 0 10px;
+        padding: 8px 20px;
+        background-color: white;
+        border-radius: 30px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .filter-item.active,
+      .filter-item:hover {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .portfolio-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+      }
+
+      .portfolio-item {
+        position: relative;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: white;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .portfolio-image {
+        width: 100%;
+        height: 250px;
+        background-color: #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #aaa;
+        font-size: 1.2rem;
+      }
+
+      .portfolio-info {
+        padding: 20px;
+        text-align: center;
+      }
+
+      .portfolio-info h3 {
+        margin-bottom: 5px;
+      }
+
+      .portfolio-info span {
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      /* Contact Form Section */
+      .contact {
+        padding: 100px 0;
+        background-color: white;
+      }
+
+      .contact-container {
+        display: flex;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .contact-info {
+        flex: 2;
+        padding: 50px;
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .contact-info h3 {
+        margin-bottom: 30px;
+        font-size: 1.8rem;
+      }
+
+      .contact-method {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 30px;
+      }
+
+      .contact-icon {
+        width: 50px;
+        height: 50px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .contact-text h4 {
+        margin-bottom: 5px;
+      }
+
+      .contact-form {
+        flex: 3;
+        padding: 50px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-family: "Poppins", sans-serif;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+      }
+
+      .checkbox-group {
+        margin-top: 30px;
+      }
+
+      .checkbox-title {
+        margin-bottom: 15px;
+        font-weight: 500;
+      }
+
+      .checkbox-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+      }
+
+      .checkbox-item {
+        display: flex;
+        align-items: center;
+      }
+
+      .checkbox-item input {
+        margin-right: 8px;
+      }
+
+      /* Footer */
+      .footer {
+        background-color: var(--dark-color);
+        color: white;
+        padding: 80px 0 30px;
+      }
+
+      .footer-content {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 40px;
+        margin-bottom: 60px;
+      }
+
+      .footer-column h3 {
+        margin-bottom: 25px;
+        font-size: 1.3rem;
+        position: relative;
+        padding-bottom: 10px;
+      }
+
+      .footer-column h3::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 30px;
+        height: 2px;
+        background-color: var(--primary-color);
+      }
+
+      .footer-column p,
+      .footer-column a {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 10px;
+      }
+
+      .footer-column a:hover {
+        color: white;
+        padding-left: 5px;
+      }
+
+      .social-links {
+        display: flex;
+        margin-top: 20px;
+      }
+
+      .social-link {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .social-link:hover {
+        background-color: var(--primary-color);
+        transform: translateY(-5px);
+      }
+
+      .copyright {
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      /* Responsive */
+      @media (max-width: 992px) {
+        .services-grid,
+        .portfolio-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .footer-content {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .hero-content {
+          flex-direction: column;
+        }
+
+        .hero-text {
+          margin-bottom: 50px;
+          padding-right: 0;
+          text-align: center;
+        }
+
+        .contact-container {
+          flex-direction: column;
+        }
+
+        .checkbox-container {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .navbar {
+          position: relative;
+        }
+
+        .hamburger {
+          display: block;
+          font-size: 1.5rem;
+        }
+
+        .nav-menu {
+          position: absolute;
+          top: 100%;
+          right: -100%;
+          width: 70%;
+          background-color: white;
+          flex-direction: column;
+          padding: 30px;
+          border-radius: 10px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+          transition: all 0.4s ease;
+        }
+
+        .nav-menu.active {
+          right: 0;
+        }
+
+        .nav-item {
+          margin: 15px 0;
+        }
+
+        .service-card,
+        .portfolio-item {
+          transform: translateY(0) !important;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .services-grid,
+        .portfolio-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-content {
+          grid-template-columns: 1fr;
+        }
+
+        .checkbox-container {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-text h1 {
+          font-size: 2.5rem;
+        }
+      }
+      /* Base Styles (already present) */
+:root {
+  --primary-color: #6c63ff;
+  --secondary-color: #f50057;
+  --dark-color: #2d3436;
+  --light-color: #f5f6fa;
+  --success-color: #2ecc71;
+  --warning-color: #f39c12;
+  --danger-color: #e74c3c;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  line-height: 1.6;
+  color: var(--dark-color);
+  background-color: var(--light-color);
+  overflow-x: hidden;
+}
+
+/* Improved Responsive Container */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Improved Responsive Typography */
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.3;
+}
+
+/* Enhanced Mobile Menu */
+.hamburger {
+  display: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  z-index: 1100;
+}
+
+/* Responsive Images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Enhanced Media Queries */
+/* Extra Large Devices (1200px and up) */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+  
+  .hero-text h1 {
+    font-size: 3.5rem;
+  }
+}
+
+/* Large Devices (992px and up) */
+@media (max-width: 1199px) {
+  .container {
+    max-width: 960px;
+  }
+  
+  .hero-text h1 {
+    font-size: 3rem;
+  }
+  
+  .services-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .portfolio-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Medium Devices (768px to 991px) */
+@media (max-width: 991px) {
+  .container {
+    max-width: 720px;
+  }
+  
+  .hero-text h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero-content {
+    flex-direction: column;
+  }
+  
+  .hero-text {
+    width: 100%;
+    padding-right: 0;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .services-grid,
+  .portfolio-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .footer-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+  
+  .contact-container {
+    flex-direction: column;
+  }
+  
+  .contact-info {
+    width: 100%;
+  }
+  
+  .contact-form {
+    width: 100%;
+  }
+  
+  .checkbox-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Small Devices (576px to 767px) */
+@media (max-width: 767px) {
+  .container {
+    max-width: 540px;
+  }
+  
+  .hero-text h1 {
+    font-size: 2.2rem;
+  }
+  
+  .section-title h2 {
+    font-size: 2rem;
+  }
+  
+  /* Enhanced Mobile Navigation */
+  .hamburger {
+    display: block;
+    font-size: 1.5rem;
+  }
+  
+  .nav-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    height: 100vh;
+    background-color: white;
+    flex-direction: column;
+    padding: 80px 30px 30px;
+    transition: all 0.4s ease;
+    z-index: 1000;
+    overflow-y: auto;
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .nav-menu.active {
+    right: 0;
+  }
+  
+  .nav-item {
+    margin: 15px 0;
+    width: 100%;
+  }
+  
+  .nav-link {
+    display: block;
+    padding: 10px 0;
+    font-size: 1.1rem;
+  }
+  
+  /* Adjust service cards */
+  .service-card {
+    padding: 20px;
+  }
+  
+  .service-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.3rem;
+  }
+}
+
+/* Extra Small Devices (575px and down) */
+@media (max-width: 575px) {
+  .hero-text h1 {
+    font-size: 1.8rem;
+  }
+  
+  .section-title h2 {
+    font-size: 1.8rem;
+  }
+  
+  .services-grid,
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .contact-info,
+  .contact-form {
+    padding: 30px 20px;
+  }
+  
+  .checkbox-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .nav-menu {
+    width: 85%;
+  }
+  
+  /* Adjust portfolio */
+  .portfolio-filter {
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .filter-item {
+    margin: 5px;
+  }
+  
+  /* Form responsiveness */
+  .form-control {
+    padding: 10px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+  
+  /* Better spacing for mobile */
+  .section-title {
+    margin-bottom: 40px;
+  }
+  
+  .services, .portfolio, .contact {
+    padding: 60px 0;
+  }
+}
+
+/* Orientation Specific Adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero {
+    height: auto;
+    min-height: 100vh;
+    padding: 50px 0;
+  }
+  
+  .nav-menu {
+    padding-top: 60px;
+  }
+}
+
+/* Additional Responsive Enhancements */
+
+/* Fix for images in portfolio that might not be loading */
+.portfolio-image {
+  width: 100%;
+  height: 0;
+  padding-bottom: 75%; /* 4:3 Aspect Ratio */
+  position: relative;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+
+.portfolio-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Fix for hero image responsiveness */
+.hero-image {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Improved spacing between sections on mobile */
+@media (max-width: 767px) {
+  section {
+    padding: 50px 0;
+  }
+  
+  .footer {
+    padding: 50px 0 20px;
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) {
+  .btn, .nav-link, .filter-item, .social-link {
+    padding: 12px;
+    min-height: 44px; /* Minimum touch target size */
+  }
+  
+  .service-card, .portfolio-item {
+    transform: none !important;
+    transition: background-color 0.3s ease;
+  }
+  
+  .portfolio-item:active, .service-card:active {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Improved focus styles for accessibility */
+a:focus, button:focus, input:focus, textarea:focus {
+  outline: 3px solid rgba(108, 99, 255, 0.3);
+  outline-offset: 2px;
+}
+
+/* Fix for form elements on mobile */
+@media (max-width: 575px) {
+  input, textarea, select, button {
+    font-size: 16px; /* Prevents iOS zoom on input */
+  }
+}
+    </style>
+  
+
+  
+    <header class="header">
+      <div class="container">
+        <nav class="navbar">
+          <a href="#" class="logo" style="position: relative; border: 0px none rgb(108, 99, 255);">GrowthOrbit</a>
+          <ul class="nav-menu">
+            <li class="nav-item"><a href="#" class="nav-link" style="position: relative;">Home</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" style="position: relative;">Services</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" style="position: relative;">Portfolio</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" style="position: relative;">About</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" style="position: relative;">Contact</a></li>
+          </ul>
+          <div class="hamburger">
+            <i class="fas fa-bars" style="position: relative;"></i>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1 class="" style="position: relative; border: 0px none rgb(45, 52, 54);">
+              We Put You in<div><span class="" style="position: relative; border: 0px none rgb(108, 99, 255);">Growth Orbit</span></div><div><br><span class="" style="position: relative; border: 0px none rgb(108, 99, 255);"></span></div></h1>
+            <p class="" style="position: relative; border: 0px none rgb(102, 102, 102);">
+              Our creative team delivers cutting-edge solutions for brands
+              looking to stand out in today's competitive digital landscape.
+            </p>
+            <a href="#" class="btn" style="position: relative;">Our Work</a>
+          </div>
+          <div class="hero-image">
+            <img src="images3/bg_1.jpg" alt="Hero Image" style="
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 10px;
+              ">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="services">
+      <div class="container">
+        <div class="section-title">
+          <h2 class="" style="position: relative;">Our Services</h2>
+          <p class="" style="position: relative; border: 0px none rgb(102, 102, 102);">
+            We provide comprehensive digital solutions tailored to meet your
+            business needs and help you achieve your goals.
+          </p>
+        </div>
+
+        <div class="services-grid">
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-paint-brush" style="position: relative;"></i>
+            </div>
+            <h3 class="" style="position: relative; border: 0px none rgb(45, 52, 54);">Analyse Competition<br></h3>
+            <p class="" style="position: relative; border: 0px none rgb(102, 102, 102);">
+              We analyse your competitive landscape to look for what has worked for them and combine this with target audience preferences and user experience</p>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-code" style="position: relative;"></i>
+            </div>
+            <h3 class="" style="position: relative; border: 0px none rgb(45, 52, 54);">Develop an Activity Calendar<br></h3>
+            <p class="" style="position: relative; border: 0px none rgb(102, 102, 102);">
+              Our team puts together an activity calendar based on the analysis&nbsp;</p>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-mobile-alt" style="position: relative;"></i>
+            </div>
+            <h3 class="" style="position: relative; border: 0px none rgb(45, 52, 54);">Create Content<br></h3>
+            <p class="" style="position: relative; border: 0px none rgb(102, 102, 102);">Create posts, long form articles, graphics, videos for various channels as per the activity calendar<br></p>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-chart-line" style="position: relative;"></i>
+            </div>
+            <h3 class="" style="position: relative; border: 0px none rgb(45, 52, 54);">Execute the plan<br></h3>
+            <p class="" style="position: relative; border: 0px none rgb(102, 102, 102);">Schedule posts, and run the campaign on all the social channels identified in analysis stage using the content created</p>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-palette" style="position: relative;"></i>
+            </div>
+            <h3 class="" style="position: relative; border: 0px none rgb(45, 52, 54);">Monitor Progress<br></h3>
+            <p class="" style="position: relative; border: 0px none rgb(102, 102, 102);">Monitor the campaign using your Campaign Dashboard. You can even edit the preferences or reach out to our team to make changes any time.</p>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-search" style="position: relative;"></i>
+            </div>
+            <h3 class="" style="position: relative; border: 0px none rgb(45, 52, 54);">Results<br></h3>
+            <p class="" style="position: relative; border: 0px none rgb(102, 102, 102);">See results as they arrive home. Strategy and action work together to get you results and in full visibility.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="portfolio">
+      <div class="container">
+        <div class="section-title">
+          <h2 class="" style="position: relative; border: 0px none rgb(45, 52, 54);">Our Portfolio</h2>
+          <p class="" style="position: relative;">
+            Check out some of our recent projects and see how we've helped
+            businesses transform their digital presence.
+          </p>
+        </div>
+
+        <div class="portfolio-filter">
+          <div class="filter-item active">All</div>
+        </div>
+
+        <div class="portfolio-grid">
+          <div class="portfolio-item">
+            <div class="portfolio-image">
+              <img src="images3/work-1.jpg" alt="Project Image 1">
+            </div>
+            <div class="portfolio-info">
+              <h3 class="" style="position: relative; border: 0px none rgb(45, 52, 54);">Project Name</h3>
+              <span class="" style="position: relative; border: 0px none rgb(102, 102, 102);">Web Design</span>
+            </div>
+          </div>
+
+          <div class="portfolio-item">
+            <div class="portfolio-image">
+              <img src="images3/work-2.jpg" alt="Project Image 2">
+            </div>
+            <div class="portfolio-info">
+              <h3 class="" style="position: relative;">Project Name</h3>
+              <span class="" style="position: relative;">Development</span>
+            </div>
+          </div>
+
+          <div class="portfolio-item">
+            <div class="portfolio-image">
+              <img src="images3/work-3.jpg" alt="Project Image 3">
+            </div>
+            <div class="portfolio-info">
+              <h3 class="" style="position: relative;">Project Name</h3>
+              <span class="" style="position: relative;">Branding</span>
+            </div>
+          </div>
+
+          <div class="portfolio-item">
+            <div class="portfolio-image">
+              <img src="images3/work-4.jpg" alt="Project Image 4">
+            </div>
+            <div class="portfolio-info">
+              <h3 class="" style="position: relative;">Project Name</h3>
+              <span class="" style="position: relative;">Marketing</span>
+            </div>
+          </div>
+
+          <div class="portfolio-item">
+            <div class="portfolio-image">
+              <img src="images3/work-5.jpg" alt="Project Image 5">
+            </div>
+            <div class="portfolio-info">
+              <h3 class="" style="position: relative;">Project Name</h3>
+              <span class="" style="position: relative;">Web Design</span>
+            </div>
+          </div>
+
+          <div class="portfolio-item">
+            <div class="portfolio-image">
+              <img src="images3/work-6.jpg" alt="Project Image 6">
+            </div>
+            <div class="portfolio-info">
+              <h3 class="" style="position: relative;">Project Name</h3>
+              <span class="" style="position: relative;">Development</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact">
+      <div class="container">
+        <div class="section-title">
+          <h2 class="" style="position: relative;">Contact Us</h2>
+          <p class="" style="position: relative; border: 0px none rgb(102, 102, 102);">
+            Get in touch with our team to discuss your project requirements and
+            how we can help you achieve your goals.
+          </p>
+        </div>
+
+        <div class="contact-container">
+          <div class="contact-info">
+            <h3 class="" style="position: relative; border: 0px none rgb(255, 255, 255);">Get In Touch</h3>
+
+            <div class="contact-method">
+              <div class="contact-icon">
+                <i class="fas fa-map-marker-alt" style="position: relative;"></i>
+              </div>
+              <div class="contact-text">
+                <h4 class="" style="position: relative;">Address</h4>
+                <p class="" style="position: relative;">123 Creative Street, Design City, 10001</p>
+              </div>
+            </div>
+
+            <div class="contact-method">
+              <div class="contact-icon">
+                <i class="fas fa-phone" style="position: relative;"></i>
+              </div>
+              <div class="contact-text">
+                <h4 class="" style="position: relative;">Phone</h4>
+                <p class="" style="position: relative;">+1 (555) 123-4567</p>
+              </div>
+            </div>
+
+            <div class="contact-method">
+              <div class="contact-icon">
+                <i class="fas fa-envelope" style="position: relative;"></i>
+              </div>
+              <div class="contact-text">
+                <h4 class="" style="position: relative;">Email</h4>
+                <p class="" style="position: relative;">info@creativex.com</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-form">
+            <h3 class="" style="position: relative;">Contact Form</h3>
+            <form id="frmLead" class="contact-form" onsubmit="return chkLead()">
+              <div id="formFields">
+                <div class="form-group form-control form-field visible" data-field="name">
+                  <label for="Name">Name *</label>
+                  <input type="text" id="Name" name="Name" class="form-control" required="">
+                </div>
+
+                <div class="form-group form-control form-field visible" data-field="email">
+                  <label for="Email">Email *</label>
+                  <input type="email" id="Email" name="Email" class="form-control" required="">
+                </div>
+
+                <div class="form-group form-control form-field visible" data-field="phone">
+                  <label for="Mobile">Phone Number *</label>
+                  <input type="tel" id="Mobile" name="Mobile" class="form-control" required="">
+                </div>
+
+                <div class="form-group form-control form-field visible" data-field="query">
+                  <label for="Query">Message *</label>
+                  <textarea id="Query" name="Query" class="form-control" rows="5" required=""></textarea>
+                </div>
+              </div>
+
+              <div id="panelStatus" class="status-panel"></div>
+
+              <div class="submit-section">
+                <button type="submit" id="btnSubmit" class="submit-button btn" style="margin-top: 20px">
+                  Send Message
+                </button>
+                <div id="contentLoader" class="loader" style="display: none">
+                  Processing...
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-column">
+            <h3 class="" style="position: relative;">About Us</h3>
+            <p class="" style="position: relative;">
+              CreativeX is a leading digital agency specializing in web design,
+              development, and digital marketing services for businesses of all
+              sizes.
+            </p>
+            <div class="social-links">
+              <a href="#" class="social-link" style="position: relative;"><i class="fab fa-facebook-f" style="position: relative;"></i></a>
+              <a href="#" class="social-link" style="position: relative;"><i class="fab fa-twitter" style="position: relative;"></i></a>
+              <a href="#" class="social-link" style="position: relative;"><i class="fab fa-instagram" style="position: relative;"></i></a>
+              <a href="#" class="social-link" style="position: relative;"><i class="fab fa-linkedin-in" style="position: relative;"></i></a>
+            </div>
+          </div>
+
+          <div class="footer-column">
+            <h3 class="" style="position: relative;">Services</h3>
+            <a href="#" class="" style="position: relative;">Web Design</a>
+            <a href="#" class="" style="position: relative;">Web Development</a>
+            <a href="#" class="" style="position: relative;">Mobile Apps</a>
+            <a href="#" class="" style="position: relative;">Digital Marketing</a>
+            <a href="#" class="" style="position: relative;">Branding</a>
+            <a href="#" class="" style="position: relative;">SEO</a>
+          </div>
+
+          <div class="footer-column">
+            <h3 class="" style="position: relative;">Quick Links</h3>
+            <a href="#" class="" style="position: relative;">Home</a>
+            <a href="#" class="" style="position: relative;">About Us</a>
+            <a href="#" class="" style="position: relative;">Services</a>
+            <a href="#" class="" style="position: relative;">Portfolio</a>
+            <a href="#" class="" style="position: relative;">Contact Us</a>
+            <a href="#" class="" style="position: relative;">Privacy Policy</a>
+          </div>
+        </div>
+
+        <div class="copyright">
+          <p class="" style="position: relative;">© 2025 CreativeX. All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Mobile Menu Toggle
+      document
+        .querySelector(".hamburger")
+        .addEventListener("click", function () {
+          document.querySelector(".nav-menu").classList.toggle("active");
+        });
+
+      // Portfolio Filter
+      const filterItems = document.querySelectorAll(".filter-item");
+      filterItems.forEach((item) => {
+        item.addEventListener("click", function () {
+          filterItems.forEach((btn) => btn.classList.remove("active"));
+          this.classList.add("active");
+        });
+      });
+    </script>
+  
+  <script src="script.js"></script>
+
