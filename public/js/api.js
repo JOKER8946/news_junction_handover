@@ -312,3 +312,19 @@ const API = {
 };
 
 window.API = API;
+
+// Global sticky navbar height synchronization for responsive sub-nav alignment
+document.addEventListener('DOMContentLoaded', () => {
+  const syncNavHeight = () => {
+    const nav = document.getElementById('mainNav') || document.querySelector('nav.main-nav');
+    if (nav) {
+      const h = nav.offsetHeight;
+      document.documentElement.style.setProperty('--nav-height', `${h}px`);
+    }
+  };
+  syncNavHeight();
+  window.addEventListener('resize', syncNavHeight);
+  window.addEventListener('orientationchange', syncNavHeight);
+  // Re-sync after images and fonts load
+  window.addEventListener('load', syncNavHeight);
+});

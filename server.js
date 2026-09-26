@@ -68,6 +68,7 @@ app.get('/sharemarket.php', (req, res) => res.redirect('/sharemarket.html'));
 app.get('/influencer.php', (req, res) => res.redirect('/influencers.html'));
 app.get(['/CreateLeadPage', '/CreateLeadPage/index.php'], (req, res) => res.redirect('/lead-builder.html'));
 app.get(['/admin_ads.php', '/ads.php', '/admin_complaints.php', '/admin_complaint_detail.php', '/admin', '/admin/index.php'], (req, res) => res.redirect('/admin.html'));
+app.get(['/reels', '/reels.php'], (req, res) => res.redirect('/reels.html'));
 app.get('/logout.php', (req, res) => res.redirect('/api/auth/logout'));
 
 // Legacy PHP POST dispatch compatibility
@@ -117,6 +118,7 @@ app.use('/images', express.static(path.join(__dirname, 'app/images')));
 app.use('/data', express.static(path.join(__dirname, 'app/data')));
 app.use('/assets', express.static(path.join(__dirname, 'app/assets')));
 app.use('/inc', express.static(path.join(__dirname, 'app/inc')));
+app.use('/uploads', express.static(path.join(__dirname, 'app/uploads')));
 
 // Serve converted HTML, CSS, JS frontend
 app.use(express.static(path.join(__dirname, 'public')));

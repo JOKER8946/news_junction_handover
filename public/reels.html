@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reels & Shorts &bull; News Junction</title>
+  <link rel="icon" type="image/png" href="/grfx/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    /* Dedicated Reels Page Styling */
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+    }
+
+    .reels-page-wrapper {
+      max-width: 1320px;
+      margin: 16px auto 30px;
+      padding: 0 16px;
+    }
+
+    .reels-page-card {
+      background: #0f172a;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    .reels-standalone-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .reels-standalone-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .reels-live-pulse {
+      width: 12px;
+      height: 12px;
+      background: #ef4444;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #ef4444;
+      animation: pulseLive 1.5s infinite;
+    }
+
+    @keyframes pulseLive {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    .trending-tag-pill {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      padding: 5px 12px;
+      border-radius: 16px;
+      font-size: 0.78rem;
+      margin: 3px 2px;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .trending-tag-pill:hover {
+      background: var(--color-primary);
+      color: #ffffff;
+      border-color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= STICKY NAVBAR ================= -->
+  <nav class="main-nav" id="mainNav">
+    <div class="nav-content">
+      <a href="/" style="display:flex; align-items:center; gap:10px;">
+        <img src="/grfx/images/newsjunction.png" alt="News Junction" style="height: 38px;" onerror="this.src='/images/newsjunction.png'" />
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/reader.html">News Feed</a></li>
+        <li><a href="/reels.html" class="active nav-reel-badge">🎬 Reels</a></li>
+        <li><a href="/complaints.html">Citizen Grievances</a></li>
+        <li><a href="/about.html">About Us</a></li>
+      </ul>
+
+      <div class="nav-auth" id="navAuthContainer">
+        <a href="/sign-in.html?type=login" class="btn-nav-login">Login</a>
+        <a href="/sign-in.html?type=signup" class="btn-nav-signup">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= SUB NAVIGATION ================= -->
+  <div class="sub-nav">
+    <div class="sub-nav-content">
+      <a href="/" class="sub-nav-item">🏠 Home</a>
+      <a href="/reels.html" class="sub-nav-item active highlight">🎬 Reels & Shorts</a>
+      <a href="/reader.html" class="sub-nav-item">📰 News Feed</a>
+      <a href="/channels.html" class="sub-nav-item">📡 Channels</a>
+      <a href="/district-newspapers.html" class="sub-nav-item">🗞️ District Papers</a>
+      <a href="/sharemarket.html" class="sub-nav-item">📈 Share Market</a>
+      <a href="/magazine.html" class="sub-nav-item">📖 Digital Magazine</a>
+      <a href="/complaints.html" class="sub-nav-item">⚖️ Citizen Grievances</a>
+      <a href="/influencers.html" class="sub-nav-item">✍️ Columnists</a>
+      <a href="/create.html" class="sub-nav-item">✏️ Create Story</a>
+      <a href="/my-articles.html" class="sub-nav-item">📚 My Stories</a>
+      <a href="/collections.html" class="sub-nav-item">🔖 Collections</a>
+      <a href="/lead-builder.html" class="sub-nav-item">🎯 Lead Builder</a>
+      <a href="/analytics.html" class="sub-nav-item">📊 Analytics</a>
+      <a href="/admin.html" class="sub-nav-item">⚙️ Admin</a>
+    </div>
+  </div>
+
+  <!-- ================= DEDICATED REELS CONTAINER ================= -->
+  <main class="reels-page-wrapper">
+    <div class="reels-page-card" id="reelsSection">
+
+      <!-- Header Section -->
+      <div class="reels-standalone-header">
+        <div>
+          <div class="reels-standalone-title">
+            <span class="reels-live-pulse"></span>
+            <h1 style="font-size:1.85rem; font-weight:800; color:#ffffff; margin:0;">News Junction Reels & Shorts</h1>
+          </div>
+          <p style="color:#94a3b8; font-size:0.92rem; margin-top:4px;">
+            Full-screen vertical news videos from 30+ Karnataka district bureaus. Swipe or scroll down to view one-by-one.
+          </p>
+        </div>
+
+        <div class="reels-controls-header">
+          <button class="reels-ctrl-btn" id="reelsPrevBtn" title="Previous Reel (Arrow Up)" aria-label="Previous Reel">
+            &#x25B2;
+          </button>
+          <button class="reels-ctrl-btn" id="reelsNextBtn" title="Next Reel (Arrow Down)" aria-label="Next Reel">
+            &#x25BC;
+          </button>
+          <button class="reels-ctrl-btn" id="reelsGlobalMuteBtn" title="Toggle Audio (Mute/Unmute)" aria-label="Toggle Audio">
+            <span id="reelsMuteIcon">🔇</span>
+          </button>
+          <button class="reels-ctrl-btn" id="reelsFullscreenBtn" title="Fullscreen View" aria-label="Fullscreen View">
+            ⛶
+          </button>
+        </div>
+      </div>
+
+      <!-- Main 3-Column Reels Viewport -->
+      <div class="reels-viewport-layout">
+
+        <!-- Left Column: Filters, District Desks & Trending Tags -->
+        <aside class="reels-sidebar-filters">
+          <h4 class="reels-filter-title">Filter by Desk</h4>
+          <div class="reels-filter-list" id="reelsFilterList">
+            <button class="reels-filter-chip active" data-filter="all">All Stories <span>🔥</span></button>
+            <button class="reels-filter-chip" data-filter="bengaluru">Bengaluru Urban <span>🏙️</span></button>
+            <button class="reels-filter-chip" data-filter="udupi">Coastal Desk <span>🌊</span></button>
+            <button class="reels-filter-chip" data-filter="mysuru">Mysuru Heritage <span>🏰</span></button>
+            <button class="reels-filter-chip" data-filter="civic">Civic & Agriculture <span>🌾</span></button>
+            <button class="reels-filter-chip" data-filter="breaking">Breaking Bulletins <span>⚡</span></button>
+          </div>
+
+          <!-- Trending Topics -->
+          <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08);">
+            <h4 style="font-size:0.88rem; color:#cbd5e1; font-weight:700; margin-bottom:10px;">Trending Hashtags</h4>
+            <div>
+              <span class="trending-tag-pill">#UdupiExpressway</span>
+              <span class="trending-tag-pill">#NammaMetro</span>
+              <span class="trending-tag-pill">#MysuruDasara</span>
+              <span class="trending-tag-pill">#FarmerCompensation</span>
+              <span class="trending-tag-pill">#KarnatakaLive</span>
+            </div>
+          </div>
+
+          <!-- Video Report Tip -->
+          <div class="reels-tip-box" style="margin-top: 20px;">
+            <div style="font-size:1.3rem;">📹</div>
+            <div>
+              <strong>Report a Civic Story:</strong>
+              <p>Have a video of local civic issues or news in your area? <a href="/complaints.html" style="color:#f59e0b; text-decoration:underline;">Submit a report here &rarr;</a></p>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Center Column: Smartphone Reels Player Viewport -->
+        <div class="reels-device-container">
+          <div class="reels-scroll-container" id="reelsScrollContainer">
+            <!-- Dynamically injected via reels.js -->
+          </div>
+
+          <!-- Scroll Snap Indicators -->
+          <div class="reels-pagination" id="reelsPagination"></div>
+        </div>
+
+        <!-- Right Column: Active Reel Detailed Metadata & Live Reactions -->
+        <aside class="reels-meta-sidebar" id="reelsMetaSidebar">
+          <!-- Dynamically updated based on active snapped reel -->
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer">
+    <p>&copy; 2026 News Junction Media Network. All Rights Reserved.</p>
+    <ul class="footer-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/reader.html">News Feed</a></li>
+      <li><a href="/reels.html">Reels & Shorts</a></li>
+      <li><a href="/about.html">About</a></li>
+      <li><a href="/privacy.html">Privacy Policy</a></li>
+      <li><a href="/contact.html">Contact Us</a></li>
+      <li><a href="/complaints.html">Report Issue</a></li>
+    </ul>
+  </footer>
+
+  <!-- ================= FLOATING CHAT ASSISTANT ================= -->
+  <div class="chat-widget-wrapper">
+    <div class="chat-box" id="chatBox">
+      <div class="chat-header">
+        <span>News Junction Assistant</span>
+        <button id="closeChatBtn" style="background:none; border:none; color:#fff; font-size:1.1rem; cursor:pointer;">&times;</button>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-bubble chat-bubble-bot">
+          Hi! Looking for specific district reels or video stories? Ask me anything or filter by district on the left.
+        </div>
+      </div>
+      <form class="chat-input-area" id="chatForm">
+        <input type="text" id="chatInput" placeholder="Ask about video stories..." required />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+    <button class="chat-trigger-btn" id="chatTriggerBtn">
+      <span>💬</span>
+      <span>Assistant</span>
+    </button>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/index.js"></script>
+  <script src="/js/reels.js"></script>
+</body>
+</html>
