@@ -46,3 +46,13 @@ CREATE INDEX IF NOT EXISTS channel_posts_channel_idx ON channel_posts(channel_id
 CREATE INDEX IF NOT EXISTS community_posts_time_idx ON community_posts(created_at DESC,id DESC);
 CREATE INDEX IF NOT EXISTS community_likes_post_idx ON community_likes(post_id);
 CREATE INDEX IF NOT EXISTS community_comments_post_idx ON community_comments(post_id,created_at);
+CREATE TABLE IF NOT EXISTS reels (
+ id BIGSERIAL PRIMARY KEY, title VARCHAR(150) NOT NULL, caption VARCHAR(2200) NOT NULL DEFAULT '',
+ filename TEXT UNIQUE NOT NULL, mime TEXT NOT NULL, published BOOLEAN NOT NULL DEFAULT true,
+ user_id BIGINT REFERENCES users(id) ON DELETE SET NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS reels_feed_idx ON reels(created_at DESC,id DESC) WHERE published;
+CREATE TABLE IF NOT EXISTS reel_likes (
+ reel_id BIGINT REFERENCES reels(id) ON DELETE CASCADE, user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+ PRIMARY KEY(reel_id,user_id)
+);

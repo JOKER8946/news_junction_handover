@@ -20,6 +20,7 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         'img-src': ["'self'", 'https:', 'data:'],
+        'media-src': ["'self'", 'blob:'],
         'script-src': ["'self'"],
         'style-src': ["'self'", "'unsafe-inline'"],
         'upgrade-insecure-requests': production ? [] : null,
@@ -689,6 +690,7 @@ app.put(
   }),
 );
 app.use('/api/community', require('./community'));
+app.use('/api/reels', require('./reels'));
 const multer = require('multer');
 const receiveImage = multer({
   storage: multer.memoryStorage(),
@@ -717,6 +719,7 @@ app.use('/api', (req, res) => res.status(404).json({ error: 'Endpoint not found.
 app.use(
   '/media',
   express.static(path.join(__dirname, '../public/media'), { dotfiles: 'deny', index: false }),
+  (req, res) => res.status(404).end(),
 );
 app.use(
   '/legacy-media',

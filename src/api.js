@@ -1,5 +1,28 @@
 let csrf;
 let sessionRequest;
+export async function uploadReel(form, onProgress) {
+  if (!csrf) await session();
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/reels');
+    xhr.setRequestHeader('X-CSRF-Token', csrf);
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
+    };
+    xhr.onerror = () => reject(Error('Upload failed. Check your connection and try again.'));
+    xhr.onload = () => {
+      try {
+        const data = JSON.parse(xhr.responseText);
+        xhr.status >= 200 && xhr.status < 300
+          ? resolve(data)
+          : reject(Error(data.error || 'Upload failed.'));
+      } catch {
+        reject(Error('Upload failed. Please try again.'));
+      }
+    };
+    xhr.send(form);
+  });
+}
 export async function session() {
   sessionRequest ||= fetch('/api/auth/session')
     .then(async (r) => {

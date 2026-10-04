@@ -43,3 +43,7 @@ Production cutover still requires access to the hosting environment, database pr
 Restored the original red/blue public landing page, full News Junction logo, Kannada feature cards, orange split-screen authentication, and Social/Reader sidebar layout from the supplied references. Removed the editorial homepage and marketing slogans. Login opens Social, and Reader has its own route. The separate marketplace navigation links to the existing marketplace.
 
 The production build passed. Four browser workflows were verified across the UI correction runs: landing/sign-up navigation; desktop search, reading, bookmarks and article editing; community posting, replies and image uploads; and mobile layout/menu/login. The final mobile check passed after fixing the menu backdrop. Screenshots are in `tmp/restored-*.png`. No production deployment was performed.
+
+## Reels feature ? 5 October 2026
+
+Added PostgreSQL-backed reels and likes, access-checked MP4/WebM uploads (100 MB maximum), private drafts, byte-range video streaming, admin editing/deletion, and an on-site vertical player. The production build and all 18 API/parser/RSS checks passed. A Chrome workflow verified admin upload, mobile autoplay/play-pause/mute, draft visibility, and deletion. Its screenshot is `tmp/reels-mobile.png`. Test uploads were removed.

@@ -121,3 +121,11 @@ Do not use the example database password or a placeholder session secret on a pu
 - `app/`: retained legacy non-PHP files/media, never used as an application runtime.
 - `tests/`: API, parser and Playwright browser tests.
 - `reference_images/`: the supplied design-reference PDFs.
+
+## Reels
+
+Open `/reels` from the sidebar to watch published reels in a vertical, scroll-snap player. Videos play muted while visible, pause off screen, and support play/pause, sound, likes, and direct sharing links. Visitors can watch; liking requires login.
+
+Admins can open **Administration > Reels** (`/admin?tab=reels`) to upload a video, add a title and caption, publish immediately or save a draft, edit visibility/details, and delete reels. MP4 and WebM files up to 100 MB are accepted; vertical 9:16 is recommended. Videos are served as uploaded, without transcoding; use browser-compatible codecs (such as H.264 MP4).
+
+Run `npm run db:migrate` when updating an existing installation. Reel metadata and likes are in PostgreSQL. Video files are stored under `public/media/uploads/.reels`, within the existing Docker uploads volume. They are served through an access-checked API (with byte-range support), not the public static route; drafts are admin-only. Include both the database and uploads volume in backups. Configure any production reverse proxy to allow 100 MB uploads plus multipart overhead.

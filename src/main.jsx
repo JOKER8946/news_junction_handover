@@ -49,7 +49,6 @@ import {
   Profile,
   Analytics,
   Admin,
-  Reels,
   LeadBuilder,
   LeadPage,
   Info,
@@ -59,6 +58,7 @@ import './styles.css';
 import './original.css';
 import { Landing } from './original-ui';
 import Social from './social';
+import { Reels } from './reels';
 export const AppContext = createContext();
 export const useApp = () => useContext(AppContext);
 export const districts = [
@@ -176,12 +176,16 @@ function Shell() {
       'Social',
       [
         ['/community', 'Social', Globe],
+        ['/reels', 'Reels', Video],
         ['/community?pincode=1', 'Pincode', MapPin],
         ['/community?mode=saved', 'Bookmarks', Bookmark],
         ['/community?mode=following', 'Following', Users],
       ],
     ],
-    ['Shop', [['https://newsjunction.net/manikya_market/index.php?p=home', 'Manikya Market', BookOpen]]],
+    [
+      'Shop',
+      [['https://newsjunction.net/manikya_market/index.php?p=home', 'Manikya Market', BookOpen]],
+    ],
     [
       'Reader',
       [

@@ -1,0 +1,229 @@
+.reels-stage {
+  position: relative;
+  width: min(100%, 480px);
+  margin: auto;
+}
+.reels-feed {
+  height: min(760px, calc(100dvh - 190px));
+  min-height: 360px;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  border-radius: 16px;
+  background: #080808;
+  scrollbar-width: none;
+}
+.reels-feed::-webkit-scrollbar {
+  display: none;
+}
+.reel-slide {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow: hidden;
+  color: #fff;
+  background: #080808;
+}
+.reel-slide > video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.reel-play {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  display: grid;
+  place-items: center;
+}
+.reel-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  background: linear-gradient(#0007, transparent);
+  pointer-events: none;
+}
+.reel-top > span {
+  font-size: 20px;
+  font-weight: 700;
+}
+.reel-top button {
+  pointer-events: auto;
+}
+.reel-top button,
+.reel-actions button,
+.reel-navigation button {
+  border: 0;
+  color: white;
+  background: #0005;
+  border-radius: 50%;
+  padding: 10px;
+  display: grid;
+  place-items: center;
+}
+.reel-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 60px;
+  padding: 50px 18px 24px;
+  background: linear-gradient(transparent, #000b);
+  pointer-events: none;
+}
+.reel-caption h2 {
+  font-size: 20px;
+  line-height: 1.35;
+  margin: 10px 0;
+  overflow-wrap: anywhere;
+}
+.reel-caption details {
+  pointer-events: auto;
+  font-size: 13px;
+}
+.reel-caption p {
+  white-space: pre-wrap;
+  max-height: 180px;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  margin: 10px 0 0;
+}
+.reel-actions {
+  position: absolute;
+  right: 10px;
+  bottom: 24px;
+  display: grid;
+  gap: 16px;
+}
+.reel-actions button {
+  background: #0006;
+  border-radius: 14px;
+  gap: 6px;
+  min-width: 46px;
+}
+.reel-actions span {
+  font-size: 11px;
+}
+.reel-actions [aria-pressed='true'] {
+  color: #ff806a;
+}
+.reel-navigation {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 45%;
+  display: grid;
+  gap: 12px;
+}
+.reel-navigation button {
+  background: #3c4652;
+}
+.reels-more {
+  height: 100%;
+  scroll-snap-align: start;
+  display: grid;
+  place-items: center;
+}
+.reel-error {
+  position: absolute;
+  top: 40%;
+  padding: 20px;
+  background: #000b;
+}
+.reel-upload {
+  max-width: 700px;
+}
+.reel-upload fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.reel-upload-preview {
+  width: 180px;
+  max-height: 300px;
+  background: #111;
+  border-radius: 10px;
+  margin: 15px 0;
+}
+.reel-upload progress {
+  width: 100%;
+  margin-top: 15px;
+}
+.admin-reel-row {
+  display: flex;
+  gap: 20px;
+  margin-top: 15px;
+  align-items: center;
+}
+.admin-reel-row video {
+  width: 120px;
+  height: 180px;
+  object-fit: contain;
+  background: #111;
+  border-radius: 8px;
+}
+.admin-reel-row h3 {
+  overflow-wrap: anywhere;
+}
+.admin-reel-row > div {
+  min-width: 0;
+}
+.admin-reels .row {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+.admin-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.admin-tabs a {
+  padding: 12px 20px;
+  border-radius: 8px;
+  background: #fff;
+}
+.admin-tabs a.active {
+  background: #f26422;
+  color: white;
+}
+@media (max-width: 680px) {
+  .reels-page .page-title {
+    margin-bottom: 15px;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+  .reels-page .page-title h1 {
+    margin: 0;
+  }
+  .reels-feed {
+    height: calc(100dvh - 170px);
+    min-height: 300px;
+  }
+  .reel-navigation {
+    display: none;
+  }
+  .admin-reel-row {
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .admin-reel-row video {
+    width: 95px;
+    height: 155px;
+  }
+  .admin-reel-row .button {
+    padding: 10px;
+    font-size: 12px;
+  }
+  .reel-caption h2 {
+    font-size: 18px;
+  }
+}

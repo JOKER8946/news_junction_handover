@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { api } from './api';
 import ImageUpload from './upload';
+import { AdminReels } from './reels';
 import { useApp, useLoad, State, Cover, Gate, districts, dateLabel } from './main';
 
 function PageTitle({ eyebrow, title, description, action }) {
@@ -1301,6 +1302,8 @@ export function Admin() {
   const { data, loading, error, reload } = useLoad('/admin/users'),
     { user, toast } = useApp();
   const ads = useLoad('/resources/ads');
+  const [params] = useSearchParams();
+  const reelsTab = params.get('tab') === 'reels';
   return (
     <>
       <PageTitle
@@ -1308,103 +1311,97 @@ export function Admin() {
         title="Administration"
         description="Manage newsroom access, advertisements, and civic reports."
       />
-      <State loading={loading} error={error} retry={reload} />
-      <div className="panel">
-        <h2>People & permissions</h2>
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.map((u) => (
-                <tr key={u.id}>
-                  <td>{u.full_name}</td>
-                  <td>{u.email}</td>
-                  <td>
-                    <select
-                      aria-label={'Role for ' + u.full_name}
-                      value={u.role}
-                      disabled={u.id === user.id}
-                      onChange={async (e) => {
-                        try {
-                          await api('/admin/users/' + u.id + '/role', {
-                            method: 'PUT',
-                            body: { role: e.target.value },
-                          });
-                          reload();
-                        } catch (e) {
-                          toast(e.message);
-                        }
-                      }}
-                    >
-                      {['reader', 'reporter', 'admin'].map((r) => (
-                        <option key={r}>{r}</option>
-                      ))}
-                    </select>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div className="section-heading">
-        <h2>Advertisements</h2>
-        <Link to="/complaints" className="text-link">
-          Review civic reports <ArrowUpRight size={16} />
+      <nav className="admin-tabs" aria-label="Administration sections">
+        <Link to="/admin" className={!reelsTab ? 'active' : ''}>
+          General
         </Link>
-      </div>
-      <ResourceForm
-        kind="ads"
-        onDone={() => {
-          ads.reload();
-          toast('Advertisement saved.');
-        }}
-      />
-      {ads.data?.map((a) => (
-        <div className="panel row" key={a.id}>
-          <span>{a.title}</span>
-          <button
-            className="button secondary"
-            onClick={async () => {
-              if (!confirm('Remove this advertisement?')) return;
-              try {
-                await api('/resources/' + a.id, { method: 'DELETE' });
-                ads.reload();
-              } catch (e) {
-                toast(e.message);
-              }
+        <Link to="/admin?tab=reels" className={reelsTab ? 'active' : ''}>
+          Reels
+        </Link>
+      </nav>
+      {reelsTab ? (
+        <AdminReels />
+      ) : (
+        <>
+          <State loading={loading} error={error} retry={reload} />
+          <div className="panel">
+            <h2>People & permissions</h2>
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data?.map((u) => (
+                    <tr key={u.id}>
+                      <td>{u.full_name}</td>
+                      <td>{u.email}</td>
+                      <td>
+                        <select
+                          aria-label={'Role for ' + u.full_name}
+                          value={u.role}
+                          disabled={u.id === user.id}
+                          onChange={async (e) => {
+                            try {
+                              await api('/admin/users/' + u.id + '/role', {
+                                method: 'PUT',
+                                body: { role: e.target.value },
+                              });
+                              reload();
+                            } catch (e) {
+                              toast(e.message);
+                            }
+                          }}
+                        >
+                          {['reader', 'reporter', 'admin'].map((r) => (
+                            <option key={r}>{r}</option>
+                          ))}
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className="section-heading">
+            <h2>Advertisements</h2>
+            <Link to="/complaints" className="text-link">
+              Review civic reports <ArrowUpRight size={16} />
+            </Link>
+          </div>
+          <ResourceForm
+            kind="ads"
+            onDone={() => {
+              ads.reload();
+              toast('Advertisement saved.');
             }}
-          >
-            Remove
-          </button>
-        </div>
-      ))}
-    </>
-  );
-}
-export function Reels() {
-  return (
-    <>
-      <PageTitle
-        eyebrow="IN THE FRAME"
-        title="Videos"
-        description="Short films from the News Junction media library."
-      />
-      <div className="reel-grid">
-        {[1, 2, 3, 4, 5].map((n) => (
-          <article key={n}>
-            <video controls playsInline preload="metadata" src={'/media/reel' + n + '.mp4'} />
-            <span className="eyebrow">FROM OUR VIDEO LIBRARY</span>
-            <h3>Community perspectives · {String(n).padStart(2, '0')}</h3>
-          </article>
-        ))}
-      </div>
+          />
+          {ads.data?.map((a) => (
+            <div className="panel row" key={a.id}>
+              <span>{a.title}</span>
+              <button
+                className="button secondary"
+                onClick={async () => {
+                  if (!confirm('Remove this advertisement?')) return;
+                  try {
+                    await api('/resources/' + a.id, { method: 'DELETE' });
+                    ads.reload();
+                  } catch (e) {
+                    toast(e.message);
+                  }
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </>
+      )}
     </>
   );
 }
