@@ -1,24 +1,52 @@
 {
   "name": "news-junction",
-  "version": "1.0.0",
-  "description": "News Junction - Digital News Platform converted to HTML, CSS, JS and Node.js",
-  "main": "server.js",
+  "version": "2.0.0",
+  "private": true,
+  "description": "News Junction - React, Express and PostgreSQL",
   "type": "commonjs",
+  "engines": {
+    "node": ">=22.12"
+  },
   "scripts": {
+    "dev": "concurrently -k \"node --watch server.js\" \"vite --host 127.0.0.1\"",
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "build": "vite build",
+    "db:migrate": "node scripts/migrate.js",
+    "db:seed": "node scripts/seed.js",
+    "db:import": "node scripts/import-legacy.js",
+    "test": "node --test tests/*.test.js",
+    "test:e2e": "playwright test",
+    "feeds:sync": "node scripts/sync-feeds.js",
+    "format": "prettier --write src server scripts/*.js tests *.js *.mjs *.json *.html *.md *.yaml"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
+    "@fontsource/dm-sans": "^5.3.0",
+    "@fontsource/dm-serif-display": "^5.3.0",
+    "@fontsource/noto-sans-kannada": "^5.3.0",
+    "bcryptjs": "^3.0.2",
+    "connect-pg-simple": "^10.0.0",
     "dotenv": "^16.4.7",
+    "entities": "^8.1.0",
     "express": "^4.21.2",
+    "express-rate-limit": "^8.1.0",
     "express-session": "^1.18.1",
-    "multer": "^1.4.5-lts.1",
-    "mysql2": "^3.12.0"
+    "file-type": "^22.1.1",
+    "helmet": "^8.1.0",
+    "lucide-react": "^0.468.0",
+    "multer": "^2.4.0",
+    "pg": "^8.16.3",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.9.1",
+    "rss-parser": "^3.13.0",
+    "sanitize-html": "^2.17.0",
+    "zod": "^4.1.11"
   },
-  "keywords": ["news", "portal", "html", "css", "javascript", "nodejs", "express"],
-  "author": "News Junction",
-  "license": "ISC"
+  "devDependencies": {
+    "@playwright/test": "^1.55.1",
+    "@vitejs/plugin-react": "^5.0.3",
+    "concurrently": "^9.2.1",
+    "prettier": "^3.9.9",
+    "vite": "^7.1.7"
+  }
 }

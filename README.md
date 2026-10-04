@@ -1,194 +1,123 @@
-# News Junction (Digital News & Citizen Journalism Platform)
+﻿# News Junction
 
-[![Node.js](https://img.shields.io/badge/Node.js-v18+-green.svg)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Express-4.21-lightgrey.svg)](https://expressjs.com/)
-[![Frontend](https://img.shields.io/badge/Frontend-Vanilla%20HTML5%20%7C%20CSS3%20%7C%20ES6-orange.svg)]()
-[![Database](https://img.shields.io/badge/Database-MySQL%20%2F%20In--Memory%20Fallback-blue.svg)]()
-[![License](https://img.shields.io/badge/License-ISC-purple.svg)]()
+A React 19 application with an Express API and PostgreSQL storage. No PHP runtime or MySQL driver is used. The previous PHP source and the replaced static HTML/JavaScript application have been removed. The original database backups remain unchanged.
 
-> A modern, responsive digital news and citizen journalism platform focused on grassroots reporting, district e-papers, verified columnist opinions, and citizen grievance escalation. Converted from a legacy PHP architecture to **vanilla HTML5, CSS3, JavaScript, and Node.js/Express**, preserving all business logic and editorial workflows.
+The UI follows the supplied reference PDFs and the original live site: red/blue public landing page, original logo, orange split-screen login, and a white Social/Reader sidebar with the original navigation labels. The React, Express, and PostgreSQL implementation remains in place.
 
----
+## Run locally
 
-## 🚀 Key Features & Modules
+Requirements: Node.js 22.12+ (Node 24 recommended), npm, and PostgreSQL 17. Docker Compose can supply PostgreSQL.
 
-### 1. 📰 Editorial & Reader Operations
-* **News Feed & Discovery (`/reader.html`)**: Real-time article feed with search, category filtering (Karnataka, District, Business, Technology, Sports, Entertainment), and district-level geo-filtering.
-* **Single Article Reader (`/article.html`)**: Clean distraction-free reading experience, page view tracking, like counters, user comments, bookmarking, and **"Read More" Lead Capture Gating**.
-* **Story Composer & Editor (`/create.html`)**: Rich post authoring with tags, cover image preview, customizable lead capture gates (mandatory email, mobile, company fields, custom autoresponders), and future release scheduling.
-* **Author Dashboard (`/my-articles.html`)**: View published articles vs. scheduled queue, monitor readership performance, edit, and delete stories.
-
-### 2. 📡 Community & Regional Hubs
-* **Channels & Streams (`/channels.html`, `/channel.html`)**: Regional reporter bureaus and community channels with live stream updates, post composition, and follower subscriptions.
-* **District E-Papers (`/district-newspapers.html`)**: Digitized morning editions and PDF archives across Karnataka districts (Bengaluru Urban, Udupi, Mysuru, Belagavi, Hassan, Dharwad, Tumakuru), complete with upload modal.
-* **Verified Columnists Hub (`/influencers.html`)**: Directory of respected journalists and columnists with beat expertise, published opinion counts, and follow actions.
-
-### 3. 📖 Curation & Commerce
-* **Personalized Digital Magazine (`/magazine.html`)**: Multi-publisher curation wizard (Prajavani, Udayavani, Deccan Herald, The Hindu, etc.) that compiles customized, print-ready digital editions (`window.print()` support).
-* **Reading Vault & Collections (`/collections.html`)**: Personal reading library with tags, offline study, and one-click **eSamudaay sharing** integration.
-* **Visual Landing Page & Lead Builder (`/lead-builder.html`)**: Interactive drag-and-drop/controls studio with real-time canvas preview, customizable themes (light/dark), brand color pickers, and **standalone HTML export**.
-* **Live Indian Share Market Board (`/sharemarket.html`)**: Real-time ticker for NIFTY 50, SENSEX, and blue-chip equities (Reliance, TCS, Infosys, HDFC Bank, ICICI Bank, Tata Motors) with 30s auto-refresh.
-
-### 4. ⚖️ Civic Action & Administration
-* **Citizen Grievance Desk (`/complaints.html`)**: Local civic and infrastructure reporting mapped to pincodes with verified reporter follow-up.
-* **Executive Analytics & Leads (`/analytics.html`)**: Performance dashboard showing readership leaderboards, complaint resolution rates, and **captured business leads table with CSV export**.
-* **Administrative Control Center (`/admin.html`)**: Full campaign control for sponsor ads, grievance triage with status assignment ("In Review", "Resolved", "Rejected") and official notes, plus user/reporter directory.
-* **Identity & Profiles (`/sign-in.html`, `/profile.html`)**: Secure authentication, session cookies, user registration, password recovery, and profile editing.
-
----
-
-## 🛠️ Technology Stack
-
-* **Frontend**: Vanilla HTML5, semantic CSS3 (no bulky frameworks), ES6 JavaScript modules with clean `Fetch` API client (`public/js/api.js`).
-* **Backend**: Node.js & Express (`server.js`).
-* **Session & Security**: `express-session`, `cookie-parser`, `cors`, `bcryptjs`.
-* **Database & Persistence**: MySQL 2 (`mysql2/promise`) with a resilient, zero-config in-memory database engine for seamless operation when MySQL is offline.
-* **Backward Compatibility**: Preserved legacy PHP routes (`/create.php`, `/channel.php`, `/district_newspapers.php`, `/magazine.php`, `/signInProcess.php`, etc.) via HTTP 302 redirects and POST dispatchers.
-
----
-
-## 📂 Project Structure
-
-```
-news_junction_handover/
-├── public/                     # Converted Frontend (HTML, CSS, JS)
-│   ├── css/
-│   │   └── style.css           # Vanilla CSS design system & responsive layout
-│   ├── js/
-│   │   ├── api.js              # Universal REST API client
-│   │   ├── index.js            # Home page interactions & tickers
-│   │   ├── reader.js           # News feed filtering & infinite scrolling
-│   │   ├── article.js          # Article view, comments, and lead gate
-│   │   ├── create.js           # Story authoring & schedule logic
-│   │   ├── my-articles.js      # Author stories & drafts management
-│   │   ├── channels.js         # Channel directory & stream composer
-│   │   ├── district-newspapers.js # E-paper archive & upload
-│   │   ├── magazine.js         # Digital magazine compilation & print
-│   │   ├── collections.js      # Reading library & eSamudaay share
-│   │   ├── analytics.js        # Analytics charts & CSV lead export
-│   │   ├── sharemarket.js      # Stock market quotes & auto-refresh
-│   │   ├── influencers.js      # Columnists directory & follow logic
-│   │   ├── lead-builder.js     # Visual template editor & HTML export
-│   │   ├── admin.js            # Ads manager & grievance triage
-│   │   ├── complaints.js       # Citizen grievance submission
-│   │   ├── profile.js          # User profile management
-│   │   └── auth.js             # Login, register, and password reset
-│   ├── index.html              # Home portal & district headline ticker
-│   ├── reader.html             # News feed & filter dashboard
-│   ├── article.html            # Single story view with lead capture
-│   ├── create.html             # Story composer & lead gate config
-│   ├── my-articles.html        # Published & scheduled queue
-│   ├── channels.html           # Channels directory
-│   ├── channel.html            # Single channel stream & post composer
-│   ├── district-newspapers.html# Regional newspaper archive
-│   ├── magazine.html           # Digital magazine curation
-│   ├── collections.html        # Saved articles & eSamudaay
-│   ├── analytics.html          # Executive analytics & leads
-│   ├── sharemarket.html        # Live stock market board
-│   ├── influencers.html        # Columnists & editorial voices
-│   ├── lead-builder.html       # Landing page studio
-│   ├── admin.html              # Admin ads & complaint triage
-│   ├── complaints.html         # Citizen grievance portal
-│   ├── profile.html            # User account settings
-│   ├── sign-in.html            # Authentication hub
-│   ├── about.html              # About News Junction
-│   ├── contact.html            # Contact & newsroom desk
-│   ├── privacy.html            # Privacy policy & terms
-│   └── 404.html                # Error page
-│
-├── server/                     # Node.js Server Architecture
-│   ├── db.js                   # Unified data access layer (MySQL + In-Memory)
-│   ├── mockData.js             # Initial dataset & seed models
-│   ├── crypto.js               # Password hashing & verification
-│   └── routes/
-│       ├── auth.js             # /api/auth (login, register, forgot-pwd)
-│       ├── reader.js           # /api/reader (feeds, categories, bookmarks)
-│       ├── articles.js         # /api/articles (CRUD, comments, leads)
-│       ├── channels.js         # /api/channels (channels, streams, follow)
-│       ├── newspapers.js       # /api/newspapers (district papers, upload)
-│       ├── magazine.js         # /api/magazine (publishers, digest generator)
-│       ├── collections.js      # /api/collections (saved list, eSamudaay)
-│       ├── analytics.js        # /api/analytics (stats, leads, newsletter)
-│       ├── sharemarket.js      # /api/sharemarket (live stock quotes)
-│       ├── influencers.js      # /api/influencers (columnists & opinions)
-│       ├── templates.js        # /api/templates (landing pages, export)
-│       ├── admin.js            # /api/admin (ads CRUD, grievance triage)
-│       ├── ads.js              # /api/ads (sponsor delivery & click tracker)
-│       ├── complaints.js       # /api/complaints (citizen submissions)
-│       └── profile.js          # /api/profile (user bio, settings)
-│
-├── app/                        # Original PHP code & static media assets
-│   ├── images/                 # District logos & UI graphics
-│   ├── grfx/                   # Brand logos & artwork
-│   └── ...                     # Legacy reference scripts
-├── database/                   # Database backup dumps (nj_cream, nj_reader)
-├── .env.example                # Sample environment configuration
-├── .gitignore                  # Git ignore rules
-├── package.json                # Project dependencies & scripts
-├── server.js                   # Express application entry point
-└── README.md                   # Project documentation
+```sh
+npm ci
+# On a fresh checkout, copy .env.example to .env and choose your own secrets.
+docker compose up -d db
+npm run db:migrate
+npm run db:seed
+npm run build
+npm start
 ```
 
----
+Open **http://localhost:3000**. On Windows with restricted PowerShell script execution, use `npm.cmd` instead of `npm`.
 
-## ⚙️ Getting Started
+In this working directory, `.env` now selects `newsjunction_migration_check`, which contains the converted original backups. Your supplied existing account authenticates with its preserved bcrypt hash. A separate local editor is configured in the untracked `.env`. The earlier six-story sample database is still available as `newsjunction`; neither database is the live hosted database.
 
-### Prerequisites
-* **Node.js**: Version 18.0 or higher
-* **npm**: Version 8.0 or higher
-* *(Optional)* **MySQL**: Version 8.0 (if connecting to local/remote database)
+`db:seed` creates a local editor from `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD`. It adds six explicitly example stories only when the articles table is empty. These examples came from the previous Node prototype; they are not a live news feed. Do not seed a production database with example content. The untracked `.env` created during this migration has a random local editor password; the live website password is not included in source or example configuration.
 
-### Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/news-junction.git
-   cd news-junction
-   ```
-2. Install npm dependencies:
-   ```bash
-   npm install
-   ```
-3. Create your environment configuration:
-   ```bash
-   cp .env.example .env
-   ```
-4. Start the server:
-   ```bash
-   # Production mode
-   npm start
+For development, run `npm run dev` and open **http://localhost:5173**. Vite proxies `/api`, `/media`, and `/legacy-media` to Express on port 3000.
 
-   # Development mode with hot-reload
-   npm run dev
-   ```
-5. Open your browser and navigate to:
-   ```
-   http://localhost:3000
-   ```
+## Implemented workflows
 
-> **Note on Database**: If MySQL is not running on your machine, the application will automatically start in **resilient in-memory mode** using preloaded seed data. All features (publishing, bookmarking, channels, complaints, analytics) will function normally in memory!
+- News search, category and district filters, pagination, story details, original-source links, saved stories, likes and comments.
+- Account registration/sign-in/sign-out, PostgreSQL-backed sessions, profile updates and password changes.
+- Reporter story creation, editing, deletion, drafts, scheduled publication and verified image uploads. Scheduled stories become public at their publication time without requiring a worker.
+- Citizen Connect: public neighbourhood posts, PIN-code filtering, following people, saved posts, likes and replies.
+- Channels, follows, owner-authored updates, newspaper and magazine resource directories, and community voice profiles.
+- Private civic reports, administrator status changes and responses.
+- Author analytics, shareable lead pages, lead capture and newsletter signup storage.
+- Administrator roles and advertisement management.
+- Existing local videos, informational pages and market-exchange links.
+- Operator-run RSS refresh with duplicate URL protection: `npm run feeds:sync`.
 
----
+Reader accounts can publish community posts and interact with news. Only reporters and administrators can publish news stories. Administrators manage account roles; users cannot grant themselves privileges. The new site does not accept the old client-editable identity cookie.
 
-## 📡 REST API Summary
+## Database migration
 
-| Route Prefix | Resource Description | Key Endpoints |
-| :--- | :--- | :--- |
-| `/api/auth` | Authentication & Sessions | `POST /login`, `POST /register`, `GET /me`, `POST /logout` |
-| `/api/reader` | Feeds & Categorization | `GET /feeds`, `GET /categories`, `POST /bookmark`, `POST /like` |
-| `/api/articles` | Story Publishing & Leads | `POST /create`, `GET /:id`, `PUT /:id`, `DELETE /:id`, `POST /:id/lead` |
-| `/api/channels` | Community Channels | `GET /`, `POST /`, `GET /:id`, `POST /:id/posts`, `POST /:id/follow` |
-| `/api/newspapers` | District E-Papers | `GET /?district=...`, `POST /` |
-| `/api/magazine` | Digital Digest Generator | `GET /publishers`, `POST /generate`, `POST /blast` |
-| `/api/collections` | Reading Vault & Sharing | `GET /`, `POST /tag`, `POST /esamudaay`, `DELETE /:id` |
-| `/api/analytics` | Editorial & Conversion Stats| `GET /overview`, `GET /top-articles`, `GET /leads` |
-| `/api/sharemarket` | Indian Stock Quotes | `GET /quotes?live=true` |
-| `/api/influencers` | Verified Columnists | `GET /`, `GET /:id`, `POST /:id/follow` |
-| `/api/templates` | Lead Builder Templates | `GET /`, `POST /save`, `POST /export` |
-| `/api/admin` | Management & Triage | `GET /stats`, `GET /ads`, `POST /ads`, `PUT /complaints/:id` |
-| `/api/ads` | Public Sponsored Banners | `GET /?position=...`, `GET /click/:id` |
-| `/api/complaints` | Citizen Grievances | `GET /?pincode=...`, `POST /` |
+The original `.sql.gz` files are MySQL dumps, not PostgreSQL scripts. Do not run them directly against PostgreSQL.
 
----
+The Node importer parses SQL values without executing the source SQL. It first preserves **every row** in the private `legacy_records` table, including unconverted integration data. Repeated archival imports update the same source records, and duplicate legacy rows are retained separately. Each file is imported in a transaction.
 
-## 📜 License
-This project is licensed under the ISC License.
+```sh
+# Point DATABASE_URL to a new PostgreSQL database before starting.
+npm run db:migrate
+npm run db:import -- database/cream.sql.gz database/reader.sql.gz database/nj_gallery.sql.gz database/nj_mailer.sql.gz database/manikya_market.sql.gz database/nj_cream.sql.gz database/nj_reader.sql.gz
+npm run db:import -- --promote
+```
+
+Promotion requires empty application `users` and `articles` tables and runs in one transaction. It preserves account ownership relationships while assigning new PostgreSQL IDs. `nj_cream.sql.gz` supplies accounts/authored articles, and `nj_reader.sql.gz` supplies syndicated articles and social data. Override those filenames with `LEGACY_ACCOUNT_SOURCE` and `LEGACY_READER_SOURCE` when testing alternate dumps.
+
+Promotion covers accounts, categories, authored and RSS articles, source URLs, publishers, channels, channel updates, public community posts, user follows, community likes, article bookmarks/likes/comments, civic reports, magazines, advertisements and RSS feed sources. Missing/deleted users and private/deleted posts are not exposed publicly; their original records remain archived. Invalid/missing dates are kept out of the latest-news order instead of being assigned today's date. Legacy timestamps without a zone are interpreted as India time.
+
+The supplied backups were checked in an isolated database, separate from the initial sample preview. The archived data includes records for other applications and third-party integrations; archival does not make those integrations active in the new news application.
+
+### Existing passwords
+
+Bcrypt hashes remain usable, including the `$2y$` prefix. Other legacy password formats are preserved in the archive but do not authenticate through insecure plaintext or reversible-password fallbacks. An operator can reset an imported account using environment variables:
+
+```sh
+# Set RESET_EMAIL and RESET_PASSWORD in your shell, then:
+node scripts/reset-password.js
+```
+
+The reset script hashes the replacement and invalidates all sessions for that account. It does not print the password. Production email-based account recovery and Google OAuth require their provider configuration and are not enabled.
+
+### Existing media
+
+Relative legacy image/video/PDF paths resolve through `/legacy-media/`, which serves only allowed media extensions from `LEGACY_MEDIA_ROOT` (defaults to `app/`). HTML, JavaScript, configuration files and backups are not served by that route. Keep the original media directories when moving to a new host. External publisher images remain external; a local illustrated fallback appears when one fails.
+
+New uploads are checked by file signature, limited to JPEG/PNG/WebP and 8 MB, and saved under random filenames in `public/media/uploads`. Back up this directory together with PostgreSQL. Docker uses a persistent uploads volume and a read-only mount for the legacy media tree.
+
+## RSS and external services
+
+Feed definitions live in `feed_sources`; imported feeds keep their publisher/category mappings. Only configure trusted feeds that you have permission to display. Schedule `npm run feeds:sync` using your host's scheduler. Each feed records its last successful refresh or failure, and response size/time limits apply. The application never invents live stock prices; market links open the exchanges.
+
+Newsletter signups and leads are stored in PostgreSQL. Email delivery, payment processing, Google sign-in, push notifications, social-network publishing and the separate Manikya marketplace are not wired to providers in this rebuild. Their old records are retained for follow-up migration; no old PHP service is run. Advertisement links are managed in the administration screen.
+
+## Verification
+
+```sh
+npm test
+npm run build
+npm run test:e2e
+```
+
+API tests run against `DATABASE_URL`, create uniquely named accounts and records, and clean up their own data. Use a development database. They cover PostgreSQL persistence, CSRF/origin checks, forged-cookie rejection, role/ownership enforcement, publishing and scheduling, idempotent bookmarks/likes, comments, civic-report privacy, channels, lead capture, community posts/follows/replies, and session invalidation. Parser tests cover Unicode, escapes, NULLs, invalid SQL tuples and legacy dates.
+
+Browser tests use installed Google Chrome, the local editor credentials from `.env`, and the production build. They cover desktop/mobile navigation, search, reading, login, saving, draft publishing/deletion, community posting/replies and upload validation. Screenshots are written to `tmp/`. To use Playwright's Chromium instead, install it with `npx playwright install chromium` and remove `channel: 'chrome'` from `playwright.config.js`.
+
+`npm run format` formats the maintained JavaScript/React source. The SQL dumps and historical assets are excluded.
+
+## Production deployment
+
+This repository includes a multi-stage Docker build and Compose configuration. The Node container serves the built React application and the API on port 3000.
+
+1. Set a private PostgreSQL connection and a random `SESSION_SECRET` (at least 32 characters). Use a strong `POSTGRES_PASSWORD` for Compose.
+2. Set `APP_ORIGIN` to the exact public HTTPS origin, `COOKIE_SECURE=true`, and `TRUST_PROXY=1` only when running behind one trusted reverse proxy.
+3. Import and verify a fresh production database. Bring across the legacy media directories and uploaded images.
+4. Build with `npm run build`, migrate with `npm run db:migrate`, and start with `npm start`; or use `docker compose --profile production up -d --build`.
+5. Configure the host's reverse proxy, HTTPS, database/upload backups and RSS schedule. Check `/api/health` and smoke-test sign-in, publishing and media before changing DNS.
+
+Do not use the example database password or a placeholder session secret on a public server. Database connection failures stop startup; there is no in-memory fallback.
+
+**The existing newsjunction.net deployment has not been replaced.** Website sign-in credentials do not provide hosting/SSH/DNS access. The repository, local PostgreSQL migration, build and deployment files are ready for hosting access to be connected.
+
+## Layout
+
+- `src/`: React pages, shared components, API client and responsive styling.
+- `server/`: Express API, PostgreSQL access and community endpoints.
+- `database/schema.sql`: PostgreSQL schema and indexes.
+- `scripts/`: schema migration, demo seeding, SQL-dump import, password recovery and RSS refresh.
+- `public/media/`: bundled visual assets and video; uploads are ignored by Git.
+- `app/`: retained legacy non-PHP files/media, never used as an application runtime.
+- `tests/`: API, parser and Playwright browser tests.
+- `reference_images/`: the supplied design-reference PDFs.

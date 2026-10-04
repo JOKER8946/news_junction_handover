@@ -1,0 +1,212 @@
+{
+  "categories": [
+    {
+      "id": 2,
+      "category": "District News"
+    },
+    {
+      "id": 3,
+      "category": "Karnataka"
+    },
+    {
+      "id": 4,
+      "category": "National"
+    },
+    {
+      "id": 5,
+      "category": "Business"
+    },
+    {
+      "id": 6,
+      "category": "Technology"
+    },
+    {
+      "id": 7,
+      "category": "Entertainment"
+    },
+    {
+      "id": 8,
+      "category": "Sports"
+    }
+  ],
+  "articles": [
+    {
+      "id": 101,
+      "title": "Bengaluru Suburban Rail Corridor 2 Progress Ahead of Schedule",
+      "description": "The Baiyappanahalli to Chikkabanavara corridor reaches major milestone with 65% viaduct construction completed. K-RIDE confirms testing will begin by late 2026 with ultra-modern air-conditioned rakes.",
+      "content": "<p>The long-awaited Bengaluru Suburban Rail Project (BSRP) has achieved a significant milestone along Corridor 2 (Kanaka Line), which connects Baiyappanahalli to Chikkabanavara.</p>\n    <p>K-RIDE officials announced on Wednesday that over 65% of the elevated viaducts and track-laying groundwork have been concluded ahead of the targeted quarterly timeline.</p>\n    <h3>Enhanced Urban Connectivity</h3>\n    <p>The 25.2 km stretch will feature 14 stations providing crucial interchanges with the Namma Metro Purple and Green lines. The initiative aims to relieve traffic congestion across Yeshwanthpur, Hebbal, and the North Bengaluru tech corridor.</p>\n    <p>Citizen welfare associations have welcomed the rapid execution and urged the authorities to prioritize non-motorized last-mile connectivity at each hub.</p>",
+      "image": "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&auto=format&fit=crop&q=80",
+      "category_id": 3,
+      "category_name": "Karnataka",
+      "publisher": "Deccan Herald",
+      "url": "https://deccanherald.com",
+      "user_id": 1,
+      "author_name": "News Junction Bureau",
+      "district": "Bengaluru Urban",
+      "pincode": "560001",
+      "likes": 42,
+      "views": 1250,
+      "date": "2026-03-10 11:30:00"
+    },
+    {
+      "id": 102,
+      "title": "Udupi Coastal Tourism Boost: New Eco-Walkway Inaugurated at Malpe Beach",
+      "description": "District administration launches state-of-the-art mangrove walkway and zero-emission electric buggy facility to encourage sustainable coastal tourism while protecting fragile marine ecology.",
+      "content": "<p>Malpe Beach in Udupi witnessed the grand opening of the Coastal Eco-Walkway today, attended by local representatives and environmental scholars.</p>\n    <p>The project, developed under the Swadesh Darshan initiative, includes a 1.2-kilometer wooden walkway winding through coastal mangrove thickets without disturbing local flora and marine birds.</p>\n    <h3>Eco-Friendly Amenities</h3>\n    <p>Battery-operated electric buggies will provide accessibility for senior citizens and differently-abled visitors. Automated waste segregation points and solar-powered lighting have been integrated across the stretch.</p>",
+      "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80",
+      "category_id": 2,
+      "category_name": "District News",
+      "publisher": "Udayavani",
+      "url": "https://udayavani.com",
+      "user_id": 2,
+      "author_name": "Ramesh Kulkarni",
+      "district": "Udupi",
+      "pincode": "576101",
+      "likes": 38,
+      "views": 980,
+      "date": "2026-03-10 09:45:00"
+    },
+    {
+      "id": 103,
+      "title": "Karnataka Agri-Tech Expo 2026 Opens in Dharwad with Focus on AI Irrigation",
+      "description": "Over 200 startups and research scientists showcase smart sensor drones, precision soil moisture monitors, and drought-resilient millets to thousands of regional farmers in North Karnataka.",
+      "content": "<p>The University of Agricultural Sciences (UAS) campus in Dharwad became the epicentre of farming innovation as the 4-day Agri-Tech Expo 2026 kicked off today.</p>\n    <p>Key highlights include autonomous soil-scanning drones, solar pump automation kits, and predictive pest management models tuned specifically to Karnataka climatic zones.</p>",
+      "image": "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&auto=format&fit=crop&q=80",
+      "category_id": 2,
+      "category_name": "District News",
+      "publisher": "Prajavani",
+      "url": "https://prajavani.net",
+      "user_id": 1,
+      "author_name": "North Karnataka Bureau",
+      "district": "Dharwad",
+      "pincode": "580005",
+      "likes": 29,
+      "views": 810,
+      "date": "2026-03-09 14:15:00"
+    },
+    {
+      "id": 104,
+      "title": "Renewable Energy: Pavagada Solar Park Expands with Grid-Scale Battery Storage",
+      "description": "Tumakuru Pavagada solar facility integrates 250 MWh battery energy storage systems, ensuring round-the-clock clean power stability for state industrial grids.",
+      "content": "<p>One of the world's premier photovoltaic installations, the Pavagada Solar Park in Tumakuru district, has officially synchronized a next-generation 250 MWh battery energy storage system (BESS).</p>\n    <p>This addition ensures that surplus mid-day solar energy can be smoothly dispatched during peak evening industrial demand hours across Bengaluru and surrounding manufacturing belts.</p>",
+      "image": "https://images.unsplash.com/photo-1509391365360-2e959784a276?w=800&auto=format&fit=crop&q=80",
+      "category_id": 5,
+      "category_name": "Business",
+      "publisher": "The Hindu",
+      "url": "https://thehindu.com",
+      "user_id": 1,
+      "author_name": "Energy Desk",
+      "district": "Tumakuru",
+      "pincode": "572101",
+      "likes": 54,
+      "views": 1420,
+      "date": "2026-03-09 10:00:00"
+    },
+    {
+      "id": 105,
+      "title": "Hassan Heritage Preservation: Hoysala Temples Receive UNESCO Digital Archiving",
+      "description": "High-resolution 3D lidar scanning and digital twin creation underway for Belur, Halebidu, and Somanathapura temple complexes to preserve architectural genius for future generations.",
+      "content": "<p>Following the UNESCO World Heritage inscription of the Sacred Ensembles of the Hoysalas, the Archeological Survey of India has initiated comprehensive millimeter-precise 3D laser photogrammetry scanning.</p>\n    <p>The interactive 3D models will soon be made available through the News Junction Virtual Heritage reader and national digital archives.</p>",
+      "image": "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=800&auto=format&fit=crop&q=80",
+      "category_id": 3,
+      "category_name": "Karnataka",
+      "publisher": "Vijaya Karnataka",
+      "url": "https://vijaykarnataka.com",
+      "user_id": 2,
+      "author_name": "Heritage Bureau",
+      "district": "Hassan",
+      "pincode": "573201",
+      "likes": 67,
+      "views": 1890,
+      "date": "2026-03-08 16:30:00"
+    },
+    {
+      "id": 106,
+      "title": "India Wins T20 International Series with Stellar All-Round Performance in Bengaluru",
+      "description": "Chinnaswamy stadium erupts in celebration as thrilling final-over defense seals the series 3-1. Sensational fielding and death bowling praised by cricket experts.",
+      "content": "<p>A packed M. Chinnaswamy Stadium witnessed top-tier cricketing drama as India successfully defended 185 against Australia in the series finale.</p>\n    <p>Disciplined bowling in the death overs and two breathtaking boundary catches secured an 11-run victory and clinched the bilateral cup.</p>",
+      "image": "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=800&auto=format&fit=crop&q=80",
+      "category_id": 8,
+      "category_name": "Sports",
+      "publisher": "Times of India",
+      "url": "https://timesofindia.indiatimes.com",
+      "user_id": 1,
+      "author_name": "Sports Desk",
+      "district": "Bengaluru Urban",
+      "pincode": "560001",
+      "likes": 112,
+      "views": 3400,
+      "date": "2026-03-08 22:45:00"
+    }
+  ],
+  "channels": [
+    {
+      "id": 1,
+      "name": "District Reporters Network",
+      "profilePic": "images/district.png",
+      "visibility": "public",
+      "featured_channel": "Y",
+      "created_by": 1,
+      "subscribers": 1420
+    },
+    {
+      "id": 2,
+      "name": "Coastal Watch & Udupi News",
+      "profilePic": "images/udupi.png",
+      "visibility": "public",
+      "featured_channel": "Y",
+      "created_by": 2,
+      "subscribers": 890
+    },
+    {
+      "id": 3,
+      "name": "Bengaluru Tech & Infrastructure",
+      "profilePic": "grfx/images/bengaluru.png",
+      "visibility": "public",
+      "featured_channel": "Y",
+      "created_by": 1,
+      "subscribers": 2310
+    },
+    {
+      "id": 4,
+      "name": "Citizen Grievance Forum",
+      "profilePic": "images/verified.png",
+      "visibility": "public",
+      "featured_channel": "N",
+      "created_by": 1,
+      "subscribers": 670
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "channel_id": 1,
+      "user_id": 1,
+      "user_name": "Editor In Chief",
+      "chat": "Welcome to the District Reporters Network! Ground correspondents across all 31 districts can post verified regional updates and ground dispatches directly here.",
+      "postedOn": "2026-03-10 14:00:00",
+      "mediaPath": "images/district.png",
+      "likes": 18
+    },
+    {
+      "id": 2,
+      "channel_id": 2,
+      "user_id": 2,
+      "user_name": "Ramesh Kulkarni",
+      "chat": "High tide alert along Kaup and Malpe coastlines issued for fishermen over the next 48 hours. District Disaster Management Authority advises caution.",
+      "postedOn": "2026-03-10 16:30:00",
+      "mediaPath": "images/udupi.png",
+      "likes": 24
+    },
+    {
+      "id": 3,
+      "channel_id": 3,
+      "user_id": 1,
+      "user_name": "Editor In Chief",
+      "chat": "BMRCL initiates trial runs for the Pink Line underground segment between Dairy Circle and Nagawara. Commercial readiness slated for Q4 2026.",
+      "postedOn": "2026-03-09 18:20:00",
+      "mediaPath": "grfx/images/bengaluru.png",
+      "likes": 31
+    }
+  ]
+}

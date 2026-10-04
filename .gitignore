@@ -1,7 +1,14 @@
 # Dependency directories
 node_modules/
+dist/
+test-results/
+playwright-report/
+public/media/uploads/
+.env.*
+!.env.example
 jspm_packages/
 web_modules/
+reference_images/
 
 # Environment and sensitive variables
 .env

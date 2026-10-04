@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: newsjunction
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-newsjunction}
+      POSTGRES_DB: ${POSTGRES_DB:-newsjunction}
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U newsjunction']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  app:
+    profiles: [production]
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://newsjunction:${POSTGRES_PASSWORD:-newsjunction}@db:5432/${POSTGRES_DB:-newsjunction}
+      SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET in .env}
+      APP_ORIGIN: ${APP_ORIGIN:-http://localhost:3000}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      TRUST_PROXY: ${TRUST_PROXY:-0}
+      LEGACY_MEDIA_ROOT: /app/legacy-media
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - uploads:/app/public/media/uploads
+      - ./app:/app/legacy-media:ro
+volumes:
+  postgres_data:
+  uploads:
