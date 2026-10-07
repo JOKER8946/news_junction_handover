@@ -8,6 +8,7 @@ const crypto = require('node:crypto');
 const path = require('node:path');
 const sanitize = require('sanitize-html');
 const { z } = require('zod');
+const prisma = require('./prisma');
 const { pool, query } = require('./database');
 const app = express();
 const production = process.env.NODE_ENV === 'production';
@@ -60,7 +61,7 @@ app.use(
   '/api',
   wrap(async (req, res, next) => {
     if (req.session.userId)
-      req.user = (await query('SELECT * FROM users WHERE id=$1', [req.session.userId])).rows[0];
+      req.user = await prisma.user.findUnique({ where: { id: BigInt(req.session.userId) } });
     if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
       const origin = req.get('origin');
       const allowed = process.env.APP_ORIGIN || 'http://localhost:3000';
@@ -115,12 +116,52 @@ const articleSchema = z.object({
   status: z.enum(['draft', 'published', 'scheduled']).default('published'),
   published_at: z.iso.datetime().optional(),
 });
-const visible = "(a.status='published' OR (a.status='scheduled' AND a.published_at<=now()))";
-const articleSelect = `SELECT a.*,c.name AS category_name,(SELECT count(*)::int FROM likes l WHERE l.article_id=a.id) AS likes,EXISTS(SELECT 1 FROM bookmarks b WHERE b.article_id=a.id AND b.user_id=$1) AS bookmarked,EXISTS(SELECT 1 FROM likes l WHERE l.article_id=a.id AND l.user_id=$1) AS liked FROM articles a LEFT JOIN categories c ON c.id=a.category_id`;
+
+// ── Visibility condition for Prisma queries ───────────────────────────
+const visibleWhere = {
+  OR: [
+    { status: 'published' },
+    { AND: [{ status: 'scheduled' }, { published_at: { lte: new Date() } }] },
+  ],
+};
+
+// ── Response mapper: flatten Prisma includes to the shape the API returns ──
+function articleToJSON(a) {
+  const { category, _count, bookmarks: bm, likes: lk, comments: cm, author, ...scalar } = a;
+  const json = {
+    ...scalar,
+    category_name: category?.name ?? null,
+    likes: _count?.likes ?? 0,
+    bookmarked: bm ? bm.length > 0 : false,
+    liked: lk ? lk.length > 0 : false,
+  };
+  if (cm) {
+    json.comments = cm.map((c) => {
+      const { user, ...rest } = c;
+      return { ...rest, full_name: user?.full_name };
+    });
+  }
+  return json;
+}
+
+// ── Build article include object for findMany / findFirst ─────────────
+function articleInclude(userId) {
+  const inc = {
+    category: { select: { name: true } },
+    _count: { select: { likes: true } },
+  };
+  if (userId) {
+    inc.bookmarks = { where: { user_id: userId }, take: 1, select: { user_id: true } };
+    inc.likes = { where: { user_id: userId }, take: 1, select: { user_id: true } };
+  }
+  return inc;
+}
+
+// ────────────────────────────────────────────────────────────────────────
 app.get(
   '/api/health',
   wrap(async (req, res) => {
-    await query('SELECT 1');
+    await prisma.$queryRaw`SELECT 1`;
     res.json({ status: 'ok', database: 'postgresql' });
   }),
 );
@@ -135,7 +176,7 @@ async function signIn(req, user) {
   await new Promise((resolve, reject) =>
     req.session.regenerate((e) => (e ? reject(e) : resolve())),
   );
-  req.session.userId = user.id;
+  req.session.userId = Number(user.id);
   req.session.csrf = crypto.randomBytes(24).toString('hex');
   await new Promise((resolve, reject) => req.session.save((e) => (e ? reject(e) : resolve())));
 }
@@ -147,13 +188,9 @@ app.post(
       .object({ full_name: text(100), email, password: z.string().min(10).max(128) })
       .parse(req.body);
     const hash = await bcrypt.hash(d.password, 12);
-    const user = (
-      await query('INSERT INTO users(full_name,email,password) VALUES($1,$2,$3) RETURNING *', [
-        d.full_name,
-        d.email,
-        hash,
-      ])
-    ).rows[0];
+    const user = await prisma.user.create({
+      data: { full_name: d.full_name, email: d.email, password: hash },
+    });
     await signIn(req, user);
     res.status(201).json({ user: publicUser(user), csrf: req.session.csrf });
   }),
@@ -163,7 +200,9 @@ app.post(
   limited,
   wrap(async (req, res) => {
     const d = z.object({ email, password: text(128) }).parse(req.body);
-    const user = (await query('SELECT * FROM users WHERE lower(email)=$1', [d.email])).rows[0];
+    const user = await prisma.user.findFirst({
+      where: { email: { equals: d.email, mode: 'insensitive' } },
+    });
     const valid = await bcrypt.compare(
       d.password,
       user?.password?.replace(/^\$2y\$/, '$2b$') ||
@@ -194,12 +233,10 @@ app.put(
         phone: z.string().max(30),
       })
       .parse(req.body);
-    const u = (
-      await query(
-        'UPDATE users SET full_name=$1,bio=$2,district=$3,phone=$4 WHERE id=$5 RETURNING *',
-        [d.full_name, d.bio, d.district, d.phone, req.user.id],
-      )
-    ).rows[0];
+    const u = await prisma.user.update({
+      where: { id: req.user.id },
+      data: { full_name: d.full_name, bio: d.bio, district: d.district, phone: d.phone },
+    });
     res.json(publicUser(u));
   }),
 );
@@ -213,10 +250,11 @@ app.put(
       .parse(req.body);
     if (!(await bcrypt.compare(d.current, req.user.password.replace(/^\$2y\$/, '$2b$'))))
       throw fail(400, 'Current password is incorrect.');
-    await query('UPDATE users SET password=$1 WHERE id=$2', [
-      await bcrypt.hash(d.password, 12),
-      req.user.id,
-    ]);
+    await prisma.user.update({
+      where: { id: req.user.id },
+      data: { password: await bcrypt.hash(d.password, 12) },
+    });
+    // Session table is managed by connect-pg-simple — use raw pool query
     await query("DELETE FROM session WHERE sess->>'userId'=$1 AND sid<>$2", [
       String(req.user.id),
       req.sessionID,
@@ -226,40 +264,57 @@ app.put(
 );
 app.get(
   '/api/categories',
-  wrap(async (req, res) => res.json((await query('SELECT * FROM categories ORDER BY id')).rows)),
+  wrap(async (req, res) =>
+    res.json(await prisma.category.findMany({ orderBy: { id: 'asc' } })),
+  ),
 );
 app.get(
   '/api/articles',
   wrap(async (req, res) => {
     const page = Math.max(1, Math.min(10000, parseInt(req.query.page) || 1)),
       limit = 12;
-    const values = [req.user?.id || null];
-    let conditions = [visible];
-    for (const [field, value, expr] of [
-      ['q', req.query.q, '(a.title ILIKE ? OR a.description ILIKE ?)'],
-      ['district', req.query.district, 'a.district=?'],
-      ['category', req.query.category, 'c.name=?'],
-    ])
-      if (value) {
-        values.push(field === 'q' ? `%${String(value).slice(0, 100)}%` : String(value));
-        conditions.push(expr.replaceAll('?', `$${values.length}`));
-      }
-    if (req.query.saved === 'true') {
-      if (!req.user) throw fail(401, 'Please sign in to see saved stories.');
-      conditions.push('EXISTS(SELECT 1 FROM bookmarks b WHERE b.article_id=a.id AND b.user_id=$1)');
-    }
+    const userId = req.user?.id ?? null;
+
+    // Build dynamic where conditions
+    const conditions = [];
+
     if (req.query.mine === 'true') {
       if (!req.user) throw fail(401, 'Please sign in.');
-      conditions[0] = 'a.user_id=$1';
+      conditions.push({ user_id: userId });
+    } else {
+      conditions.push(visibleWhere);
     }
-    const where = ' WHERE ' + conditions.join(' AND ');
-    const result = await query(
-      articleSelect +
-        where +
-        ` ORDER BY a.published_at DESC,a.id DESC LIMIT 13 OFFSET ${(page - 1) * limit}`,
-      values,
-    );
-    res.json({ articles: result.rows.slice(0, limit), hasMore: result.rows.length > limit, page });
+
+    if (req.query.q) {
+      const pattern = String(req.query.q).slice(0, 100);
+      conditions.push({
+        OR: [
+          { title: { contains: pattern, mode: 'insensitive' } },
+          { description: { contains: pattern, mode: 'insensitive' } },
+        ],
+      });
+    }
+    if (req.query.district) conditions.push({ district: String(req.query.district) });
+    if (req.query.category) conditions.push({ category: { name: String(req.query.category) } });
+
+    if (req.query.saved === 'true') {
+      if (!req.user) throw fail(401, 'Please sign in to see saved stories.');
+      conditions.push({ bookmarks: { some: { user_id: userId } } });
+    }
+
+    const result = await prisma.article.findMany({
+      where: { AND: conditions },
+      include: articleInclude(userId),
+      orderBy: [{ published_at: 'desc' }, { id: 'desc' }],
+      take: 13,
+      skip: (page - 1) * limit,
+    });
+
+    res.json({
+      articles: result.slice(0, limit).map(articleToJSON),
+      hasMore: result.length > limit,
+      page,
+    });
   }),
 );
 app.post(
@@ -270,48 +325,67 @@ app.post(
     const d = articleSchema.parse(req.body);
     if (d.status === 'scheduled' && (!d.published_at || new Date(d.published_at) <= new Date()))
       throw fail(400, 'Choose a future publication time.');
-    const r = await query(
-      'INSERT INTO articles(title,description,content,image,category_id,district,status,published_at,user_id,author_name) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *',
-      [
-        d.title,
-        d.description,
-        sanitize(d.content),
-        d.image,
-        d.category_id,
-        d.district,
-        d.status,
-        d.published_at || new Date().toISOString(),
-        req.user.id,
-        req.user.full_name,
-      ],
-    );
-    res.status(201).json(r.rows[0]);
+    const article = await prisma.article.create({
+      data: {
+        title: d.title,
+        description: d.description,
+        content: sanitize(d.content),
+        image: d.image,
+        category_id: d.category_id,
+        district: d.district,
+        status: d.status,
+        published_at: d.published_at ? new Date(d.published_at) : new Date(),
+        user_id: req.user.id,
+        author_name: req.user.full_name,
+      },
+    });
+    res.status(201).json(article);
   }),
 );
 app.get(
   '/api/articles/:id',
   wrap(async (req, res) => {
-    const a = (
-      await query(articleSelect + ` WHERE a.id=$2 AND (${visible} OR a.user_id=$1 OR $3)`, [
-        req.user?.id || null,
-        req.params.id,
-        req.user?.role === 'admin',
-      ])
-    ).rows[0];
+    const userId = req.user?.id ?? null;
+    const isAdmin = req.user?.role === 'admin';
+    const articleId = BigInt(req.params.id);
+
+    const whereConditions = [{ id: articleId }];
+    if (!isAdmin) {
+      whereConditions.push({
+        OR: [
+          { status: 'published' },
+          { AND: [{ status: 'scheduled' }, { published_at: { lte: new Date() } }] },
+          ...(userId ? [{ user_id: userId }] : []),
+        ],
+      });
+    }
+
+    const inc = articleInclude(userId);
+    inc.comments = {
+      select: {
+        id: true,
+        body: true,
+        created_at: true,
+        user: { select: { full_name: true } },
+      },
+      orderBy: { created_at: 'desc' },
+    };
+
+    const a = await prisma.article.findFirst({ where: { AND: whereConditions }, include: inc });
     if (!a) throw fail(404, 'Story not found.');
-    await query('UPDATE articles SET views=views+1 WHERE id=$1', [a.id]);
-    a.content = sanitize(a.content);
-    a.comments = (
-      await query(
-        'SELECT c.id,c.body,c.created_at,u.full_name FROM comments c JOIN users u ON u.id=c.user_id WHERE article_id=$1 ORDER BY c.created_at DESC',
-        [a.id],
-      )
-    ).rows;
-    res.json(a);
+
+    await prisma.article.update({
+      where: { id: a.id },
+      data: { views: { increment: 1 } },
+    });
+
+    const json = articleToJSON(a);
+    json.content = sanitize(json.content);
+    res.json(json);
   }),
 );
 async function ownedArticle(req) {
-  const a = (await query('SELECT * FROM articles WHERE id=$1', [req.params.id])).rows[0];
+  const a = await prisma.article.findUnique({ where: { id: BigInt(req.params.id) } });
   if (!a) throw fail(404, 'Story not found.');
   if (String(a.user_id) !== String(req.user.id) && req.user.role !== 'admin')
     throw fail(403, 'You can only change your own stories.');
@@ -326,24 +400,20 @@ app.put(
     const d = articleSchema.parse(req.body);
     if (d.status === 'scheduled' && (!d.published_at || new Date(d.published_at) <= new Date()))
       throw fail(400, 'Choose a future publication time.');
-    res.json(
-      (
-        await query(
-          'UPDATE articles SET title=$1,description=$2,content=$3,image=$4,category_id=$5,district=$6,status=$7,published_at=COALESCE($8,published_at) WHERE id=$9 RETURNING *',
-          [
-            d.title,
-            d.description,
-            sanitize(d.content),
-            d.image,
-            d.category_id,
-            d.district,
-            d.status,
-            d.published_at || null,
-            req.params.id,
-          ],
-        )
-      ).rows[0],
-    );
+    const updated = await prisma.article.update({
+      where: { id: BigInt(req.params.id) },
+      data: {
+        title: d.title,
+        description: d.description,
+        content: sanitize(d.content),
+        image: d.image,
+        category_id: d.category_id,
+        district: d.district,
+        status: d.status,
+        ...(d.published_at ? { published_at: new Date(d.published_at) } : {}),
+      },
+    });
+    res.json(updated);
   }),
 );
 app.delete(
@@ -352,30 +422,36 @@ app.delete(
   editor,
   wrap(async (req, res) => {
     await ownedArticle(req);
-    await query('DELETE FROM articles WHERE id=$1', [req.params.id]);
+    await prisma.article.delete({ where: { id: BigInt(req.params.id) } });
     res.json({ ok: true });
   }),
 );
-for (const [action, table] of [
-  ['bookmark', 'bookmarks'],
-  ['like', 'likes'],
+for (const [action, model] of [
+  ['bookmark', 'bookmark'],
+  ['like', 'like'],
 ])
   app.put(
     `/api/articles/:id/${action}`,
     auth,
     wrap(async (req, res) => {
       const { active } = z.object({ active: z.boolean() }).parse(req.body);
-      const a = (
-        await query(`SELECT id FROM articles a WHERE id=$1 AND ${visible}`, [req.params.id])
-      ).rows[0];
+      const articleId = BigInt(req.params.id);
+      const a = await prisma.article.findFirst({
+        where: { id: articleId, ...visibleWhere },
+        select: { id: true },
+      });
       if (!a) throw fail(404, 'Story not found.');
-      if (active)
-        await query(
-          `INSERT INTO ${table}(user_id,article_id) VALUES($1,$2) ON CONFLICT DO NOTHING`,
-          [req.user.id, a.id],
-        );
-      else
-        await query(`DELETE FROM ${table} WHERE user_id=$1 AND article_id=$2`, [req.user.id, a.id]);
+
+      const key = { user_id: req.user.id, article_id: a.id };
+      if (active) {
+        await prisma[model].upsert({
+          where: { user_id_article_id: key },
+          create: key,
+          update: {},
+        });
+      } else {
+        await prisma[model].deleteMany({ where: key });
+      }
       res.json({ active });
     }),
   );
@@ -384,33 +460,42 @@ app.post(
   auth,
   wrap(async (req, res) => {
     const body = text(3000).parse(req.body.body);
-    const a = (await query(`SELECT id FROM articles a WHERE id=$1 AND ${visible}`, [req.params.id]))
-      .rows[0];
+    const articleId = BigInt(req.params.id);
+    const a = await prisma.article.findFirst({
+      where: { id: articleId, ...visibleWhere },
+      select: { id: true },
+    });
     if (!a) throw fail(404, 'Story not found.');
-    res
-      .status(201)
-      .json(
-        (
-          await query(
-            'INSERT INTO comments(user_id,article_id,body) VALUES($1,$2,$3) RETURNING *',
-            [req.user.id, a.id, body],
-          )
-        ).rows[0],
-      );
+    const comment = await prisma.comment.create({
+      data: { user_id: req.user.id, article_id: a.id, body },
+    });
+    res.status(201).json(comment);
   }),
 );
 app.get(
   '/api/channels',
-  wrap(async (req, res) =>
+  wrap(async (req, res) => {
+    const userId = req.user?.id ?? null;
+    const channels = await prisma.channel.findMany({
+      include: {
+        _count: { select: { follows: true } },
+        ...(userId
+          ? { follows: { where: { user_id: userId }, take: 1, select: { user_id: true } } }
+          : {}),
+      },
+      orderBy: { id: 'asc' },
+    });
     res.json(
-      (
-        await query(
-          'SELECT c.*,(SELECT count(*)::int FROM follows f WHERE f.channel_id=c.id) AS followers,EXISTS(SELECT 1 FROM follows f WHERE f.channel_id=c.id AND f.user_id=$1) AS followed FROM channels c ORDER BY c.id',
-          [req.user?.id || null],
-        )
-      ).rows,
-    ),
-  ),
+      channels.map((c) => {
+        const { _count, follows: fl, ...scalar } = c;
+        return {
+          ...scalar,
+          followers: _count.follows,
+          followed: fl ? fl.length > 0 : false,
+        };
+      }),
+    );
+  }),
 );
 app.post(
   '/api/channels',
@@ -418,17 +503,10 @@ app.post(
   editor,
   wrap(async (req, res) => {
     const d = z.object({ name: text(120), bio: z.string().max(1000).default('') }).parse(req.body);
-    res
-      .status(201)
-      .json(
-        (
-          await query('INSERT INTO channels(name,bio,user_id) VALUES($1,$2,$3) RETURNING *', [
-            d.name,
-            d.bio,
-            req.user.id,
-          ])
-        ).rows[0],
-      );
+    const channel = await prisma.channel.create({
+      data: { name: d.name, bio: d.bio, user_id: req.user.id },
+    });
+    res.status(201).json(channel);
   }),
 );
 app.put(
@@ -436,31 +514,37 @@ app.put(
   auth,
   wrap(async (req, res) => {
     const { active } = z.object({ active: z.boolean() }).parse(req.body);
-    if (active)
-      await query('INSERT INTO follows(user_id,channel_id) VALUES($1,$2) ON CONFLICT DO NOTHING', [
-        req.user.id,
-        req.params.id,
-      ]);
-    else
-      await query('DELETE FROM follows WHERE user_id=$1 AND channel_id=$2', [
-        req.user.id,
-        req.params.id,
-      ]);
+    const channelId = BigInt(req.params.id);
+    const key = { user_id: req.user.id, channel_id: channelId };
+    if (active) {
+      await prisma.follow.upsert({
+        where: { user_id_channel_id: key },
+        create: key,
+        update: {},
+      });
+    } else {
+      await prisma.follow.deleteMany({ where: key });
+    }
     res.json({ active });
   }),
 );
 app.get(
   '/api/channels/:id',
   wrap(async (req, res) => {
-    const c = (await query('SELECT * FROM channels WHERE id=$1', [req.params.id])).rows[0];
+    const c = await prisma.channel.findUnique({ where: { id: BigInt(req.params.id) } });
     if (!c) throw fail(404, 'Channel not found.');
-    c.posts = (
-      await query(
-        'SELECT p.*,u.full_name FROM channel_posts p LEFT JOIN users u ON u.id=p.user_id WHERE channel_id=$1 ORDER BY p.created_at DESC',
-        [c.id],
-      )
-    ).rows;
-    res.json(c);
+    const posts = await prisma.channelPost.findMany({
+      where: { channel_id: c.id },
+      include: { user: { select: { full_name: true } } },
+      orderBy: { created_at: 'desc' },
+    });
+    res.json({
+      ...c,
+      posts: posts.map((p) => {
+        const { user, ...rest } = p;
+        return { ...rest, full_name: user?.full_name };
+      }),
+    });
   }),
 );
 app.post(
@@ -468,36 +552,27 @@ app.post(
   auth,
   editor,
   wrap(async (req, res) => {
-    const c = (await query('SELECT * FROM channels WHERE id=$1', [req.params.id])).rows[0];
+    const c = await prisma.channel.findUnique({ where: { id: BigInt(req.params.id) } });
     if (!c) throw fail(404, 'Channel not found.');
     if (String(c.user_id) !== String(req.user.id) && req.user.role !== 'admin')
       throw fail(403, 'Only the channel owner can post.');
     const body = text(5000).parse(req.body.body);
-    res
-      .status(201)
-      .json(
-        (
-          await query(
-            'INSERT INTO channel_posts(channel_id,user_id,body) VALUES($1,$2,$3) RETURNING *',
-            [c.id, req.user.id, body],
-          )
-        ).rows[0],
-      );
+    const post = await prisma.channelPost.create({
+      data: { channel_id: c.id, user_id: req.user.id, body },
+    });
+    res.status(201).json(post);
   }),
 );
 app.get(
   '/api/complaints',
   auth,
-  wrap(async (req, res) =>
+  wrap(async (req, res) => {
+    const where =
+      req.user.role === 'admin' ? {} : { user_id: req.user.id };
     res.json(
-      (
-        await query('SELECT * FROM complaints WHERE user_id=$1 OR $2 ORDER BY created_at DESC', [
-          req.user.id,
-          req.user.role === 'admin',
-        ])
-      ).rows,
-    ),
-  ),
+      await prisma.complaint.findMany({ where, orderBy: { created_at: 'desc' } }),
+    );
+  }),
 );
 app.post(
   '/api/complaints',
@@ -511,16 +586,16 @@ app.post(
         pincode: z.string().regex(/^\d{6}$/),
       })
       .parse(req.body);
-    res
-      .status(201)
-      .json(
-        (
-          await query(
-            'INSERT INTO complaints(user_id,title,description,location,pincode) VALUES($1,$2,$3,$4,$5) RETURNING *',
-            [req.user.id, d.title, d.description, d.location, d.pincode],
-          )
-        ).rows[0],
-      );
+    const complaint = await prisma.complaint.create({
+      data: {
+        user_id: req.user.id,
+        title: d.title,
+        description: d.description,
+        location: d.location,
+        pincode: d.pincode,
+      },
+    });
+    res.status(201).json(complaint);
   }),
 );
 app.put(
@@ -534,13 +609,16 @@ app.put(
         response: z.string().max(5000),
       })
       .parse(req.body);
-    const r = await query('UPDATE complaints SET status=$1,response=$2 WHERE id=$3 RETURNING *', [
-      d.status,
-      d.response,
-      req.params.id,
-    ]);
-    if (!r.rowCount) throw fail(404, 'Report not found.');
-    res.json(r.rows[0]);
+    try {
+      const complaint = await prisma.complaint.update({
+        where: { id: BigInt(req.params.id) },
+        data: { status: d.status, response: d.response },
+      });
+      res.json(complaint);
+    } catch (e) {
+      if (e.code === 'P2025') throw fail(404, 'Report not found.');
+      throw e;
+    }
   }),
 );
 app.get(
@@ -550,7 +628,7 @@ app.get(
       .enum(['newspapers', 'magazines', 'influencers', 'ads', 'templates'])
       .parse(req.params.kind);
     res.json(
-      (await query('SELECT * FROM resources WHERE kind=$1 ORDER BY created_at DESC', [kind])).rows,
+      await prisma.resource.findMany({ where: { kind }, orderBy: { created_at: 'desc' } }),
     );
   }),
 );
@@ -574,16 +652,10 @@ app.post(
         }),
       })
       .parse(req.body);
-    res
-      .status(201)
-      .json(
-        (
-          await query(
-            'INSERT INTO resources(kind,title,data,user_id) VALUES($1,$2,$3,$4) RETURNING *',
-            [kind, d.title, d.data, req.user.id],
-          )
-        ).rows[0],
-      );
+    const resource = await prisma.resource.create({
+      data: { kind, title: d.title, data: d.data, user_id: req.user.id },
+    });
+    res.status(201).json(resource);
   }),
 );
 app.delete(
@@ -591,12 +663,13 @@ app.delete(
   auth,
   editor,
   wrap(async (req, res) => {
-    const r = await query('DELETE FROM resources WHERE id=$1 AND (user_id=$2 OR $3) RETURNING id', [
-      req.params.id,
-      req.user.id,
-      req.user.role === 'admin',
-    ]);
-    if (!r.rowCount) throw fail(404, 'Resource not found or not owned by you.');
+    const resourceId = BigInt(req.params.id);
+    const where =
+      req.user.role === 'admin'
+        ? { id: resourceId }
+        : { id: resourceId, user_id: req.user.id };
+    const deleted = await prisma.resource.deleteMany({ where });
+    if (!deleted.count) throw fail(404, 'Resource not found or not owned by you.');
     res.json({ ok: true });
   }),
 );
@@ -605,16 +678,20 @@ app.post(
   limited,
   wrap(async (req, res) => {
     const e = email.parse(req.body.email);
-    await query('INSERT INTO subscribers(email) VALUES($1) ON CONFLICT DO NOTHING', [e]);
+    await prisma.subscriber.upsert({
+      where: { email: e },
+      create: { email: e },
+      update: {},
+    });
     res.json({ ok: true, message: 'You are on the list. Thank you for joining us.' });
   }),
 );
 app.get(
   '/api/lead-pages/:id',
   wrap(async (req, res) => {
-    const r = (
-      await query("SELECT * FROM resources WHERE id=$1 AND kind='templates'", [req.params.id])
-    ).rows[0];
+    const r = await prisma.resource.findFirst({
+      where: { id: BigInt(req.params.id), kind: 'templates' },
+    });
     if (!r) throw fail(404, 'Page not found.');
     res.json(r);
   }),
@@ -624,15 +701,14 @@ app.post(
   limited,
   wrap(async (req, res) => {
     const d = z.object({ name: text(100), email }).parse(req.body);
-    const r = await query("SELECT id FROM resources WHERE id=$1 AND kind='templates'", [
-      req.params.id,
-    ]);
-    if (!r.rowCount) throw fail(404, 'Page not found.');
-    await query('INSERT INTO leads(resource_id,name,email) VALUES($1,$2,$3)', [
-      req.params.id,
-      d.name,
-      d.email,
-    ]);
+    const r = await prisma.resource.findFirst({
+      where: { id: BigInt(req.params.id), kind: 'templates' },
+      select: { id: true },
+    });
+    if (!r) throw fail(404, 'Page not found.');
+    await prisma.lead.create({
+      data: { resource_id: r.id, name: d.name, email: d.email },
+    });
     res.status(201).json({ ok: true });
   }),
 );
@@ -641,26 +717,41 @@ app.get(
   auth,
   editor,
   wrap(async (req, res) => {
-    const scope = [req.user.id, req.user.role === 'admin'];
-    const stats = (
-      await query(
-        "SELECT count(*)::int AS stories,COALESCE(sum(views),0)::int AS views,count(*) FILTER(WHERE status='draft')::int AS drafts FROM articles WHERE user_id=$1 OR $2",
-        scope,
-      )
-    ).rows[0];
-    const stories = (
-      await query(
-        'SELECT id,title,views,status FROM articles WHERE user_id=$1 OR $2 ORDER BY views DESC LIMIT 20',
-        scope,
-      )
-    ).rows;
-    const leads = (
-      await query(
-        'SELECT l.*,r.title FROM leads l JOIN resources r ON r.id=l.resource_id WHERE r.user_id=$1 OR $2 ORDER BY l.created_at DESC',
-        scope,
-      )
-    ).rows;
-    res.json({ stats, stories, leads });
+    const isAdmin = req.user.role === 'admin';
+    const articleWhere = isAdmin ? {} : { user_id: req.user.id };
+
+    const [totalCount, draftCount, viewsAgg] = await Promise.all([
+      prisma.article.count({ where: articleWhere }),
+      prisma.article.count({ where: { ...articleWhere, status: 'draft' } }),
+      prisma.article.aggregate({ where: articleWhere, _sum: { views: true } }),
+    ]);
+
+    const stories = await prisma.article.findMany({
+      where: articleWhere,
+      select: { id: true, title: true, views: true, status: true },
+      orderBy: { views: 'desc' },
+      take: 20,
+    });
+
+    const resourceWhere = isAdmin ? {} : { user_id: req.user.id };
+    const leads = await prisma.lead.findMany({
+      where: { resource: resourceWhere },
+      include: { resource: { select: { title: true } } },
+      orderBy: { created_at: 'desc' },
+    });
+
+    res.json({
+      stats: {
+        stories: totalCount,
+        views: viewsAgg._sum.views ?? 0,
+        drafts: draftCount,
+      },
+      stories,
+      leads: leads.map((l) => {
+        const { resource, ...rest } = l;
+        return { ...rest, title: resource?.title };
+      }),
+    });
   }),
 );
 app.get(
@@ -669,8 +760,11 @@ app.get(
   admin,
   wrap(async (req, res) =>
     res.json(
-      (await query('SELECT id,full_name,email,role,created_at FROM users ORDER BY id LIMIT 500'))
-        .rows,
+      await prisma.user.findMany({
+        select: { id: true, full_name: true, email: true, role: true, created_at: true },
+        orderBy: { id: 'asc' },
+        take: 500,
+      }),
     ),
   ),
 );
@@ -681,12 +775,17 @@ app.put(
   wrap(async (req, res) => {
     const role = z.enum(['reader', 'reporter', 'admin']).parse(req.body.role);
     if (String(req.user.id) === req.params.id) throw fail(400, 'You cannot change your own role.');
-    const r = await query('UPDATE users SET role=$1 WHERE id=$2 RETURNING id,role', [
-      role,
-      req.params.id,
-    ]);
-    if (!r.rowCount) throw fail(404, 'User not found.');
-    res.json(r.rows[0]);
+    try {
+      const u = await prisma.user.update({
+        where: { id: BigInt(req.params.id) },
+        data: { role },
+        select: { id: true, role: true },
+      });
+      res.json(u);
+    } catch (e) {
+      if (e.code === 'P2025') throw fail(404, 'User not found.');
+      throw e;
+    }
   }),
 );
 app.use('/api/community', require('./community'));
@@ -778,12 +877,15 @@ app.use((err, req, res, next) => {
   } else if (err.code === 'LIMIT_UNEXPECTED_FILE') {
     status = 400;
     message = 'Upload one image at a time.';
-  } else if (err.code === '23505') {
+  } else if (err.code === '23505' || err.code === 'P2002') {
     status = 409;
     message = 'This record already exists.';
-  } else if (['22P02', '23503', '22007'].includes(err.code)) {
+  } else if (['22P02', '23503', '22007'].includes(err.code) || err.code === 'P2003') {
     status = 400;
     message = 'Invalid record or reference.';
+  } else if (err.code === 'P2025') {
+    status = 404;
+    message = 'Record not found.';
   } else if (status >= 500) {
     console.error(err);
     message = 'The service is temporarily unavailable. Please try again.';

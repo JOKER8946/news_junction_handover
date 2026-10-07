@@ -1,0 +1,322 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         BigInt   @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  full_name  String
+  role       String   @default("reader")
+  bio        String   @default("")
+  district   String   @default("")
+  phone      String   @default("")
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  articles           Article[]
+  bookmarks          Bookmark[]
+  likes              Like[]
+  comments           Comment[]
+  channels           Channel[]
+  follows            Follow[]
+  channel_posts      ChannelPost[]
+  complaints         Complaint[]
+  resources          Resource[]
+  community_posts    CommunityPost[]
+  community_likes    CommunityLike[]
+  community_saves    CommunitySave[]
+  community_comments CommunityComment[]
+  followers          UserFollow[]       @relation("UserFollowers")
+  following          UserFollow[]       @relation("UserFollowing")
+  reels              Reel[]
+  reel_likes         ReelLike[]
+
+  @@map("users")
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  articles     Article[]
+  feed_sources FeedSource[]
+
+  @@map("categories")
+}
+
+model Article {
+  id           BigInt   @id @default(autoincrement())
+  title        String
+  description  String   @default("")
+  content      String
+  image        String   @default("")
+  category_id  Int?
+  user_id      BigInt?
+  author_name  String   @default("News Junction")
+  publisher    String   @default("News Junction")
+  district     String   @default("")
+  status       String   @default("published")
+  published_at DateTime @default(now()) @db.Timestamptz
+  created_at   DateTime @default(now()) @db.Timestamptz
+  views        Int      @default(0)
+  source_url   String?
+
+  category  Category?  @relation(fields: [category_id], references: [id])
+  author    User?      @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  bookmarks Bookmark[]
+  likes     Like[]
+  comments  Comment[]
+
+  @@index([status, published_at(sort: Desc)], map: "articles_feed_idx")
+  @@index([user_id, published_at(sort: Desc)], map: "articles_author_idx")
+  @@map("articles")
+}
+
+model Bookmark {
+  user_id    BigInt
+  article_id BigInt
+
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  article Article @relation(fields: [article_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, article_id])
+  @@index([article_id], map: "bookmarks_article_idx")
+  @@map("bookmarks")
+}
+
+model Like {
+  user_id    BigInt
+  article_id BigInt
+
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  article Article @relation(fields: [article_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, article_id])
+  @@index([article_id], map: "likes_article_idx")
+  @@map("likes")
+}
+
+model Comment {
+  id         BigInt   @id @default(autoincrement())
+  user_id    BigInt?
+  article_id BigInt?
+  body       String
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  user    User?    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  article Article? @relation(fields: [article_id], references: [id], onDelete: Cascade)
+
+  @@index([article_id, created_at(sort: Desc)], map: "comments_article_idx")
+  @@map("comments")
+}
+
+model Channel {
+  id      BigInt  @id @default(autoincrement())
+  name    String
+  bio     String  @default("")
+  image   String  @default("")
+  user_id BigInt?
+
+  owner   User?         @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  follows Follow[]
+  posts   ChannelPost[]
+
+  @@map("channels")
+}
+
+model Follow {
+  user_id    BigInt
+  channel_id BigInt
+
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  channel Channel @relation(fields: [channel_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, channel_id])
+  @@map("follows")
+}
+
+model ChannelPost {
+  id         BigInt   @id @default(autoincrement())
+  channel_id BigInt?
+  user_id    BigInt?
+  body       String
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  channel Channel? @relation(fields: [channel_id], references: [id], onDelete: Cascade)
+  user    User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@index([channel_id, created_at(sort: Desc)], map: "channel_posts_channel_idx")
+  @@map("channel_posts")
+}
+
+model Complaint {
+  id          BigInt   @id @default(autoincrement())
+  user_id     BigInt?
+  title       String
+  description String
+  location    String
+  pincode     String
+  status      String   @default("Submitted")
+  response    String   @default("")
+  created_at  DateTime @default(now()) @db.Timestamptz
+
+  user User? @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("complaints")
+}
+
+model Resource {
+  id         BigInt   @id @default(autoincrement())
+  kind       String
+  title      String
+  data       Json     @default("{}")
+  user_id    BigInt?
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  user  User?  @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  leads Lead[]
+
+  @@index([kind], map: "resources_kind_idx")
+  @@map("resources")
+}
+
+model Subscriber {
+  email      String   @id
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  @@map("subscribers")
+}
+
+model Lead {
+  id          BigInt   @id @default(autoincrement())
+  resource_id BigInt?
+  name        String
+  email       String
+  created_at  DateTime @default(now()) @db.Timestamptz
+
+  resource Resource? @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+
+  @@map("leads")
+}
+
+model LegacyRecord {
+  source     String
+  table_name String
+  record_key String
+  data       Json
+
+  @@id([source, table_name, record_key])
+  @@map("legacy_records")
+}
+
+model CommunityPost {
+  id         BigInt   @id @default(autoincrement())
+  user_id    BigInt?
+  body       String
+  image      String   @default("")
+  pincode    String   @default("")
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  user     User?              @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  likes    CommunityLike[]
+  saves    CommunitySave[]
+  comments CommunityComment[]
+
+  @@index([created_at(sort: Desc), id(sort: Desc)], map: "community_posts_time_idx")
+  @@map("community_posts")
+}
+
+model CommunityLike {
+  user_id BigInt
+  post_id BigInt
+
+  user User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post CommunityPost @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, post_id])
+  @@index([post_id], map: "community_likes_post_idx")
+  @@map("community_likes")
+}
+
+model CommunitySave {
+  user_id BigInt
+  post_id BigInt
+
+  user User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post CommunityPost @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, post_id])
+  @@map("community_saves")
+}
+
+model UserFollow {
+  follower_id  BigInt
+  following_id BigInt
+
+  follower  User @relation("UserFollowing", fields: [follower_id], references: [id], onDelete: Cascade)
+  following User @relation("UserFollowers", fields: [following_id], references: [id], onDelete: Cascade)
+
+  @@id([follower_id, following_id])
+  @@map("user_follows")
+}
+
+model CommunityComment {
+  id         BigInt   @id @default(autoincrement())
+  post_id    BigInt?
+  user_id    BigInt?
+  body       String
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  post CommunityPost? @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  user User?          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([post_id, created_at], map: "community_comments_post_idx")
+  @@map("community_comments")
+}
+
+model FeedSource {
+  id             BigInt    @id @default(autoincrement())
+  url            String    @unique
+  publisher      String    @default("")
+  category_id    Int?
+  active         Boolean   @default(true)
+  last_synced_at DateTime? @db.Timestamptz
+  last_error     String?
+
+  category Category? @relation(fields: [category_id], references: [id])
+
+  @@map("feed_sources")
+}
+
+model Reel {
+  id         BigInt   @id @default(autoincrement())
+  title      String   @db.VarChar(150)
+  caption    String   @default("") @db.VarChar(2200)
+  filename   String   @unique
+  mime       String
+  published  Boolean  @default(true)
+  user_id    BigInt?
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  user       User?      @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  reel_likes ReelLike[]
+
+  @@index([created_at(sort: Desc), id(sort: Desc)], map: "reels_feed_idx")
+  @@map("reels")
+}
+
+model ReelLike {
+  reel_id BigInt
+  user_id BigInt
+
+  reel Reel @relation(fields: [reel_id], references: [id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([reel_id, user_id])
+  @@map("reel_likes")
+}

@@ -56,3 +56,6 @@ app/uploads/*
 !app/uploads/.gitkeep
 app/manikya_market/uploads/*
 !app/manikya_market/uploads/.gitkeep
+
+# Prisma
+prisma/migrations/

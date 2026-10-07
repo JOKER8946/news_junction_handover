@@ -11,9 +11,13 @@
     "dev": "concurrently -k \"node --watch server.js\" \"vite --host 127.0.0.1\"",
     "start": "node server.js",
     "build": "vite build",
+    "postinstall": "prisma generate",
     "db:migrate": "node scripts/migrate.js",
     "db:seed": "node scripts/seed.js",
     "db:import": "node scripts/import-legacy.js",
+    "prisma:generate": "prisma generate",
+    "prisma:pull": "prisma db pull",
+    "prisma:studio": "prisma studio",
     "test": "node --test tests/*.test.js",
     "test:e2e": "playwright test",
     "feeds:sync": "node scripts/sync-feeds.js",
@@ -23,6 +27,7 @@
     "@fontsource/dm-sans": "^5.3.0",
     "@fontsource/dm-serif-display": "^5.3.0",
     "@fontsource/noto-sans-kannada": "^5.3.0",
+    "@prisma/client": "^7.10.0",
     "bcryptjs": "^3.0.2",
     "connect-pg-simple": "^10.0.0",
     "dotenv": "^16.4.7",
@@ -47,6 +52,7 @@
     "@vitejs/plugin-react": "^5.0.3",
     "concurrently": "^9.2.1",
     "prettier": "^3.9.9",
+    "prisma": "^6.4.1",
     "vite": "^7.1.7"
   }
 }

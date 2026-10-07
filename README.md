@@ -1,8 +1,8 @@
-﻿# News Junction
+# News Junction
 
-A React 19 application with an Express API and PostgreSQL storage. No PHP runtime or MySQL driver is used. The previous PHP source and the replaced static HTML/JavaScript application have been removed. The original database backups remain unchanged.
+A React 19 application with an Express API, Prisma ORM, and PostgreSQL storage. No PHP runtime or MySQL driver is used. The previous PHP source and the replaced static HTML/JavaScript application have been removed. The original database backups remain unchanged.
 
-The UI follows the supplied reference PDFs and the original live site: red/blue public landing page, original logo, orange split-screen login, and a white Social/Reader sidebar with the original navigation labels. The React, Express, and PostgreSQL implementation remains in place.
+The UI follows the supplied reference PDFs and the original live site: red/blue public landing page, original logo, orange split-screen login, and a white Social/Reader sidebar with the original navigation labels. The React, Express, Prisma ORM, and PostgreSQL implementation remains in place.
 
 ## Run locally
 
@@ -19,6 +19,15 @@ npm start
 ```
 
 Open **http://localhost:3000**. On Windows with restricted PowerShell script execution, use `npm.cmd` instead of `npm`.
+
+### Prisma ORM
+
+This application uses Prisma Client (`@prisma/client`) to query the PostgreSQL database. The Prisma schema is located at `prisma/schema.prisma`. 
+
+* The `npm ci` step automatically runs `npm run prisma:generate` (via `postinstall`) to generate the local Prisma Client.
+* **Important:** A raw `pg` database pool (`server/database.js`) is retained alongside Prisma. It is strictly used for the `connect-pg-simple` session store and for the legacy data import script (`npm run db:import`), which requires efficient `jsonb_to_recordset` queries that Prisma does not support well.
+* Prisma represents Postgres `bigint` columns as JavaScript `BigInt` objects. The application includes a `BigInt.prototype.toJSON` polyfill in `server/prisma.js` so these values serialize safely in Express JSON responses.
+* You can browse the database interactively by running `npm run prisma:studio`.
 
 In this working directory, `.env` now selects `newsjunction_migration_check`, which contains the converted original backups. Your supplied existing account authenticates with its preserved bcrypt hash. A separate local editor is configured in the untracked `.env`. The earlier six-story sample database is still available as `newsjunction`; neither database is the live hosted database.
 
@@ -45,7 +54,7 @@ Reader accounts can publish community posts and interact with news. Only reporte
 
 The original `.sql.gz` files are MySQL dumps, not PostgreSQL scripts. Do not run them directly against PostgreSQL.
 
-The Node importer parses SQL values without executing the source SQL. It first preserves **every row** in the private `legacy_records` table, including unconverted integration data. Repeated archival imports update the same source records, and duplicate legacy rows are retained separately. Each file is imported in a transaction.
+The Node importer parses SQL values without executing the source SQL. It first preserves **every row** in the private `legacy_records` table, including unconverted integration data. Repeated archival imports update the same source records, and duplicate legacy rows are retained separately. Each file is imported in a transaction. *(Note: The import script continues to use raw `pg` queries rather than Prisma to take advantage of bulk `jsonb_to_recordset` operations for performance).*
 
 ```sh
 # Point DATABASE_URL to a new PostgreSQL database before starting.
@@ -114,8 +123,9 @@ Do not use the example database password or a placeholder session secret on a pu
 ## Layout
 
 - `src/`: React pages, shared components, API client and responsive styling.
-- `server/`: Express API, PostgreSQL access and community endpoints.
-- `database/schema.sql`: PostgreSQL schema and indexes.
+- `server/`: Express API, Prisma singleton (`prisma.js`), PostgreSQL access, and community endpoints.
+- `prisma/`: Prisma schema mapping the PostgreSQL tables.
+- `database/schema.sql`: PostgreSQL schema and indexes (applied by `db:migrate`).
 - `scripts/`: schema migration, demo seeding, SQL-dump import, password recovery and RSS refresh.
 - `public/media/`: bundled visual assets and video; uploads are ignored by Git.
 - `app/`: retained legacy non-PHP files/media, never used as an application runtime.
