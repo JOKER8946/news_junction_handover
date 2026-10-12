@@ -26,6 +26,7 @@ router.get(
     const mode = ['following', 'saved'].includes(req.query.mode) ? req.query.mode : 'all';
     const pin = String(req.query.pincode || '').slice(0, 6);
     const userId = req.user?.id ?? null;
+    if(mode!=='all'&&!req.user)throw fail(401,'Please sign in to see your saved or followed posts.');
 
     const where = {
       AND: [
@@ -79,7 +80,7 @@ router.post(
         image: z
           .string()
           .max(2000)
-          .refine((v) => !v || v.startsWith('https://') || v.startsWith('/media/'))
+          .refine(require('./security').safeUrl)
           .default(''),
       })
       .parse(req.body);

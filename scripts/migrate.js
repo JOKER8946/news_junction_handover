@@ -1,3 +1,4 @@
+if (require.main === module) require('./operator-env')();
 const fs = require('node:fs');
 const path = require('node:path');
 const prisma = require('../server/prisma');

@@ -43,6 +43,7 @@ after(async () => {
     await pool.query('DELETE FROM users WHERE id=$1', [id]);
   }
   await new Promise((r) => server.close(r));
+  await require('../server/prisma').$disconnect();
   await pool.end();
 });
 test('complete PostgreSQL workflow and permission boundaries', async (t) => {

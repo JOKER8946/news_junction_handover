@@ -58,4 +58,11 @@ app/manikya_market/uploads/*
 !app/manikya_market/uploads/.gitkeep
 
 # Prisma
-prisma/migrations/
+# Private backups and provider credentials must never be committed.
+database/*.sql.gz
+app/manikya_market/manikya_market.sql
+app/social_media/facebook/fb_credentials.json
+*.key
+*.p12
+*.pfx
+security-reports/

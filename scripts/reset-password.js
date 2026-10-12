@@ -1,3 +1,4 @@
+if (require.main === module) require('./operator-env')();
 // Operator-only account recovery. Never print or accept passwords as CLI arguments.
 const bcrypt = require('bcryptjs');
 const { pool } = require('../server/database');

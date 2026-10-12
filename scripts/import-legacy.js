@@ -1,3 +1,4 @@
+if (require.main === module) require('./operator-env')();
 // Stage every legacy row in PostgreSQL, then promote supported news entities.
 // No source SQL is executed. Original files remain untouched.
 const path = require('node:path');

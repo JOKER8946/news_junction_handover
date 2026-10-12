@@ -11,24 +11,38 @@ const { z } = require('zod');
 const prisma = require('./prisma');
 const { pool, query } = require('./database');
 const app = express();
-const production = process.env.NODE_ENV === 'production';
-if (production && (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32))
-  throw new Error('Set SESSION_SECRET to at least 32 random characters.');
+const {configuration,limiter,safeUrl} = require('./security');
+const {production,origin:appOrigin,secure:secureCookie} = configuration();
+app.set('json replacer',(key,value)=>typeof value==='string'?require('./security').redactSecrets(value):value);
 app.disable('x-powered-by');
 if (process.env.TRUST_PROXY === '1') app.set('trust proxy', 1);
+app.use((req,res,next)=> {
+  if(production && !req.secure) {
+    if(!['GET','HEAD'].includes(req.method)) return res.status(426).json({error:'HTTPS is required.'});
+    return res.redirect(308,appOrigin + req.originalUrl);
+  }
+  res.set('Permissions-Policy','camera=(), microphone=(), geolocation=()');
+  next();
+});
 app.use(
   helmet({
+    strictTransportSecurity: production ? {maxAge:31536000,includeSubDomains:true} : false,
     contentSecurityPolicy: {
       directives: {
         'img-src': ["'self'", 'https:', 'data:'],
         'media-src': ["'self'", 'blob:'],
         'script-src': ["'self'"],
+        'frame-ancestors': ["'none'"],
+        'object-src': ["'none'"],
+        'base-uri': ["'none'"],
+        'form-action': ["'self'"],
         'style-src': ["'self'", "'unsafe-inline'"],
         'upgrade-insecure-requests': production ? [] : null,
       },
     },
   }),
 );
+app.use('/api',limiter('api',600,60000));
 app.use(express.json({ limit: '1mb' }));
 app.use(
   session({
@@ -40,7 +54,7 @@ app.use(
     cookie: {
       httpOnly: true,
       sameSite: 'lax',
-      secure: process.env.COOKIE_SECURE === 'true',
+      secure: secureCookie,
       maxAge: 7 * 86400000,
     },
   }),
@@ -60,11 +74,12 @@ const publicUser = (u) =>
 app.use(
   '/api',
   wrap(async (req, res, next) => {
+    res.set('Cache-Control','private, no-store');
     if (req.session.userId)
       req.user = await prisma.user.findUnique({ where: { id: BigInt(req.session.userId) } });
     if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
       const origin = req.get('origin');
-      const allowed = process.env.APP_ORIGIN || 'http://localhost:3000';
+      const allowed = appOrigin;
       if (
         origin &&
         origin !== allowed &&
@@ -90,12 +105,15 @@ const editor = (req, res, next) =>
   ['admin', 'reporter'].includes(req.user?.role)
     ? next()
     : next(fail(403, 'Reporter access required.'));
-const limited = rateLimit({
-  windowMs: 15 * 60000,
-  limit: 30,
-  standardHeaders: 'draft-8',
-  legacyHeaders: false,
-  message: { error: 'Too many attempts. Please try again later.' },
+const limited = limiter('sensitive',30,15*60000);
+app.use('/api',(req,res,next)=>['GET','HEAD','OPTIONS'].includes(req.method)?next():writeLimit(req,res,next));
+const writeLimit=limiter('writes',120,15*60000);
+app.use('/api',(req,res,next)=>{
+  const segments=req.path.split('/');
+  for(let i=0;i<segments.length;i++){
+    if(['articles','channels','complaints','lead-pages','reels','people'].includes(segments[i]) && segments[i+1] && !/^[1-9][0-9]{0,17}$/.test(segments[i+1])) return res.status(400).json({error:'Invalid record identifier.'});
+  }
+  next();
 });
 const text = (max = 500) => z.string().trim().min(1).max(max);
 const email = z
@@ -105,7 +123,7 @@ const email = z
 const validUrl = z
   .string()
   .max(2000)
-  .refine((v) => !v || /^https:\/\//.test(v) || /^\/media\//.test(v), 'Use an HTTPS URL.');
+  .refine(safeUrl, 'Use an HTTPS URL or a local media URL.');
 const articleSchema = z.object({
   title: text(220),
   description: z.string().max(600).default(''),
@@ -118,18 +136,19 @@ const articleSchema = z.object({
 });
 
 // ── Visibility condition for Prisma queries ───────────────────────────
-const visibleWhere = {
+const visibleWhere = () => ({
   OR: [
     { status: 'published' },
     { AND: [{ status: 'scheduled' }, { published_at: { lte: new Date() } }] },
   ],
-};
+});
 
 // ── Response mapper: flatten Prisma includes to the shape the API returns ──
 function articleToJSON(a) {
   const { category, _count, bookmarks: bm, likes: lk, comments: cm, author, ...scalar } = a;
   const json = {
     ...scalar,
+    source_url: safeUrl(scalar.source_url) ? scalar.source_url : '',
     category_name: category?.name ?? null,
     likes: _count?.likes ?? 0,
     bookmarked: bm ? bm.length > 0 : false,
@@ -185,7 +204,7 @@ app.post(
   limited,
   wrap(async (req, res) => {
     const d = z
-      .object({ full_name: text(100), email, password: z.string().min(10).max(128) })
+      .object({ full_name: text(100), email, password: z.string().min(10).max(72).refine(v=>Buffer.byteLength(v,'utf8')<=72,'Password must be at most 72 UTF-8 bytes') })
       .parse(req.body);
     const hash = await bcrypt.hash(d.password, 12);
     const user = await prisma.user.create({
@@ -198,8 +217,9 @@ app.post(
 app.post(
   '/api/auth/login',
   limited,
+  limiter('login-account',20,15*60000,{skipSuccessfulRequests:true,keyGenerator:req=>crypto.createHash('sha256').update(String(req.body?.email||'').toLowerCase().trim().slice(0,254)).digest('hex')}),
   wrap(async (req, res) => {
-    const d = z.object({ email, password: text(128) }).parse(req.body);
+    const d = z.object({ email, password: z.string().min(1).max(128) }).parse(req.body);
     const user = await prisma.user.findFirst({
       where: { email: { equals: d.email, mode: 'insensitive' } },
     });
@@ -217,7 +237,7 @@ app.post(
   '/api/auth/logout',
   wrap(async (req, res) => {
     await new Promise((resolve, reject) => req.session.destroy((e) => (e ? reject(e) : resolve())));
-    res.clearCookie('nj.sid');
+    res.clearCookie('nj.sid',{httpOnly:true,sameSite:'lax',secure:secureCookie});
     res.json({ ok: true });
   }),
 );
@@ -246,7 +266,7 @@ app.put(
   limited,
   wrap(async (req, res) => {
     const d = z
-      .object({ current: text(128), password: z.string().min(10).max(128) })
+      .object({ current: z.string().min(1).max(128), password: z.string().min(10).max(72).refine(v=>Buffer.byteLength(v,'utf8')<=72,'Password must be at most 72 UTF-8 bytes') })
       .parse(req.body);
     if (!(await bcrypt.compare(d.current, req.user.password.replace(/^\$2y\$/, '$2b$'))))
       throw fail(400, 'Current password is incorrect.');
@@ -282,7 +302,7 @@ app.get(
       if (!req.user) throw fail(401, 'Please sign in.');
       conditions.push({ user_id: userId });
     } else {
-      conditions.push(visibleWhere);
+      conditions.push(visibleWhere());
     }
 
     if (req.query.q) {
@@ -437,7 +457,7 @@ for (const [action, model] of [
       const { active } = z.object({ active: z.boolean() }).parse(req.body);
       const articleId = BigInt(req.params.id);
       const a = await prisma.article.findFirst({
-        where: { id: articleId, ...visibleWhere },
+        where: { id: articleId, ...visibleWhere() },
         select: { id: true },
       });
       if (!a) throw fail(404, 'Story not found.');
@@ -462,7 +482,7 @@ app.post(
     const body = text(3000).parse(req.body.body);
     const articleId = BigInt(req.params.id);
     const a = await prisma.article.findFirst({
-      where: { id: articleId, ...visibleWhere },
+      where: { id: articleId, ...visibleWhere() },
       select: { id: true },
     });
     if (!a) throw fail(404, 'Story not found.');
@@ -781,6 +801,7 @@ app.put(
         data: { role },
         select: { id: true, role: true },
       });
+      await query("DELETE FROM session WHERE sess->>'userId'=$1",[req.params.id]);
       res.json(u);
     } catch (e) {
       if (e.code === 'P2025') throw fail(404, 'User not found.');
@@ -793,12 +814,14 @@ app.use('/api/reels', require('./reels'));
 const multer = require('multer');
 const receiveImage = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 8 * 1024 * 1024, files: 1 },
+  limits: { fileSize: 8 * 1024 * 1024, files: 1, fields: 0, parts: 1 },
 }).single('image');
 app.post(
   '/api/uploads',
   auth,
+  editor,
   limited,
+  require('./upload-budget').reserveUpload(8*1024*1024),
   receiveImage,
   wrap(async (req, res) => {
     if (!req.file) throw fail(400, 'Choose an image to upload.');
@@ -809,8 +832,13 @@ app.post(
     const fs = require('node:fs/promises'),
       directory = path.join(__dirname, '../public/media/uploads');
     await fs.mkdir(directory, { recursive: true });
+    let clean;
+    try { clean=await require('sharp')(req.file.buffer,{limitInputPixels:25000000,failOn:'warning'}).rotate().toFormat(type.ext==='jpg'?'jpeg':type.ext).toBuffer(); }
+    catch { throw fail(400,'The image is invalid or exceeds 25 million pixels.'); }
+    if(clean.length>8*1024*1024)throw fail(400,'The decoded image exceeds 8 MB.');
     const name = crypto.randomUUID() + '.' + type.ext;
-    await fs.writeFile(path.join(directory, name), req.file.buffer, { flag: 'wx' });
+    await fs.writeFile(path.join(directory, name), clean, { flag: 'wx' });
+    req.file.size=clean.length;
     res.status(201).json({ url: '/media/uploads/' + name });
   }),
 );
@@ -823,7 +851,7 @@ app.use(
 app.use(
   '/legacy-media',
   (req, res, next) => {
-    if (!/\.(jpe?g|png|gif|webp|avif|svg|ico|mp4|webm|mp3|wav|ogg|pdf|woff2?|ttf)$/i.test(req.path))
+    if (!/\.(jpe?g|png|gif|webp|avif|ico|mp4|webm|mp3|wav|ogg|pdf|woff2?|ttf)$/i.test(req.path))
       return res.status(404).end();
     next();
   },
@@ -833,6 +861,7 @@ app.use(
     fallthrough: false,
   }),
 );
+app.use((req,res,next)=> /^\/(?:\.|database(?:\/|$)|server(?:\/|$)|prisma(?:\/|$))/.test(req.path)?res.status(404).end():next());
 app.use(express.static(path.join(__dirname, '../dist'), { index: false }));
 const aliases = {
   stream: '/community',
@@ -863,6 +892,10 @@ app.get(/\.(php|html)$/, (req, res) => {
     target = (key === 'channel' ? '/channels/' : '/article/') + encodeURIComponent(req.query.id);
   res.redirect(301, target);
 });
+app.get(['/admin','/admin/*'],(req,res,next)=>{
+  if(!req.session.userId)return res.redirect('/sign-in');
+  prisma.user.findUnique({where:{id:BigInt(req.session.userId)},select:{role:true}}).then(u=>u?.role==='admin'?next():res.status(403).send('Administrator access required.')).catch(next);
+});
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, '../dist/index.html')));
 app.use((err, req, res, next) => {
   if (res.headersSent) return next(err);
@@ -886,8 +919,14 @@ app.use((err, req, res, next) => {
   } else if (err.code === 'P2025') {
     status = 404;
     message = 'Record not found.';
+  } else if (err.type === 'entity.parse.failed') {
+    status=400;message='Invalid JSON body.';
+  } else if (err.code && err.code.startsWith('LIMIT_')) {
+    status=400;message='Invalid multipart upload.';
+  } else if (err instanceof SyntaxError || err.name==='PrismaClientValidationError') {
+    status=400;message='Invalid request.';
   } else if (status >= 500) {
-    console.error(err);
+    console.error('Request failed:',err.code || err.name);
     message = 'The service is temporarily unavailable. Please try again.';
   }
   res.status(status).json({ error: message });

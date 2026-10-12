@@ -1,3 +1,4 @@
+if (require.main === module) require('./operator-env')();
 // Run through your scheduler (for example every 15 minutes). Sources are operator-managed.
 const Parser = require('rss-parser');
 const sanitize = require('sanitize-html');
@@ -10,10 +11,10 @@ const parser = new Parser({
     ],
   },
 });
-async function sync(ids = null) {
+async function sync(ids = null, {fetchText=require('../server/feed-fetch').fetchFeed} = {}) {
   const sources = (
     await pool.query(
-      'SELECT * FROM feed_sources WHERE active AND ($1::bigint[] IS NULL OR id=ANY($1)) ORDER BY id',
+      'SELECT * FROM feed_sources WHERE active AND ($1::bigint[] IS NULL OR id=ANY($1)) ORDER BY id LIMIT 100',
       [ids],
     )
   ).rows;
@@ -23,25 +24,7 @@ async function sync(ids = null) {
   }
   for (const source of sources) {
     try {
-      const response = await fetch(source.url, {
-        signal: AbortSignal.timeout(20000),
-        headers: { 'User-Agent': 'NewsJunction/2.0 RSS Reader' },
-      });
-      if (!response.ok) throw Error('HTTP ' + response.status);
-      const reader = response.body.getReader();
-      let bytes = 0,
-        chunks = [];
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        bytes += value.length;
-        if (bytes > 5 * 1024 * 1024) {
-          await reader.cancel();
-          throw Error('Feed exceeds 5 MB');
-        }
-        chunks.push(value);
-      }
-      const feed = await parser.parseString(Buffer.concat(chunks).toString('utf8'));
+      const feed = await parser.parseString(await fetchText(source.url));
       let inserted = 0;
       for (const item of feed.items.slice(0, 100)) {
         if (!item.title || !item.link || !/^https?:\/\//.test(item.link)) continue;

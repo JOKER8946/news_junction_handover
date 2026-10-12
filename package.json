@@ -27,7 +27,7 @@
     "@fontsource/dm-sans": "^5.3.0",
     "@fontsource/dm-serif-display": "^5.3.0",
     "@fontsource/noto-sans-kannada": "^5.3.0",
-    "@prisma/client": "^7.10.0",
+    "@prisma/client": "^6.19.3",
     "bcryptjs": "^3.0.2",
     "connect-pg-simple": "^10.0.0",
     "dotenv": "^16.4.7",
@@ -45,6 +45,7 @@
     "react-router-dom": "^7.9.1",
     "rss-parser": "^3.13.0",
     "sanitize-html": "^2.17.0",
+    "sharp": "^0.35.5",
     "zod": "^4.1.11"
   },
   "devDependencies": {
@@ -52,7 +53,10 @@
     "@vitejs/plugin-react": "^5.0.3",
     "concurrently": "^9.2.1",
     "prettier": "^3.9.9",
-    "prisma": "^6.4.1",
+    "prisma": "6.19.3",
     "vite": "^7.1.7"
+  },
+  "overrides": {
+    "deepmerge-ts": "^8.0.0"
   }
 }

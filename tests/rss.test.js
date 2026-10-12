@@ -1,3 +1,4 @@
+require('../scripts/operator-env')();
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const http = require('node:http');
@@ -20,8 +21,8 @@ test('RSS ingestion sanitizes content, preserves provenance and ignores duplicat
         [`http://127.0.0.1:${server.address().port}/feed`, 'Test publisher'],
       )
     ).rows[0].id;
-    await sync([id]);
-    await sync([id]);
+    await sync([id],{fetchText:async url=>(await fetch(url)).text()});
+    await sync([id],{fetchText:async url=>(await fetch(url)).text()});
     const rows = (await pool.query('SELECT * FROM articles WHERE source_url=$1', [unique])).rows;
     assert.equal(rows.length, 1);
     assert.equal(rows[0].title, 'Testing & context');

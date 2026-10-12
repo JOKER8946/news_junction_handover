@@ -7,3 +7,7 @@ reference_images
 database/*.gz
 test-results
 playwright-report
+public/media/uploads
+security-reports
+tests
+*.log

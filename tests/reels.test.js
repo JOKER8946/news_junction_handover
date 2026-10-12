@@ -99,6 +99,7 @@ test('reel permissions, file validation, drafts, streaming, likes and deletion',
       await pool.query('DELETE FROM users WHERE id=$1', [userId]);
     }
     await new Promise((r) => server.close(r));
-    await pool.end();
+    await require('../server/prisma').$disconnect();
+  await pool.end();
   }
 });

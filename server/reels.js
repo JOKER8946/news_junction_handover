@@ -23,7 +23,7 @@ const receive = multer({
 }).single('video');
 
 function reelToJSON(r) {
-  const { user, _count, reel_likes: lk, ...scalar } = r;
+  const { user, _count, reel_likes: lk, filename, mime, ...scalar } = r;
   return {
     ...scalar,
     author_name: user?.full_name ?? null,
@@ -85,6 +85,8 @@ router.get(
 router.post(
   '/',
   admin,
+  require('./security').limiter('reel-uploads',20,60*60000),
+  require('./upload-budget').reserveUpload(100*1024*1024),
   (req, res, next) =>
     receive(req, res, (err) => {
       if (err)

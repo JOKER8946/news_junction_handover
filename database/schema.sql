@@ -28,6 +28,9 @@ CREATE TABLE IF NOT EXISTS subscribers (email TEXT PRIMARY KEY, created_at TIMES
 CREATE TABLE IF NOT EXISTS leads (id BIGSERIAL PRIMARY KEY, resource_id BIGINT REFERENCES resources(id) ON DELETE CASCADE, name TEXT NOT NULL, email TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now());
 CREATE TABLE IF NOT EXISTS session (sid VARCHAR PRIMARY KEY, sess JSON NOT NULL, expire TIMESTAMP(6) NOT NULL);
 CREATE INDEX IF NOT EXISTS session_expire_idx ON session(expire);
+CREATE TABLE IF NOT EXISTS security_rate_limits (bucket TEXT PRIMARY KEY,hits INTEGER NOT NULL,expires_at TIMESTAMPTZ NOT NULL);
+CREATE INDEX IF NOT EXISTS security_rate_limits_expiry_idx ON security_rate_limits(expires_at);
+CREATE TABLE IF NOT EXISTS upload_budgets (month TEXT PRIMARY KEY,bytes BIGINT NOT NULL CHECK(bytes>=0));
 CREATE TABLE IF NOT EXISTS legacy_records (source TEXT NOT NULL, table_name TEXT NOT NULL, record_key TEXT NOT NULL, data JSONB NOT NULL, PRIMARY KEY(source,table_name,record_key));
 CREATE TABLE IF NOT EXISTS community_posts (id BIGSERIAL PRIMARY KEY, user_id BIGINT REFERENCES users(id) ON DELETE CASCADE, body TEXT NOT NULL, image TEXT NOT NULL DEFAULT '', pincode TEXT NOT NULL DEFAULT '', created_at TIMESTAMPTZ NOT NULL DEFAULT now());
 CREATE TABLE IF NOT EXISTS community_likes (user_id BIGINT REFERENCES users(id) ON DELETE CASCADE, post_id BIGINT REFERENCES community_posts(id) ON DELETE CASCADE, PRIMARY KEY(user_id,post_id));
