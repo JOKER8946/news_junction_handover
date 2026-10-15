@@ -2,7 +2,7 @@ const { test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const app = require('../server/app');
 const { pool } = require('../server/database');
-let server, base, articleId, channelId, templateId;
+let server, base, articleId, readerArticleId, rejectedArticleId, channelId, templateId;
 const ids = [];
 const suffix = Date.now();
 function agent() {
@@ -28,6 +28,7 @@ function agent() {
 }
 const owner = agent(),
   other = agent(),
+  adminCall = agent(),
   guest = agent();
 before(async () => {
   server = app.listen(0);
@@ -36,6 +37,8 @@ before(async () => {
 });
 after(async () => {
   if (articleId) await pool.query('DELETE FROM articles WHERE id=$1', [articleId]);
+  if (readerArticleId) await pool.query('DELETE FROM articles WHERE id=$1', [readerArticleId]);
+  if (rejectedArticleId) await pool.query('DELETE FROM articles WHERE id=$1', [rejectedArticleId]);
   if (channelId) await pool.query('DELETE FROM channels WHERE id=$1', [channelId]);
   if (templateId) await pool.query('DELETE FROM resources WHERE id=$1', [templateId]);
   for (const id of ids) {
@@ -62,6 +65,7 @@ test('complete PostgreSQL workflow and permission boundaries', async (t) => {
     for (const [call, n] of [
       [owner, 'owner'],
       [other, 'other'],
+      [adminCall, 'admin'],
     ]) {
       await call('/auth/session');
       const r = await call('/auth/register', 'POST', {
@@ -76,15 +80,73 @@ test('complete PostgreSQL workflow and permission boundaries', async (t) => {
       assert.match(r.headers.get('set-cookie'), /SameSite=Lax/);
       ids.push(r.data.user.id);
     }
+    await pool.query("UPDATE users SET role='admin' WHERE id=$1", [ids[2]]);
     const row = (await pool.query('SELECT password FROM users WHERE id=$1', [ids[0]])).rows[0];
     assert.match(row.password, /^\$2[aby]\$/);
   });
-  await t.test('readers cannot publish or elevate their role', async () => {
-    assert.equal((await owner('/articles', 'POST', {})).status, 403);
+  await t.test('readers can submit but cannot publish or approve their own article', async () => {
+    assert.equal((await owner('/articles', 'POST', {})).status, 400);
     assert.equal(
       (await owner('/admin/users/' + ids[0] + '/role', 'PUT', { role: 'admin' })).status,
       403,
     );
+    const submission = await owner('/articles', 'POST', {
+      title: `Reader submission ${suffix}`,
+      description: 'Waiting for review',
+      content: 'Reader submitted story',
+      category_id: 3,
+      status: 'published',
+    });
+    assert.equal(submission.status, 201);
+    readerArticleId = submission.data.id;
+    assert.equal(submission.data.status, 'pending');
+    assert.equal((await guest('/articles/' + readerArticleId)).status, 404);
+    assert.equal(
+      (
+        await owner('/admin/articles/' + readerArticleId + '/review', 'PUT', {
+          decision: 'approve',
+        })
+      ).status,
+      403,
+    );
+    assert.equal(
+      (await adminCall('/admin/articles')).data.some((a) => a.id === readerArticleId),
+      true,
+    );
+    assert.equal(
+      (
+        await adminCall('/admin/articles/' + readerArticleId + '/review', 'PUT', {
+          decision: 'approve',
+        })
+      ).status,
+      200,
+    );
+    assert.equal((await guest('/articles/' + readerArticleId)).status, 200);
+    assert.equal(
+      (
+        await adminCall('/admin/articles/' + readerArticleId + '/review', 'PUT', {
+          decision: 'approve',
+        })
+      ).status,
+      409,
+    );
+    const rejected = await other('/articles', 'POST', {
+      title: `Rejected submission ${suffix}`,
+      content: 'This story will be rejected',
+      category_id: 3,
+    });
+    assert.equal(rejected.status, 201);
+    rejectedArticleId = rejected.data.id;
+    assert.equal(
+      (
+        await adminCall('/admin/articles/' + rejectedArticleId + '/review', 'PUT', {
+          decision: 'reject',
+        })
+      ).status,
+      200,
+    );
+    assert.equal((await guest('/articles/' + rejectedArticleId)).status, 404);
+    assert.equal((await other('/articles/' + rejectedArticleId)).data.status, 'rejected');
     await pool.query("UPDATE users SET role='reporter' WHERE id=$1", [ids[0]]);
   });
   await t.test('publishing is persistent and sanitizes markup', async () => {
@@ -98,12 +160,37 @@ test('complete PostgreSQL workflow and permission boundaries', async (t) => {
     });
     assert.equal(r.status, 201);
     articleId = r.data.id;
+    assert.equal(r.data.status, 'pending');
+    assert.equal((await guest('/articles/' + articleId)).status, 404);
+    assert.equal(
+      (await adminCall('/admin/articles/' + articleId + '/review', 'PUT', { decision: 'approve' }))
+        .status,
+      200,
+    );
     const a = (await guest('/articles/' + articleId)).data;
     assert.equal(a.title, `Integration story ${suffix}`);
     assert.doesNotMatch(a.content, /<script|onerror/);
     assert.equal(
       (await pool.query('SELECT title FROM articles WHERE id=$1', [articleId])).rows[0].title,
       a.title,
+    );
+    const edited = await owner('/articles/' + articleId, 'PUT', {
+      title: `Edited integration story ${suffix}`,
+      description: 'An edit must be reviewed again',
+      content: 'Updated safe story',
+      category_id: 3,
+      status: 'published',
+    });
+    assert.equal(edited.status, 200);
+    assert.equal(edited.data.status, 'pending');
+    assert.equal((await guest('/articles/' + articleId)).status, 404);
+    assert.equal(
+      (
+        await adminCall('/admin/articles/' + articleId + '/review', 'PUT', {
+          decision: 'approve',
+        })
+      ).status,
+      200,
     );
   });
   await t.test('ownership, foreign origins and invalid input are rejected', async () => {
@@ -205,7 +292,7 @@ test('complete PostgreSQL workflow and permission boundaries', async (t) => {
       status: 'scheduled',
       published_at: new Date(Date.now() + 86400000).toISOString(),
     };
-    assert.equal((await owner('/articles/' + articleId, 'PUT', body)).status, 200);
+    assert.equal((await adminCall('/articles/' + articleId, 'PUT', body)).status, 200);
     assert.equal((await guest('/articles/' + articleId)).status, 404);
     assert.equal((await owner('/articles/' + articleId)).status, 200);
     assert.equal(

@@ -172,7 +172,7 @@ export function Feed({ saved = false, mine = false }) {
           saved
             ? 'Saved stories'
             : mine
-              ? 'My Collection'
+              ? 'My Articles'
               : q
                 ? `Search results for "${q}"`
                 : 'Reader'
@@ -267,6 +267,11 @@ export function Story() {
       </div>
       <h1>{a.title}</h1>
       <p className="article-deck">{a.description}</p>
+      {a.status !== 'published' && (
+        <span className="badge">
+          {a.status === 'pending' ? 'Pending admin approval' : a.status}
+        </span>
+      )}
       <div className="article-byline">
         <span className="avatar">{a.author_name[0]}</span>
         <div>
@@ -971,6 +976,8 @@ export function Complaints() {
 export function Editor() {
   const { id } = useParams();
   const { data, loading, error } = useLoad(id ? '/articles/' + id : '/categories');
+  const { user, toast } = useApp();
+  const canPublish = user?.role === 'admin';
   const [form, setForm] = useState({
       title: '',
       description: '',
@@ -983,8 +990,7 @@ export function Editor() {
     }),
     [saving, setSaving] = useState(false),
     [failure, setFailure] = useState('');
-  const navigate = useNavigate(),
-    { toast } = useApp();
+  const navigate = useNavigate();
   useEffect(() => {
     if (id && data)
       setForm({
@@ -1007,7 +1013,11 @@ export function Editor() {
       <PageTitle
         eyebrow="THE NEWSROOM"
         title={id ? 'Edit Article' : 'Create Article'}
-        description="Write with care. Add context. Help your community understand."
+        description={
+          canPublish
+            ? 'Write with care. Add context. Help your community understand.'
+            : 'Submit your story for review. Admin approval is required before it appears on the site.'
+        }
       />
       <State loading={loading} error={error} />
       {!loading && !error && (
@@ -1018,15 +1028,23 @@ export function Editor() {
             setSaving(true);
             setFailure('');
             try {
-              const body = { ...form, category_id: Number(form.category_id) };
+              const body = {
+                ...form,
+                category_id: Number(form.category_id),
+                ...(canPublish ? {} : { status: 'pending' }),
+              };
               if (body.published_at) body.published_at = new Date(body.published_at).toISOString();
               else delete body.published_at;
               const a = await api('/articles' + (id ? '/' + id : ''), {
                 method: id ? 'PUT' : 'POST',
                 body,
               });
-              toast('Your story has been saved.');
-              navigate('/article/' + a.id);
+              toast(
+                canPublish
+                  ? 'Your story has been saved.'
+                  : 'Your article was sent for admin approval.',
+              );
+              navigate(canPublish ? '/article/' + a.id : '/my-articles');
             } catch (e) {
               setFailure(e.message);
             } finally {
@@ -1084,31 +1102,41 @@ export function Editor() {
               {...field('content')}
             />
           </label>
-          <div className="form-grid">
-            <label>
-              Publication status
-              <select {...field('status')}>
-                <option value="draft">Save as draft</option>
-                <option value="published">Publish now</option>
-                <option value="scheduled">Schedule for later</option>
-              </select>
-            </label>
-            {form.status === 'scheduled' && (
+          {canPublish ? (
+            <div className="form-grid">
               <label>
-                Publish at
-                <input type="datetime-local" required {...field('published_at')} />
+                Publication status
+                <select {...field('status')}>
+                  <option value="draft">Save as draft</option>
+                  <option value="published">Publish now</option>
+                  <option value="scheduled">Schedule for later</option>
+                </select>
               </label>
-            )}
-          </div>
+              {form.status === 'scheduled' && (
+                <label>
+                  Publish at
+                  <input type="datetime-local" required {...field('published_at')} />
+                </label>
+              )}
+            </div>
+          ) : (
+            <p className="muted">
+              Your article will appear on the website after an admin approves it.
+            </p>
+          )}
           <FormError error={failure} />
           <button className="button" disabled={saving}>
             {saving
               ? 'Saving…'
-              : form.status === 'draft'
-                ? 'Save draft'
-                : form.status === 'scheduled'
-                  ? 'Schedule story'
-                  : 'Publish story'}
+              : canPublish
+                ? form.status === 'draft'
+                  ? 'Save draft'
+                  : form.status === 'scheduled'
+                    ? 'Schedule story'
+                    : 'Publish story'
+                : id
+                  ? 'Resubmit for approval'
+                  : 'Submit for approval'}
             <ArrowUpRight size={17} />
           </button>
         </form>
@@ -1302,8 +1330,10 @@ export function Admin() {
   const { data, loading, error, reload } = useLoad('/admin/users'),
     { user, toast } = useApp();
   const ads = useLoad('/resources/ads');
+  const submissions = useLoad('/admin/articles');
   const [params] = useSearchParams();
   const reelsTab = params.get('tab') === 'reels';
+  const submissionsTab = params.get('tab') === 'submissions';
   return (
     <>
       <PageTitle
@@ -1312,8 +1342,11 @@ export function Admin() {
         description="Manage newsroom access, advertisements, and civic reports."
       />
       <nav className="admin-tabs" aria-label="Administration sections">
-        <Link to="/admin" className={!reelsTab ? 'active' : ''}>
+        <Link to="/admin" className={!reelsTab && !submissionsTab ? 'active' : ''}>
           General
+        </Link>
+        <Link to="/admin?tab=submissions" className={submissionsTab ? 'active' : ''}>
+          Article submissions
         </Link>
         <Link to="/admin?tab=reels" className={reelsTab ? 'active' : ''}>
           Reels
@@ -1321,6 +1354,82 @@ export function Admin() {
       </nav>
       {reelsTab ? (
         <AdminReels />
+      ) : submissionsTab ? (
+        <>
+          <PageTitle
+            eyebrow="REVIEW QUEUE"
+            title="Article submissions"
+            description="Approve stories to publish them, or reject submissions that are not ready."
+          />
+          <State
+            loading={submissions.loading}
+            error={submissions.error}
+            retry={submissions.reload}
+          />
+          {!submissions.loading &&
+            !submissions.error &&
+            (submissions.data?.length ? (
+              submissions.data.map((article) => (
+                <article className="panel submission-card" key={article.id}>
+                  <div className="row">
+                    <div>
+                      <span className="badge">Pending approval</span>
+                      <h2>
+                        <Link to={'/article/' + article.id}>{article.title}</Link>
+                      </h2>
+                      <p>
+                        By {article.author_name}
+                        {article.author_email ? ` · ${article.author_email}` : ''} ·{' '}
+                        {article.category_name || 'Uncategorized'} · {dateLabel(article.created_at)}
+                      </p>
+                    </div>
+                    <Link className="text-link" to={'/article/' + article.id}>
+                      Review story <ArrowUpRight size={16} />
+                    </Link>
+                  </div>
+                  {article.description && <p>{article.description}</p>}
+                  <div className="submission-actions">
+                    <button
+                      className="button"
+                      onClick={async () => {
+                        try {
+                          await api(`/admin/articles/${article.id}/review`, {
+                            method: 'PUT',
+                            body: { decision: 'approve' },
+                          });
+                          toast('Article approved and published.');
+                          submissions.reload();
+                        } catch (e) {
+                          toast(e.message);
+                        }
+                      }}
+                    >
+                      Approve and publish
+                    </button>
+                    <button
+                      className="button secondary"
+                      onClick={async () => {
+                        try {
+                          await api(`/admin/articles/${article.id}/review`, {
+                            method: 'PUT',
+                            body: { decision: 'reject' },
+                          });
+                          toast('Article rejected.');
+                          submissions.reload();
+                        } catch (e) {
+                          toast(e.message);
+                        }
+                      }}
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </article>
+              ))
+            ) : (
+              <Empty title="No articles waiting for review." />
+            ))}
+        </>
       ) : (
         <>
           <State loading={loading} error={error} retry={reload} />

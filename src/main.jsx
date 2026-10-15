@@ -199,9 +199,11 @@ function Shell() {
     [
       'Creator',
       [
-        ['/my-articles', 'My Collection', Newspaper],
-        ['/create', 'Reporter', PenLine],
-        ['/analytics', 'Analytics', ChartNoAxesCombined],
+        ['/my-articles', 'My Articles', Newspaper],
+        ['/create', 'Write an Article', PenLine],
+        ...(user && ['reporter', 'admin'].includes(user.role)
+          ? [['/analytics', 'Analytics', ChartNoAxesCombined]]
+          : []),
       ],
     ],
     [
@@ -307,7 +309,7 @@ function Shell() {
             <Route
               path="/my-articles"
               element={
-                <Gate editor>
+                <Gate>
                   <Feed mine />
                 </Gate>
               }
@@ -330,7 +332,7 @@ function Shell() {
             <Route
               path="/create"
               element={
-                <Gate editor>
+                <Gate>
                   <Editor />
                 </Gate>
               }
@@ -338,7 +340,7 @@ function Shell() {
             <Route
               path="/edit/:id"
               element={
-                <Gate editor>
+                <Gate>
                   <Editor />
                 </Gate>
               }
@@ -430,6 +432,21 @@ function App() {
         Skip to content
       </a>
       <Shell />
+      <a
+        className="whatsapp-float"
+        href="https://wa.me/917411742999"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Contact News Junction on WhatsApp"
+        title="Contact us on WhatsApp"
+      >
+        <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path
+            fill="currentColor"
+            d="M16.04 3A12.94 12.94 0 0 0 4.9 22.52L3.2 28.7l6.33-1.66A12.94 12.94 0 1 0 16.04 3Zm0 23.53c-2 0-3.96-.54-5.68-1.57l-.4-.24-3.76.99 1-3.66-.26-.42a10.56 10.56 0 1 1 9.1 4.9Zm5.8-7.91c-.32-.16-1.9-.94-2.2-1.05-.3-.11-.51-.16-.72.16-.21.31-.83 1.05-1.01 1.27-.19.21-.37.23-.69.08-.32-.16-1.35-.5-2.57-1.58-.95-.85-1.59-1.9-1.78-2.22-.18-.32-.02-.49.14-.65.14-.14.32-.37.48-.55.16-.19.21-.32.32-.53.1-.21.05-.4-.03-.55-.08-.16-.72-1.73-.99-2.37-.26-.62-.53-.54-.72-.55l-.61-.01c-.21 0-.56.08-.85.4-.29.32-1.11 1.09-1.11 2.66s1.14 3.09 1.3 3.3c.16.21 2.24 3.42 5.43 4.8.76.33 1.35.53 1.81.67.76.24 1.45.2 2 .12.61-.09 1.9-.77 2.16-1.52.27-.74.27-1.38.19-1.51-.08-.13-.29-.21-.61-.37Z"
+          />
+        </svg>
+      </a>
       {notice && (
         <div className="toast" role="status">
           {notice}

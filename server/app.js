@@ -11,22 +11,25 @@ const { z } = require('zod');
 const prisma = require('./prisma');
 const { pool, query } = require('./database');
 const app = express();
-const {configuration,limiter,safeUrl} = require('./security');
-const {production,origin:appOrigin,secure:secureCookie} = configuration();
-app.set('json replacer',(key,value)=>typeof value==='string'?require('./security').redactSecrets(value):value);
+const { configuration, limiter, safeUrl } = require('./security');
+const { production, origin: appOrigin, secure: secureCookie } = configuration();
+app.set('json replacer', (key, value) =>
+  typeof value === 'string' ? require('./security').redactSecrets(value) : value,
+);
 app.disable('x-powered-by');
 if (process.env.TRUST_PROXY === '1') app.set('trust proxy', 1);
-app.use((req,res,next)=> {
-  if(production && !req.secure) {
-    if(!['GET','HEAD'].includes(req.method)) return res.status(426).json({error:'HTTPS is required.'});
-    return res.redirect(308,appOrigin + req.originalUrl);
+app.use((req, res, next) => {
+  if (production && !req.secure) {
+    if (!['GET', 'HEAD'].includes(req.method))
+      return res.status(426).json({ error: 'HTTPS is required.' });
+    return res.redirect(308, appOrigin + req.originalUrl);
   }
-  res.set('Permissions-Policy','camera=(), microphone=(), geolocation=()');
+  res.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   next();
 });
 app.use(
   helmet({
-    strictTransportSecurity: production ? {maxAge:31536000,includeSubDomains:true} : false,
+    strictTransportSecurity: production ? { maxAge: 31536000, includeSubDomains: true } : false,
     contentSecurityPolicy: {
       directives: {
         'img-src': ["'self'", 'https:', 'data:'],
@@ -42,7 +45,7 @@ app.use(
     },
   }),
 );
-app.use('/api',limiter('api',600,60000));
+app.use('/api', limiter('api', 600, 60000));
 app.use(express.json({ limit: '1mb' }));
 app.use(
   session({
@@ -74,7 +77,7 @@ const publicUser = (u) =>
 app.use(
   '/api',
   wrap(async (req, res, next) => {
-    res.set('Cache-Control','private, no-store');
+    res.set('Cache-Control', 'private, no-store');
     if (req.session.userId)
       req.user = await prisma.user.findUnique({ where: { id: BigInt(req.session.userId) } });
     if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
@@ -105,13 +108,22 @@ const editor = (req, res, next) =>
   ['admin', 'reporter'].includes(req.user?.role)
     ? next()
     : next(fail(403, 'Reporter access required.'));
-const limited = limiter('sensitive',30,15*60000);
-app.use('/api',(req,res,next)=>['GET','HEAD','OPTIONS'].includes(req.method)?next():writeLimit(req,res,next));
-const writeLimit=limiter('writes',120,15*60000);
-app.use('/api',(req,res,next)=>{
-  const segments=req.path.split('/');
-  for(let i=0;i<segments.length;i++){
-    if(['articles','channels','complaints','lead-pages','reels','people'].includes(segments[i]) && segments[i+1] && !/^[1-9][0-9]{0,17}$/.test(segments[i+1])) return res.status(400).json({error:'Invalid record identifier.'});
+const limited = limiter('sensitive', 30, 15 * 60000);
+app.use('/api', (req, res, next) =>
+  ['GET', 'HEAD', 'OPTIONS'].includes(req.method) ? next() : writeLimit(req, res, next),
+);
+const writeLimit = limiter('writes', 120, 15 * 60000);
+app.use('/api', (req, res, next) => {
+  const segments = req.path.split('/');
+  for (let i = 0; i < segments.length; i++) {
+    if (
+      ['articles', 'channels', 'complaints', 'lead-pages', 'reels', 'people'].includes(
+        segments[i],
+      ) &&
+      segments[i + 1] &&
+      !/^[1-9][0-9]{0,17}$/.test(segments[i + 1])
+    )
+      return res.status(400).json({ error: 'Invalid record identifier.' });
   }
   next();
 });
@@ -120,10 +132,7 @@ const email = z
   .email()
   .max(254)
   .transform((v) => v.toLowerCase());
-const validUrl = z
-  .string()
-  .max(2000)
-  .refine(safeUrl, 'Use an HTTPS URL or a local media URL.');
+const validUrl = z.string().max(2000).refine(safeUrl, 'Use an HTTPS URL or a local media URL.');
 const articleSchema = z.object({
   title: text(220),
   description: z.string().max(600).default(''),
@@ -131,7 +140,7 @@ const articleSchema = z.object({
   image: validUrl.default(''),
   category_id: z.coerce.number().int().positive(),
   district: z.string().max(100).default(''),
-  status: z.enum(['draft', 'published', 'scheduled']).default('published'),
+  status: z.enum(['draft', 'pending', 'rejected', 'published', 'scheduled']).default('published'),
   published_at: z.iso.datetime().optional(),
 });
 
@@ -204,7 +213,18 @@ app.post(
   limited,
   wrap(async (req, res) => {
     const d = z
-      .object({ full_name: text(100), email, password: z.string().min(10).max(72).refine(v=>Buffer.byteLength(v,'utf8')<=72,'Password must be at most 72 UTF-8 bytes') })
+      .object({
+        full_name: text(100),
+        email,
+        password: z
+          .string()
+          .min(10)
+          .max(72)
+          .refine(
+            (v) => Buffer.byteLength(v, 'utf8') <= 72,
+            'Password must be at most 72 UTF-8 bytes',
+          ),
+      })
       .parse(req.body);
     const hash = await bcrypt.hash(d.password, 12);
     const user = await prisma.user.create({
@@ -217,7 +237,19 @@ app.post(
 app.post(
   '/api/auth/login',
   limited,
-  limiter('login-account',20,15*60000,{skipSuccessfulRequests:true,keyGenerator:req=>crypto.createHash('sha256').update(String(req.body?.email||'').toLowerCase().trim().slice(0,254)).digest('hex')}),
+  limiter('login-account', 20, 15 * 60000, {
+    skipSuccessfulRequests: true,
+    keyGenerator: (req) =>
+      crypto
+        .createHash('sha256')
+        .update(
+          String(req.body?.email || '')
+            .toLowerCase()
+            .trim()
+            .slice(0, 254),
+        )
+        .digest('hex'),
+  }),
   wrap(async (req, res) => {
     const d = z.object({ email, password: z.string().min(1).max(128) }).parse(req.body);
     const user = await prisma.user.findFirst({
@@ -237,7 +269,7 @@ app.post(
   '/api/auth/logout',
   wrap(async (req, res) => {
     await new Promise((resolve, reject) => req.session.destroy((e) => (e ? reject(e) : resolve())));
-    res.clearCookie('nj.sid',{httpOnly:true,sameSite:'lax',secure:secureCookie});
+    res.clearCookie('nj.sid', { httpOnly: true, sameSite: 'lax', secure: secureCookie });
     res.json({ ok: true });
   }),
 );
@@ -266,7 +298,17 @@ app.put(
   limited,
   wrap(async (req, res) => {
     const d = z
-      .object({ current: z.string().min(1).max(128), password: z.string().min(10).max(72).refine(v=>Buffer.byteLength(v,'utf8')<=72,'Password must be at most 72 UTF-8 bytes') })
+      .object({
+        current: z.string().min(1).max(128),
+        password: z
+          .string()
+          .min(10)
+          .max(72)
+          .refine(
+            (v) => Buffer.byteLength(v, 'utf8') <= 72,
+            'Password must be at most 72 UTF-8 bytes',
+          ),
+      })
       .parse(req.body);
     if (!(await bcrypt.compare(d.current, req.user.password.replace(/^\$2y\$/, '$2b$'))))
       throw fail(400, 'Current password is incorrect.');
@@ -284,9 +326,7 @@ app.put(
 );
 app.get(
   '/api/categories',
-  wrap(async (req, res) =>
-    res.json(await prisma.category.findMany({ orderBy: { id: 'asc' } })),
-  ),
+  wrap(async (req, res) => res.json(await prisma.category.findMany({ orderBy: { id: 'asc' } }))),
 );
 app.get(
   '/api/articles',
@@ -340,10 +380,11 @@ app.get(
 app.post(
   '/api/articles',
   auth,
-  editor,
   wrap(async (req, res) => {
     const d = articleSchema.parse(req.body);
-    if (d.status === 'scheduled' && (!d.published_at || new Date(d.published_at) <= new Date()))
+    const isAdmin = req.user.role === 'admin';
+    const status = isAdmin ? d.status : 'pending';
+    if (status === 'scheduled' && (!d.published_at || new Date(d.published_at) <= new Date()))
       throw fail(400, 'Choose a future publication time.');
     const article = await prisma.article.create({
       data: {
@@ -353,7 +394,7 @@ app.post(
         image: d.image,
         category_id: d.category_id,
         district: d.district,
-        status: d.status,
+        status,
         published_at: d.published_at ? new Date(d.published_at) : new Date(),
         user_id: req.user.id,
         author_name: req.user.full_name,
@@ -414,11 +455,11 @@ async function ownedArticle(req) {
 app.put(
   '/api/articles/:id',
   auth,
-  editor,
   wrap(async (req, res) => {
     await ownedArticle(req);
     const d = articleSchema.parse(req.body);
-    if (d.status === 'scheduled' && (!d.published_at || new Date(d.published_at) <= new Date()))
+    const status = req.user.role === 'admin' ? d.status : 'pending';
+    if (status === 'scheduled' && (!d.published_at || new Date(d.published_at) <= new Date()))
       throw fail(400, 'Choose a future publication time.');
     const updated = await prisma.article.update({
       where: { id: BigInt(req.params.id) },
@@ -429,7 +470,7 @@ app.put(
         image: d.image,
         category_id: d.category_id,
         district: d.district,
-        status: d.status,
+        status,
         ...(d.published_at ? { published_at: new Date(d.published_at) } : {}),
       },
     });
@@ -587,11 +628,8 @@ app.get(
   '/api/complaints',
   auth,
   wrap(async (req, res) => {
-    const where =
-      req.user.role === 'admin' ? {} : { user_id: req.user.id };
-    res.json(
-      await prisma.complaint.findMany({ where, orderBy: { created_at: 'desc' } }),
-    );
+    const where = req.user.role === 'admin' ? {} : { user_id: req.user.id };
+    res.json(await prisma.complaint.findMany({ where, orderBy: { created_at: 'desc' } }));
   }),
 );
 app.post(
@@ -647,9 +685,7 @@ app.get(
     const kind = z
       .enum(['newspapers', 'magazines', 'influencers', 'ads', 'templates'])
       .parse(req.params.kind);
-    res.json(
-      await prisma.resource.findMany({ where: { kind }, orderBy: { created_at: 'desc' } }),
-    );
+    res.json(await prisma.resource.findMany({ where: { kind }, orderBy: { created_at: 'desc' } }));
   }),
 );
 app.post(
@@ -685,9 +721,7 @@ app.delete(
   wrap(async (req, res) => {
     const resourceId = BigInt(req.params.id);
     const where =
-      req.user.role === 'admin'
-        ? { id: resourceId }
-        : { id: resourceId, user_id: req.user.id };
+      req.user.role === 'admin' ? { id: resourceId } : { id: resourceId, user_id: req.user.id };
     const deleted = await prisma.resource.deleteMany({ where });
     if (!deleted.count) throw fail(404, 'Resource not found or not owned by you.');
     res.json({ ok: true });
@@ -788,6 +822,55 @@ app.get(
     ),
   ),
 );
+app.get(
+  '/api/admin/articles',
+  auth,
+  admin,
+  wrap(async (req, res) => {
+    const status = z
+      .enum(['pending', 'rejected', 'published'])
+      .default('pending')
+      .parse(req.query.status);
+    const articles = await prisma.article.findMany({
+      where: { status },
+      include: {
+        ...articleInclude(req.user.id),
+        author: { select: { full_name: true, email: true } },
+      },
+      orderBy: [{ created_at: 'asc' }, { id: 'asc' }],
+      take: 100,
+    });
+    res.json(
+      articles.map((article) => ({
+        ...articleToJSON(article),
+        author_email: article.author?.email ?? null,
+      })),
+    );
+  }),
+);
+app.put(
+  '/api/admin/articles/:id/review',
+  auth,
+  admin,
+  wrap(async (req, res) => {
+    const { decision } = z.object({ decision: z.enum(['approve', 'reject']) }).parse(req.body);
+    const id = BigInt(req.params.id);
+    const reviewed = await prisma.article.updateMany({
+      where: { id, status: 'pending' },
+      data: {
+        status: decision === 'approve' ? 'published' : 'rejected',
+        ...(decision === 'approve' ? { published_at: new Date() } : {}),
+      },
+    });
+    if (!reviewed.count) {
+      const article = await prisma.article.findUnique({ where: { id }, select: { id: true } });
+      if (!article) throw fail(404, 'Story not found.');
+      throw fail(409, 'This submission has already been reviewed.');
+    }
+    const updated = await prisma.article.findUnique({ where: { id } });
+    res.json(updated);
+  }),
+);
 app.put(
   '/api/admin/users/:id/role',
   auth,
@@ -801,7 +884,7 @@ app.put(
         data: { role },
         select: { id: true, role: true },
       });
-      await query("DELETE FROM session WHERE sess->>'userId'=$1",[req.params.id]);
+      await query("DELETE FROM session WHERE sess->>'userId'=$1", [req.params.id]);
       res.json(u);
     } catch (e) {
       if (e.code === 'P2025') throw fail(404, 'User not found.');
@@ -819,9 +902,8 @@ const receiveImage = multer({
 app.post(
   '/api/uploads',
   auth,
-  editor,
   limited,
-  require('./upload-budget').reserveUpload(8*1024*1024),
+  require('./upload-budget').reserveUpload(8 * 1024 * 1024),
   receiveImage,
   wrap(async (req, res) => {
     if (!req.file) throw fail(400, 'Choose an image to upload.');
@@ -833,12 +915,21 @@ app.post(
       directory = path.join(__dirname, '../public/media/uploads');
     await fs.mkdir(directory, { recursive: true });
     let clean;
-    try { clean=await require('sharp')(req.file.buffer,{limitInputPixels:25000000,failOn:'warning'}).rotate().toFormat(type.ext==='jpg'?'jpeg':type.ext).toBuffer(); }
-    catch { throw fail(400,'The image is invalid or exceeds 25 million pixels.'); }
-    if(clean.length>8*1024*1024)throw fail(400,'The decoded image exceeds 8 MB.');
+    try {
+      clean = await require('sharp')(req.file.buffer, {
+        limitInputPixels: 25000000,
+        failOn: 'warning',
+      })
+        .rotate()
+        .toFormat(type.ext === 'jpg' ? 'jpeg' : type.ext)
+        .toBuffer();
+    } catch {
+      throw fail(400, 'The image is invalid or exceeds 25 million pixels.');
+    }
+    if (clean.length > 8 * 1024 * 1024) throw fail(400, 'The decoded image exceeds 8 MB.');
     const name = crypto.randomUUID() + '.' + type.ext;
     await fs.writeFile(path.join(directory, name), clean, { flag: 'wx' });
-    req.file.size=clean.length;
+    req.file.size = clean.length;
     res.status(201).json({ url: '/media/uploads/' + name });
   }),
 );
@@ -861,7 +952,11 @@ app.use(
     fallthrough: false,
   }),
 );
-app.use((req,res,next)=> /^\/(?:\.|database(?:\/|$)|server(?:\/|$)|prisma(?:\/|$))/.test(req.path)?res.status(404).end():next());
+app.use((req, res, next) =>
+  /^\/(?:\.|database(?:\/|$)|server(?:\/|$)|prisma(?:\/|$))/.test(req.path)
+    ? res.status(404).end()
+    : next(),
+);
 app.use(express.static(path.join(__dirname, '../dist'), { index: false }));
 const aliases = {
   stream: '/community',
@@ -892,9 +987,14 @@ app.get(/\.(php|html)$/, (req, res) => {
     target = (key === 'channel' ? '/channels/' : '/article/') + encodeURIComponent(req.query.id);
   res.redirect(301, target);
 });
-app.get(['/admin','/admin/*'],(req,res,next)=>{
-  if(!req.session.userId)return res.redirect('/sign-in');
-  prisma.user.findUnique({where:{id:BigInt(req.session.userId)},select:{role:true}}).then(u=>u?.role==='admin'?next():res.status(403).send('Administrator access required.')).catch(next);
+app.get(['/admin', '/admin/*'], (req, res, next) => {
+  if (!req.session.userId) return res.redirect('/sign-in');
+  prisma.user
+    .findUnique({ where: { id: BigInt(req.session.userId) }, select: { role: true } })
+    .then((u) =>
+      u?.role === 'admin' ? next() : res.status(403).send('Administrator access required.'),
+    )
+    .catch(next);
 });
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, '../dist/index.html')));
 app.use((err, req, res, next) => {
@@ -920,13 +1020,16 @@ app.use((err, req, res, next) => {
     status = 404;
     message = 'Record not found.';
   } else if (err.type === 'entity.parse.failed') {
-    status=400;message='Invalid JSON body.';
+    status = 400;
+    message = 'Invalid JSON body.';
   } else if (err.code && err.code.startsWith('LIMIT_')) {
-    status=400;message='Invalid multipart upload.';
-  } else if (err instanceof SyntaxError || err.name==='PrismaClientValidationError') {
-    status=400;message='Invalid request.';
+    status = 400;
+    message = 'Invalid multipart upload.';
+  } else if (err instanceof SyntaxError || err.name === 'PrismaClientValidationError') {
+    status = 400;
+    message = 'Invalid request.';
   } else if (status >= 500) {
-    console.error('Request failed:',err.code || err.name);
+    console.error('Request failed:', err.code || err.name);
     message = 'The service is temporarily unavailable. Please try again.';
   }
   res.status(status).json({ error: message });

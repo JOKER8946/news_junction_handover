@@ -11,9 +11,22 @@ CREATE TABLE IF NOT EXISTS articles (
  image TEXT NOT NULL DEFAULT '', category_id INTEGER REFERENCES categories(id),
  user_id BIGINT REFERENCES users(id) ON DELETE SET NULL, author_name TEXT NOT NULL DEFAULT 'News Junction',
  publisher TEXT NOT NULL DEFAULT 'News Junction', district TEXT NOT NULL DEFAULT '',
- status TEXT NOT NULL DEFAULT 'published' CHECK(status IN ('draft','published','scheduled')),
+ status TEXT NOT NULL DEFAULT 'published' CHECK(status IN ('draft','pending','rejected','published','scheduled')),
  published_at TIMESTAMPTZ NOT NULL DEFAULT now(), created_at TIMESTAMPTZ NOT NULL DEFAULT now(), views INTEGER NOT NULL DEFAULT 0
 );
+DO $$
+BEGIN
+ IF NOT EXISTS (
+  SELECT 1 FROM pg_constraint
+  WHERE conrelid='articles'::regclass AND contype='c'
+    AND pg_get_constraintdef(oid) LIKE '%pending%'
+    AND pg_get_constraintdef(oid) LIKE '%rejected%'
+ ) THEN
+  ALTER TABLE articles DROP CONSTRAINT IF EXISTS articles_status_check;
+  ALTER TABLE articles ADD CONSTRAINT articles_status_check
+   CHECK(status IN ('draft','pending','rejected','published','scheduled'));
+ END IF;
+END $$;
 CREATE INDEX IF NOT EXISTS articles_feed_idx ON articles(status,published_at DESC);
 CREATE TABLE IF NOT EXISTS bookmarks (user_id BIGINT REFERENCES users(id) ON DELETE CASCADE, article_id BIGINT REFERENCES articles(id) ON DELETE CASCADE, PRIMARY KEY(user_id,article_id));
 CREATE TABLE IF NOT EXISTS likes (user_id BIGINT REFERENCES users(id) ON DELETE CASCADE, article_id BIGINT REFERENCES articles(id) ON DELETE CASCADE, PRIMARY KEY(user_id,article_id));
